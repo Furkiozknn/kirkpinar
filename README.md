@@ -158,6 +158,10 @@ other games: [Hisar](https://furkiozknn.github.io/kale-savunmasi/) ·
 **Round 5:** [Kapadokya Balonu](https://furkiozknn.github.io/kapadokya-balonu/) ·
 [Ebru](https://furkiozknn.github.io/ebru/) · [Çarşı Kaçışı](https://furkiozknn.github.io/carsi-kacisi/)
 
+**Round 6:** [Topkapı Gecesi](https://furkiozknn.github.io/topkapi-gecesi/) ·
+[Hamsi](https://furkiozknn.github.io/hamsi/) · [Pamukkale](https://furkiozknn.github.io/pamukkale/) ·
+[Mimar Sinan](https://furkiozknn.github.io/mimar-sinan/)
+
 ## Türkçe
 
 **Kırkpınar**, Edirne'deki Kırkpınar geleneğinden esinlenen 3D fizikli yağlı güreş oyunu. Kıspetli, yağlı iki
