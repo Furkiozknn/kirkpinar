@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "id": "kirkpinar",
+  "owner": "Furkiozknn",
+  "repository": "https://github.com/Furkiozknn/kirkpinar",
+  "homepage": "https://furkiozknn.github.io/kirkpinar/",
+  "releases": null,
+  "status": "active",
+  "category": "game",
+  "platform": [
+    "web"
+  ],
+  "primary_language": "JavaScript",
+  "technologies": [
+    "Three.js r170",
+    "Canvas 2D",
+    "Web Audio API"
+  ],
+  "version": null,
+  "license": "MIT",
+  "topics": [
+    "browser-game",
+    "threejs",
+    "sports-game",
+    "wrestling",
+    "physics",
+    "claude-code",
+    "claude-game-arena"
+  ],
+  "summary": "3D physics oil-wrestling game inspired by Kırkpınar, built by Claude Sonnet 5.5 · Kırkpınar'dan esinlenen 3D fizikli yağlı güreş oyunu, Claude Sonnet 5.5 yaptı",
+  "key_features": [
+    "Oiled grips slip: grip strength decays with hold time, oil and sweat, effort and stamina",
+    "Readable balance: a centre-of-mass lean over the feet decides steps and falls onto the back, side or front",
+    "Classic finishing moves as context moves: paça kazık, çaprast, künde, lift and carry, yere çal and a leg hook",
+    "Career through five weight classes to the golden belt, quick match and 2 players on one keyboard; touch and gamepad",
+    "The AI uses the same inputs as a player; the ?auto bot played a 26-bout career with 18 wins to the golden belt"
+  ],
+  "media": {
+    "hero": "docs/03-kunde.png",
+    "screenshots": [
+      "docs/card.jpg",
+      "docs/03-kunde.png",
+      "docs/01-title.png",
+      "docs/02-gameplay.png",
+      "docs/04-ladder.png",
+      "docs/05-phone.png",
+      "docs/06-ending.png"
+    ],
+    "gifs": [
+      "docs/gameplay.gif"
+    ],
+    "videos": [
+      "docs/gameplay.mp4"
+    ]
+  },
+  "tests": null,
+  "ci": {
+    "workflows": [],
+    "badge": null
+  },
+  "docs": {
+    "readme": "README.md",
+    "changelog": null,
+    "version_history": null,
+    "roadmap": null,
+    "security": null,
+    "contributing": null,
+    "license_file": "LICENSE"
+  },
+  "social": {
+    "headline": "Grip, pull and throw on the oiled grass until your rival's back touches the ground · Yağlı çimende tut, çek, at: rakibin sırtını yere getir",
+    "hashtags": [
+      "claudecode",
+      "indiegame"
+    ],
+    "primary_link": "https://furkiozknn.github.io/kirkpinar/"
+  },
+  "provenance": {
+    "generated_at": "2026-10-27",
+    "generator": "hand-written",
+    "rule": "mechanical fields read from the repository; editorial fields hand-written from the README and index.html; no field is generated from a guess"
+  }
+}
