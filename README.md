@@ -18,6 +18,10 @@
 
 <p align="center"><b>Play online: <a href="https://furkiozknn.github.io/kirkpinar/">https://furkiozknn.github.io/kirkpinar/</a></b> (desktop and phone, no install)</p>
 
+<!-- portals:start -->
+<p align="center">Also on: <a href="https://furkiozknn.itch.io/kirkpinar">itch.io</a> &middot; <a href="https://playgama.ai/play/ciehj6cxilo2lg">Playgama</a></p>
+<!-- portals:end -->
+
 ## Highlights
 
 - **Oil makes every hold slip.** Grip strength decays with hold time, oil and sweat, effort and stamina, and a grip
