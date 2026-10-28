@@ -29,9 +29,21 @@
   lift and carry three steps, yere çal (slam) and a crouched leg hook, each one a context move that lights up when the
   grip and the rival's balance allow it.
 - **Career to the golden belt.** Five weight classes from Deste to Başpehlivan, 3-4 rivals each in four styles (strong,
-  fast, defensive, tricky). Plus a quick match and 2 players on one keyboard; touch and gamepad work too.
+  fast, defensive, tricky). Plus a quick match and 2 players on one keyboard (behind "More modes"); touch and gamepad
+  work too.
+- **One click to the first grip (v2).** Play jumps straight to the current career bout: a 2.5 s versus card (any click
+  skips it), then the bout starts. A four-step coach strip in the very first bout ticks on real input and the rival plays
+  about 25 % weaker until it is done (or skipped).
+- **Longer bouts for bigger classes (v2).** Career bouts last 60 / 75 / 90 / 105 / 120 seconds from Deste to
+  Başpehlivan, as in the real sport where the final is the longest. Oil keeps building, so late bouts are about pacing.
+- **Three years and the belt is yours (v2).** A finished career is one year of the golden belt; three finished careers
+  in a row keep it for good (abandoning a run resets the streak) and turn your belt and armband gold.
+- **Oil you can see (v2).** Skin gets glossier as oil builds up, every slip throws droplets, the grass darkens where the
+  wrestlers stand, and the grip bar shows an oil-limit tick.
+- **Cazgır facts (v2).** The cazgır tells a different true fact before the first bout of each class, and result and
+  loading cards carry a "Did you know?" line (six sourced facts, TR / EN).
 - **Fair AI, tested by a bot.** The AI presses the same buttons through the same simulation as a player. The `?auto`
-  bot played a whole career: measured **26 bouts, 18 wins, golden belt**, 60 fps, 51 draw calls.
+  bot played a whole career: measured **23 bouts, 18 wins, golden belt** (v2, fast=30; zero JS errors with and without assets), 60 fps, 52 draw calls.
 - **One file, made in code.** One `index.html` with Three.js r170 from a CDN; the poses, the slow-motion replay, the
   crowd and every sound are generated in code.
 
@@ -57,8 +69,9 @@
 - **Lift:** hold push with a waist or kıspet hold on an off-balance rival. Carry him three steps to win, or slam him
   (**yere çal**).
 - **Trip:** crouch + pull hooks the rival's leg (with a cooldown) and weakens his balance for a moment.
-- Falls onto the side or front only score a point for the rival, who can follow up with the künde. Bouts last 90
-  seconds; if nobody wins, more points wins, and a tie goes to a 45 second golden score round (first point wins).
+- Falls onto the side or front only score a point for the rival, who can follow up with the künde. Career bouts last
+  60 / 75 / 90 / 105 / 120 seconds by class (quick match and 2 players: 90); if nobody wins, more points wins, and a tie
+  goes to a 45 second golden score round (first point wins).
 
 </details>
 
@@ -74,11 +87,12 @@
 | Context move | `R` | `Enter` or `'` | `R`, `Space` or `Enter` |
 
 Global: `P` / `Esc` pause, `M` music, `X` effects, `L` language (not during a 2-player bout, where it is Player 2's
-pull). Touch: a virtual stick (left / right, down to crouch, up to stand tall) and four buttons. Gamepad: stick or
+pull). The speaker button (top right on every screen) mutes music and effects together and is remembered. Touch: a virtual stick (left / right, down to crouch, up to stand tall) and four buttons. Gamepad: stick or
 d-pad, `A` grab, `X` pull, `B` push, `Y` move, Start pause.
 
-Settings (master / music / effects volume, TR / EN, Low / High quality, fullscreen) are saved in `localStorage` under
-`arena.kirkpinar.settings`; the career run and best results under `arena.kirkpinar.save`. Turkish is the default
+Settings (master / music / effects volume, mute, TR / EN, Low / High quality, fullscreen) are saved in `localStorage`
+under `arena.kirkpinar.settings`; the career run, best results, the coach flag and the golden-belt streak under
+`arena.kirkpinar.save`. Turkish is the default
 language.
 
 <details>
@@ -87,12 +101,13 @@ language.
 | Flag | Effect |
 |---|---|
 | `?auto` | a bot plays the whole career by itself, clicking the real menus; `&fast=N` sets the simulation speed (default 6), `&mode=quick` plays one quick match instead, `&sim=N` fast-forwards N seconds at the start of each bout |
-| `?debug` | fps, draw calls, triangles, fighter states and JS errors on screen; `window.kirkpinarSim(seconds)` |
+| `?debug` | fps, draw calls, triangles, fighter states and JS errors on screen; `window.kirkpinarSim(seconds)`; `&belt=N` (0-3) presets the golden-belt streak |
 | `?low` | shadows off, fewer particles and spectators |
 | `?lang=en` / `?lang=tr` | start language |
 | `?noassets` | accepted for the arena convention; the game uses no external assets anyway |
 
-`window.kirkpinar` exposes the live state (`state`, `screen`, `fps`, `drawCalls`, `auto`, `assets`, `errors`).
+`window.kirkpinar` exposes the live state (`state` incl. the bout `limit` and per-class `limits`, `screen`, `fps`,
+`drawCalls`, `auto`, `coach`, `belt`, `assets`, `errors`).
 
 </details>
 
@@ -126,6 +141,13 @@ then open <http://localhost:8000/>.
 Built by **Claude Sonnet 5.5** with Claude Code from one prompt: [prompts/kirkpinar.md](prompts/kirkpinar.md). No
 third-party assets are used; Three.js is loaded from jsDelivr under its MIT licence.
 
+### v2 update
+
+Upgraded by Claude Sonnet 5.5 with Claude Code from [prompts/kirkpinar-v2.md](prompts/kirkpinar-v2.md): one-click Play,
+a first-bout coach, a mute button on every screen, bout length that grows with the class, the three-year golden belt,
+visible oil (gloss, droplets, stains, grip-bar tick) and cazgır facts. Counts are unchanged (5 classes, the same rival
+lists, a 26-bout career). The facts come from the UNESCO listing and Wikipedia (sources are in the code comments).
+
 <details>
 <summary><b>Technical notes</b></summary>
 
@@ -139,6 +161,9 @@ third-party assets are used; Three.js is loaded from jsDelivr under its MIT lice
   between the joints. Falls, throws, kneeling, pinning and carrying are the same solver with different parameters.
 - **Replay:** the last two seconds of joint arrays are recorded and played back in slow motion from an orbiting camera
   after a decisive finish.
+- **Oil rendering (v2):** each wrestler's skin material runs roughness 0.58 to 0.14 (and a stronger reflection) from his
+  oil value; the stains are one transparent decal plane whose small canvas is stamped under the wrestlers a few times a
+  second, so it costs one extra draw call.
 - **Audio:** Web Audio only: a hicaz-flavoured zurna phrase over a 9/8 davul pattern with a drone, crowd murmur,
   cheers, slaps, thuds and whistles.
 - **Rendering:** MeshLambert / MeshStandard, one directional light with a 1024 shadow map that follows the pair, merged
@@ -168,7 +193,9 @@ other games: [Hisar](https://furkiozknn.github.io/kale-savunmasi/) ·
 pehlivan er meydanında tutar, çeker, iter ve atar; yağ yüzünden her tutuş yavaşça kayar. Paça kazık, çaprast ve
 künde gibi klasik oyunlarla rakibin sırtını yere getir. Deste'den Başpehlivan'a beş sınıflı kariyer ve altın kemer,
 hızlı maç ve aynı klavyede 2 oyuncu. Kurulum yok; masaüstünde ve telefonda tarayıcıda oynanır. Claude Sonnet 5.5
-tarafından Claude Code ile tek bir prompt'tan yapıldı.
+tarafından Claude Code ile tek bir prompt'tan yapıldı. v2: tek tıkla ilk tutuşa geçiş, ilk maçta öğretici şerit,
+her ekranda ses düğmesi, sınıfla uzayan maç süresi, üç yıl üst üste kazanınca kalıcı altın kemer, gözle görülen yağ ve
+cazgırın anlattığı gerçek bilgiler.
 
 **Oyna:** https://furkiozknn.github.io/kirkpinar/
 

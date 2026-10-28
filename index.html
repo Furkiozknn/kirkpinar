@@ -38,7 +38,7 @@ svg{display:block}
 .ibtn svg{width:24px;height:24px}
 
 /* HUD */
-.topbar{position:fixed;top:calc(8px + var(--sa-t));left:calc(8px + var(--sa-l));right:calc(8px + var(--sa-r));min-height:56px;display:flex;align-items:center;gap:10px;padding:4px 8px 4px 12px;z-index:20}
+.topbar{position:fixed;top:calc(8px + var(--sa-t));left:calc(8px + var(--sa-l));right:calc(8px + var(--sa-r));min-height:56px;display:flex;align-items:center;gap:10px;padding:4px 58px 4px 12px;z-index:20}
 .brand{display:flex;align-items:center;gap:8px;font-weight:700;color:var(--gold);white-space:nowrap}
 .brand svg{width:30px;height:30px}
 .brand span{font-size:19px;letter-spacing:.02em}
@@ -51,7 +51,7 @@ svg{display:block}
 .score{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink)}
 .acts{display:flex;gap:2px}
 @media (max-width:760px){
-  .topbar{flex-wrap:wrap;padding:4px 6px}
+  .topbar{flex-wrap:wrap;padding:4px 54px 4px 6px}
   .brand span{display:none}
   .stats{gap:8px;flex:1 1 auto;order:0}
   .chip.cls{display:none}
@@ -185,6 +185,44 @@ svg{display:block}
 .keys{width:100%;border-collapse:collapse;font-size:13.5px;margin:6px 0}
 .keys td{padding:4px 6px;border-bottom:1px solid var(--line)}.keys td:first-child{color:var(--ink2);width:34%}
 @media (min-width:900px) and (min-aspect-ratio:3/2){#s-title{justify-content:flex-start;padding-left:6vw}#s-title .title-wrap{width:min(44vw,560px)}}
+/* v2: global mute, coach strip, belt hall, oil tick, fact cards */
+#bMute{position:fixed;top:calc(14px + var(--sa-t));right:calc(12px + var(--sa-r));z-index:45;background:rgba(32,22,12,.5);border-color:var(--line)}
+#bMute.off{opacity:.7;color:var(--gold)}
+#hud{--coach-top:74px}
+@media (max-width:1080px){#hud{--coach-top:190px}}
+@media (max-width:760px){#hud{--coach-top:144px}}
+#coach{position:fixed;top:calc(var(--coach-top) + var(--sa-t));left:50%;transform:translateX(-50%);width:clamp(300px,calc(100vw - 2*min(34vw,330px) - 40px),440px);z-index:19;padding:8px 10px}
+@media (max-width:1080px){#coach{width:min(94vw,440px)}}
+#coach .cs{display:flex;gap:6px;justify-content:space-between}
+.cstep{flex:1;display:flex;align-items:center;gap:6px;padding:4px 8px 4px 4px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:12.5px;font-weight:700;color:var(--ink2);white-space:nowrap;min-width:0}
+.cstep i{width:22px;height:22px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:12px;background:rgba(255,255,255,.14);color:var(--ink)}
+.cstep i svg{width:14px;height:14px}
+.cstep.on{border-color:var(--gold);color:var(--ink);background:rgba(233,180,76,.16)}
+.cstep.on i{background:var(--gold);color:#2b1a05}
+.cstep.ok{color:#cdf2bd;border-color:rgba(127,178,106,.7)}
+.cstep.ok i{background:var(--green);color:#10260a}
+#coach .cd{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:14px;font-weight:700;color:var(--ink)}
+#coach .cd span{flex:1;line-height:1.3}
+#coach .cd .btn{min-height:44px;padding:6px 12px;font-size:13px;flex:none}
+#hud.coachOn #toasts{top:calc(var(--coach-top) + 112px + var(--sa-t))}
+@media (hover:none){#coachTxt kbd{display:none}}
+.meter .oil{position:absolute;top:0;bottom:0;width:3px;margin-left:-1px;background:#ffd36b;box-shadow:0 0 5px #ffd36b;border-radius:2px;z-index:2}
+.fbar.r .meter .oil{margin-left:0;margin-right:-1px}
+.fbar .lab .oilt{color:#ffd36b}
+.beltrow{text-align:left}
+.beltrow.kept{border-color:#f6d77b;background:linear-gradient(180deg,rgba(246,215,123,.34),rgba(233,180,76,.08));box-shadow:0 0 22px rgba(233,180,76,.35)}
+.beltrow .yr{font-weight:700;font-size:14px;margin-top:2px;display:flex;align-items:center;gap:8px}
+.pips{display:inline-flex;gap:5px}.pips i{width:14px;height:14px;border-radius:50%;border:2px solid var(--gold);display:block}
+.pips i.on{background:var(--gold)}.pips i.cur{box-shadow:0 0 0 2px rgba(233,180,76,.45)}
+.beltrow .rule{font-size:12px;color:var(--ink2);line-height:1.35;margin-top:3px}
+.rung .lim{font-family:system-ui,sans-serif;font-size:12px;font-weight:700;color:var(--gold);margin-left:6px}
+.fact{margin:10px 0 4px;padding:9px 12px;border-radius:12px;background:rgba(233,180,76,.1);border:1px solid rgba(233,180,76,.3);font-size:13.5px;line-height:1.42;color:var(--ink);text-align:left}
+.fact small{display:block;color:var(--gold);font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:10.5px;margin-bottom:2px}
+.vsauto{display:flex;align-items:center;gap:10px;margin:8px 0 2px;font-size:12.5px;color:var(--ink2)}
+.vsauto b{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.14);overflow:hidden;display:block}
+.vsauto b i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--accent2),var(--gold))}
+.dykline{margin:12px auto 0;max-width:420px;font-size:12.5px;line-height:1.4;color:var(--ink2);text-shadow:0 2px 8px rgba(0,0,0,.8)}
+.dykline b{color:var(--gold)}
 #fatal{position:fixed;inset:0;z-index:99;display:none;align-items:center;justify-content:center;background:#17120b;color:#f7ecd6;text-align:center;padding:24px;font-size:16px}
 #dbg{position:fixed;left:6px;bottom:6px;z-index:60;font:11px/1.3 ui-monospace,Consolas,monospace;color:#9f9;background:rgba(0,0,0,.65);padding:4px 7px;border-radius:6px;pointer-events:none;max-width:60vw;white-space:pre-wrap}
 </style>
@@ -192,6 +230,7 @@ svg{display:block}
 </head>
 <body>
 <canvas id="c" tabindex="-1"></canvas>
+<button class="ibtn" id="bMute" aria-label="Sound" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h4l5 4v-13l-5 4z" fill="currentColor"/><path class="w" d="M16.5 9a4 4 0 010 6M18.8 6.5a7.5 7.5 0 010 11"/><path class="x" d="M16.5 9.5l5 5M21.5 9.5l-5 5" style="display:none"/></svg></button>
 
 <div id="hud" hidden>
   <header class="topbar glass">
@@ -203,12 +242,11 @@ svg{display:block}
     </div>
     <div class="acts">
       <button class="ibtn" id="bPause" aria-label="Pause"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4.5" height="14" rx="1.2"/><rect x="13.5" y="5" width="4.5" height="14" rx="1.2"/></svg></button>
-      <button class="ibtn" id="bSound" aria-label="Sound"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h4l5 4v-13l-5 4z" fill="currentColor"/><path class="w" d="M16.5 9a4 4 0 010 6M18.8 6.5a7.5 7.5 0 010 11"/></svg></button>
       <button class="ibtn" id="bLang" aria-label="Language">TR</button>
     </div>
   </header>
-  <div class="fbar glass l" id="fb0"><div class="nm"><span class="dot"></span><span class="n"></span><span class="pts">0</span></div><div class="lab"><span data-t="stamina"></span><span class="sv"></span></div><div class="meter st"><i></i></div><div class="lab"><span data-t="grip"></span></div><div class="meter grip gr"><i></i></div></div>
-  <div class="fbar glass r" id="fb1"><div class="nm"><span class="dot"></span><span class="n"></span><span class="pts">0</span></div><div class="lab"><span data-t="stamina"></span><span class="sv"></span></div><div class="meter st"><i></i></div><div class="lab"><span data-t="grip"></span></div><div class="meter grip gr"><i></i></div></div>
+  <div class="fbar glass l" id="fb0"><div class="nm"><span class="dot"></span><span class="n"></span><span class="pts">0</span></div><div class="lab"><span data-t="stamina"></span><span class="sv"></span></div><div class="meter st"><i></i></div><div class="lab"><span data-t="grip"></span><span class="oilt" data-t="oilLim"></span></div><div class="meter grip gr"><i></i><em class="oil"></em></div></div>
+  <div class="fbar glass r" id="fb1"><div class="nm"><span class="dot"></span><span class="n"></span><span class="pts">0</span></div><div class="lab"><span data-t="stamina"></span><span class="sv"></span></div><div class="meter st"><i></i></div><div class="lab"><span data-t="grip"></span><span class="oilt" data-t="oilLim"></span></div><div class="meter grip gr"><i></i><em class="oil"></em></div></div>
   <div class="bubble" id="bb0"><i></i><span class="gt"></span></div>
   <div class="bubble" id="bb1"><i></i><span class="gt"></span></div>
   <div id="prompt" class="glass"><kbd id="pKey">R</kbd><span id="pTxt"></span></div>
@@ -216,6 +254,7 @@ svg{display:block}
   <div id="subs"></div>
   <div id="banner"></div>
   <div id="hintline"></div>
+  <div id="coach" class="glass" hidden><div class="cs" id="coachSteps"></div><div class="cd"><span id="coachTxt"></span><button class="btn" id="bCoachSkip"></button></div></div>
   <div class="replaytag glass" id="replayTag" hidden><span class="rec"></span><span id="replayTxt"></span><button class="btn" id="bSkip" style="min-height:40px;padding:6px 14px"></button></div>
 </div>
 
@@ -923,12 +962,14 @@ const LS = {
 const $ = (s, r) => (r || document).querySelector(s);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, t) => a + (b - a) * t;
-const settings = Object.assign({ master: 0.8, music: 0.6, sfx: 0.8, lang: 'tr', quality: IS_PHONE ? 'low' : 'high' }, LS.get('arena.kirkpinar.settings', {}));
+const settings = Object.assign({ master: 0.8, music: 0.6, sfx: 0.8, muted: false, lang: 'tr', quality: IS_PHONE ? 'low' : 'high' }, LS.get('arena.kirkpinar.settings', {}));
 if (Q.get('lang') === 'en' || Q.get('lang') === 'tr') settings.lang = Q.get('lang');
 if (LOWQ) settings.quality = 'low';
 const saveSettings = () => LS.set('arena.kirkpinar.settings', settings);
-const store = Object.assign({ run: null, best: { fastest: 0, titles: 0, wins: 0, points: 0 } }, LS.get('arena.kirkpinar.save', {}));
+const store = Object.assign({ run: null, best: { fastest: 0, titles: 0, wins: 0, points: 0 }, coachDone: false, belt: { streak: 0, kept: false } }, LS.get('arena.kirkpinar.save', {}));
 store.best = Object.assign({ fastest: 0, titles: 0, wins: 0, points: 0 }, store.best || {});
+store.belt = Object.assign({ streak: 0, kept: false }, store.belt || {}); // v2: golden belt streak (old saves have none)
+if (DEBUG && Q.has('belt')) { store.belt.streak = clamp((+Q.get('belt')) | 0, 0, 3); store.belt.kept = store.belt.streak >= 3; }
 const saveStore = () => { if (!AUTO) LS.set('arena.kirkpinar.save', store); };
 
 // ============================================================ audio (all synthesised)
@@ -955,7 +996,7 @@ const AU = {
   },
   apply() {
     if (!this.ctx) return;
-    this.master.gain.value = settings.master;
+    this.master.gain.value = settings.muted ? 0 : settings.master;
     this.mus.gain.value = this.musicOn ? settings.music * 0.6 : 0;
     this.sfx.gain.value = this.sfxOn ? settings.sfx : 0;
   },
@@ -974,7 +1015,7 @@ const AU = {
     s.connect(f); f.connect(g); g.connect(dest || this.sfx); s.start(t, Math.random()); s.stop(t + dur + 0.05);
   },
   play(name, k) {
-    if (!this.ctx || !this.sfxOn) return; k = k === undefined ? 1 : k;
+    if (!this.ctx || !this.sfxOn || settings.muted) return; k = k === undefined ? 1 : k;
     const c = this.ctx;
     switch (name) {
       case 'grab': this.burst(0.09, 'lowpass', 900, 0.7, 0.35 * k); this.tone(150, 0.1, 'sine', 0.25 * k, 90); break;
@@ -1030,7 +1071,7 @@ const PSEQ = [0, 1, 0, 2, 3, 1, 2, 3];
 const DAVUL = ['D', 0, 't', 0, 'D', 0, 't', 't', 0];
 const MUS = { tick: 0, next: 0, dur: 0.17, intense: 0 };
 function musicSched() {
-  if (!AU.ctx || !AU.musicOn || document.hidden) return;
+  if (!AU.ctx || !AU.musicOn || settings.muted || document.hidden) return;
   const now = AU.ctx.currentTime;
   if (MUS.next < now - 0.5) MUS.next = now + 0.05;
   while (MUS.next < now + 0.3) {
@@ -1119,6 +1160,20 @@ function patchTexture() {
 }
 const patch = new THREE.Mesh(new THREE.CircleGeometry(10.5, 40), new THREE.MeshLambertMaterial({ map: patchTexture(), transparent: true, depthWrite: false }));
 patch.rotation.x = -Math.PI / 2; patch.position.y = 0.012; patch.receiveShadow = true; scene.add(patch);
+// v2: oil stains. One decal plane over the wrestling area; its canvas is stamped where the wrestlers stand (a few times a second, so the upload stays tiny).
+const OIL_W = 24, OIL_D = 6, oilCv = document.createElement('canvas'); oilCv.width = 512; oilCv.height = 128;
+const oilCtx = oilCv.getContext('2d'), oilTex = new THREE.CanvasTexture(oilCv); oilTex.colorSpace = THREE.SRGBColorSpace;
+const oilMat = new THREE.MeshLambertMaterial({ map: oilTex, transparent: true, depthWrite: false, opacity: 0.4, polygonOffset: true, polygonOffsetFactor: -2 });
+const oilDecal = new THREE.Mesh(new THREE.PlaneGeometry(OIL_W, OIL_D), oilMat);
+oilDecal.rotation.x = -Math.PI / 2; oilDecal.position.y = 0.016; scene.add(oilDecal);
+let oilStampT = 0;
+function oilClear() { oilCtx.clearRect(0, 0, 512, 128); oilTex.needsUpdate = true; oilStampT = 0; }
+function oilStamp(x, z, u) {
+  const px = (x + OIL_W / 2) / OIL_W * 512, py = (z + OIL_D / 2) / OIL_D * 128, r = 24;
+  const g = oilCtx.createRadialGradient(px, py, 1, px, py, r), a = 0.02 + 0.03 * u;
+  g.addColorStop(0, 'rgba(34,40,10,' + a + ')'); g.addColorStop(1, 'rgba(34,40,10,0)');
+  oilCtx.fillStyle = g; oilCtx.fillRect(px - r, py - r, r * 2, r * 2);
+}
 
 // ---- static scenery (merged, vertex colours)
 const SG = []; // opaque pieces
@@ -1296,10 +1351,10 @@ function wrestlerHeadGeo(skin) {
 const BONE = { thigh: 0.46, shin: 0.46, ua: 0.29, fa: 0.27 };
 function makeRig(spec) {
   const s = spec.scale, heavy = clamp((spec.mass - 0.85) / 0.45, 0, 1);
-  const skinM = stdMat(spec.skin, 0.34, 0, { envMapIntensity: 1.2 });
+  const skinM = stdMat(spec.skin, 0.55, 0, { envMapIntensity: 0.9 });
   const kispM = stdMat('#B5400F', 0.7, 0, { envMapIntensity: 0.3 });
   const bandM = stdMat(spec.band, 0.5);
-  const headM = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.4, envMapIntensity: 1.0 });
+  const headM = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, envMapIntensity: 0.9 });
   const g = new THREE.Group(); scene.add(g);
   const mk = (geo, m, shadow) => { const x = new THREE.Mesh(geo, m); x.castShadow = !!shadow; x.frustumCulled = false; g.add(x); return x; };
   const cap = (r, len) => new THREE.CapsuleGeometry(r * s, Math.max(0.01, len * s - 2 * r * s), 3, 8);
@@ -1320,7 +1375,7 @@ function makeRig(spec) {
   P.ftR = mk(ftG(), skinM, false); P.ftL = mk(ftG(), skinM, false);
   // runtime state
   return {
-    g, P, spec, s, J: new Float32Array(66), feet: [{ x: 0, z: 0, fx: 0, fz: 0, tx: 0, tz: 0, t: 1, y: 0 }, { x: 0, z: 0, fx: 0, fz: 0, tx: 0, tz: 0, t: 1, y: 0 }],
+    g, P, spec, s, skinM, headM, J: new Float32Array(66), feet: [{ x: 0, z: 0, fx: 0, fz: 0, tx: 0, tz: 0, t: 1, y: 0 }, { x: 0, z: 0, fx: 0, fz: 0, tx: 0, tz: 0, t: 1, y: 0 }],
     rk: 0, init: false, whiffT: 0, whiffSide: 0, grabT: [0, 0], phase: Math.random() * 6
   };
 }
@@ -1559,7 +1614,7 @@ function updateParticles(dt) {
 const TX = {
   tr: {
     tagline: 'Yağlı güreşin ruhu', how: 'Yağlı kıspetten tut, dengeyi boz, hamle yandığında vur. Sırtı yere gelen kaybeder.',
-    play: 'Oyna', cont: 'Kariyere devam', settings: 'Ayarlar', howto: 'Nasıl oynanır', back: 'Geri', lang: 'English', loading: 'Yükleniyor…', ready: 'Hazır',
+    play: 'Oyna', cont: 'Kariyer merdiveni', settings: 'Ayarlar', howto: 'Nasıl oynanır', back: 'Geri', lang: 'English', loading: 'Yükleniyor…', ready: 'Hazır',
     best: 'En iyi', bestFast: 'en hızlı galibiyet', bestTitles: 'başpehlivanlık', bestWins: 'galibiyet',
     modeTitle: 'Oyun modu', modeSub: 'Nasıl güreşmek istersin?', career: 'Kariyer', careerD: 'Deste\'den Başpehlivan\'a 5 sınıfta yüksel.', quick: 'Hızlı maç', quickD: 'Rakibini ve zorluğu seç.', versus: '2 oyuncu', versusD: 'Aynı klavyede karşılıklı.',
     quickTitle: 'Hızlı maç', quickSub: 'Rakip tarzı, sınıf ve zorluk seç.', style: 'Rakip tarzı', diff: 'Zorluk', cls: 'Sıklet', easy: 'Kolay', normal: 'Normal', hard: 'Zor', random: 'Rastgele', start: 'Başla',
@@ -1588,11 +1643,16 @@ const TX = {
     tGrab: 'Tuttu', tSlip: 'Eller kaydı!', tTrip: 'Ayak kancası!', tLift: 'Kaldırdı!', tStep: 'Adım', tKnock: 'Yere düştü! +', tFail: 'Olmadı!', tEscape: 'Kurtuldu!', tWhiff: 'Boş!', tDrop: 'Düşürdü!', tKunde: 'Kündeye aldı!', tHint: 'Hamle hazır',
     cazgir: 'Cazgır', fatalNoGL: 'WebGL kullanılamıyor.',
     soundOn: 'Ses açık', soundOff: 'Ses kapalı', fsOn: 'Tam ekran', loadingAssets: 'Meydan hazırlanıyor…',
-    mass: 'Sıklet'
+    mass: 'Sıklet',
+    contRun: 'Devam', more: 'Diğer modlar', vsStart: 'Başlıyor… (geçmek için tıkla)', boutLen: 'Güreş süresi', secs: ' sn', dyk: 'Biliyor muydun?',
+    coachSkip: 'İpuçlarını geç', coachDone: 'Tamam, hazırsın!', cGrab: 'Tut', cPull: 'Çek', cCrouch: 'Çömel', cStrike: 'Vur',
+    coachD0: 'Rakibe yaklaş ve kavra', coachD1: 'Çek: rakibin baloncuğu kızarana kadar', coachD2: 'Çömel: daha dengeli durursun', coachD3: 'Hamle yanınca vur',
+    mute: 'Sesi kapat', unmute: 'Sesi aç', kMusic: 'Müzik aç / kapat', kSfx: 'Efektleri aç / kapat', kMute: 'Hoparlör düğmesi', kMuteD: 'Tüm sesi kapat (kayıtlı)', kPause: 'Duraklat', kLang: 'Dil',
+    oilLim: 'yağ sınırı', beltYear: 'Yıl {n} / 3', beltKept: 'Kemer kalıcı olarak senin', beltHall: 'Kemer salonu', abandonWarn: 'Devam eden kariyeri bırakmak kemer serisini sıfırlar.'
   },
   en: {
     tagline: 'The spirit of oil wrestling', how: 'Grab the oiled kıspet, break your rival\'s balance, strike when the move lights up. A back on the grass loses.',
-    play: 'Play', cont: 'Continue career', settings: 'Settings', howto: 'How to play', back: 'Back', lang: 'Türkçe', loading: 'Loading…', ready: 'Ready',
+    play: 'Play', cont: 'Career ladder', settings: 'Settings', howto: 'How to play', back: 'Back', lang: 'Türkçe', loading: 'Loading…', ready: 'Ready',
     best: 'Best', bestFast: 'fastest win', bestTitles: 'titles', bestWins: 'wins',
     modeTitle: 'Game mode', modeSub: 'How do you want to wrestle?', career: 'Career', careerD: 'Climb from Deste to Başpehlivan through 5 classes.', quick: 'Quick match', quickD: 'Pick your rival and difficulty.', versus: '2 players', versusD: 'Head to head on one keyboard.',
     quickTitle: 'Quick match', quickSub: 'Pick a rival style, class and difficulty.', style: 'Rival style', diff: 'Difficulty', cls: 'Weight class', easy: 'Easy', normal: 'Normal', hard: 'Hard', random: 'Random', start: 'Start',
@@ -1621,7 +1681,12 @@ const TX = {
     tGrab: 'Grip', tSlip: 'Grip slipped!', tTrip: 'Leg hook!', tLift: 'Lifted!', tStep: 'Step', tKnock: 'Down! +', tFail: 'Failed!', tEscape: 'Escaped!', tWhiff: 'Missed!', tDrop: 'Dropped!', tKunde: 'Künde lock!', tHint: 'Move ready',
     cazgir: 'Announcer', fatalNoGL: 'WebGL is not available.',
     soundOn: 'Sound on', soundOff: 'Sound off', fsOn: 'Fullscreen', loadingAssets: 'Preparing the field…',
-    mass: 'Weight'
+    mass: 'Weight',
+    contRun: 'Continue', more: 'More modes', vsStart: 'Starting… (click to skip)', boutLen: 'Bout length', secs: ' s', dyk: 'Did you know?',
+    coachSkip: 'Skip tips', coachDone: 'Nice, you are ready!', cGrab: 'Grab', cPull: 'Pull', cCrouch: 'Crouch', cStrike: 'Strike',
+    coachD0: 'Close in on your rival and grab', coachD1: 'Pull until the rival’s bubble turns red', coachD2: 'Crouch: you stand steadier', coachD3: 'Strike when the move lights up',
+    mute: 'Mute', unmute: 'Unmute', kMusic: 'Music on / off', kSfx: 'Effects on / off', kMute: 'Speaker button', kMuteD: 'Mute everything (saved)', kPause: 'Pause', kLang: 'Language',
+    oilLim: 'oil limit', beltYear: 'Year {n} of 3', beltKept: 'Belt kept for good', beltHall: 'Belt hall', abandonWarn: 'Abandoning a run in progress resets your belt streak.'
   }
 };
 const t = k => (TX[settings.lang] && TX[settings.lang][k]) || TX.en[k] || k;
@@ -1639,6 +1704,24 @@ const CAZ = {
   golden: [['Süre doldu, sayılar eşit! Altın puana gidiyoruz!', 'Time is up, the score is level! Golden score!']],
   trip: [['Ayak kancası! Dengesi gitti!', 'A leg hook! The balance is gone!']]
 };
+// Facts for the cazgır lines and the "Did you know" cards. Only these six (TR / EN), from the v2 brief.
+// [0] https://ich.unesco.org/en/RL/kirkpinar-oil-wrestling-festival-00386
+// [1] https://en.wikipedia.org/wiki/Kırkpınar_oil_wrestling and https://medyascope.tv/2025/06/30/664-tarihi-kirkpinar-yagli-guresleri-icin-geri-sayim-basladi/
+// [2] [3] [4] [5] https://en.wikipedia.org/wiki/Kırkpınar_oil_wrestling
+const FACTS = [
+  ['Kırkpınar 2010’da UNESCO Temsili Listesi’ne girdi; açılışta 40 çift davul-zurna çalar, altın kemer şehirde dolaştırılır, pehlivanlar manda ya da sığır derisinden kıspet giyer.', 'Kırkpınar joined UNESCO’s Representative List in 2010; the opening has 40 pairs of davul-zurna, the golden belt is paraded through the city, and wrestlers wear kıspet of buffalo or cattle hide.'],
+  ['Başlangıç yılı kaynağa göre 1360 ya da 1362; Kırkpınar yaklaşık 660 yıllık bir gelenek.', 'Sources give 1360 or 1362 as the start; Kırkpınar is a tradition about 660 years old.'],
+  ['1975’ten beri süre sınırı var: başpehlivanda 40 dakika, berabere kalırsa 15 dakika puanlı uzatma; öncesinde sınır yoktu.', 'Since 1975 there is a time limit: 40 minutes for the başpehlivan, and a tie goes to 15 minutes of scored extension; before 1975 there was none.'],
+  ['Altın kemer en fazla 1450 g ve 14 ayar altındır; üst üste üç yıl kazanan kemeri kalıcı alır.', 'The golden belt weighs at most 1450 g and is 14 carat; three wins in a row keep it for good.'],
+  ['Ağa, açık artırmayla seçilen hami ya da sponsordur; eskiden maçı durdurabilirdi.', 'The ağa is the patron chosen by auction; he could once stop a match.'],
+  ['Güreşler 1924’ten beri Edirne Sarayiçi’nde yapılıyor.', 'The wrestling has been held at Sarayiçi in Edirne since 1924.']
+];
+const CLASS_FACT = [0, 1, 2, 4, 3]; // the fact the cazgır tells before the first bout of each class
+const CLASS_LIMIT = [60, 75, 90, 105, 120]; // career bout length in seconds; the final class is the longest, as in the real sport
+const factText = i => FACTS[i][settings.lang === 'tr' ? 0 : 1];
+let dykN = (Math.random() * FACTS.length) | 0;
+const nextDyk = () => dykN++ % FACTS.length;
+const dykHtml = i => `<b>${t('dyk')}</b> ${factText(i)}`;
 const WIN_TR = n => 'Meydanın galibi ' + n + '!', WIN_EN = n => 'The winner of the field: ' + n + '!';
 
 // ============================================================ svg art
@@ -1651,11 +1734,17 @@ const CREST = `<svg class="crest" viewBox="0 0 200 200" role="img" aria-label="K
 <path d="M100 150c-9-12-14-18-14-24a14 14 0 0128 0c0 6-5 12-14 24z" fill="#E9B44C" stroke="#fff3d6" stroke-width="2" transform="translate(0 6)"/>
 <path d="M54 160h92" stroke="#E9B44C" stroke-width="5" stroke-linecap="round"/></svg>`;
 let beltN = 0;
-const beltSvg = () => { const id = 'bg' + (++beltN); return BELT_T.replace(/__ID__/g, id); };
+const beltSvg = kept => { const id = 'bg' + (++beltN); return (kept ? BELT_K : BELT_T).replace(/__ID__/g, id); };
 const BELT_T = `<svg viewBox="0 0 160 80" aria-hidden="true"><defs><linearGradient id="__ID__" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6d77b"/><stop offset="1" stop-color="#b9821f"/></linearGradient></defs>
 <rect x="2" y="22" width="156" height="36" rx="8" fill="#7a2f0c" stroke="#E9B44C" stroke-width="2"/><path d="M8 40h40M112 40h40" stroke="#E9B44C" stroke-width="2" stroke-dasharray="4 4"/>
 <ellipse cx="80" cy="40" rx="34" ry="30" fill="url(#__ID__)" stroke="#fff3d6" stroke-width="2"/><ellipse cx="80" cy="40" rx="25" ry="21" fill="none" stroke="#7a4a10" stroke-width="2"/>
 <path d="M80 22l5 11 12 1-9 8 3 12-11-6-11 6 3-12-9-8 12-1z" fill="#7a2f0c"/></svg>`;
+// engraved belt (kept for good): brighter plate, studs, an engraved ring and the number of years
+const BELT_K = `<svg viewBox="0 0 160 80" aria-hidden="true"><defs><linearGradient id="__ID__" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset=".5" stop-color="#e9b44c"/><stop offset="1" stop-color="#a8721a"/></linearGradient></defs>
+<rect x="2" y="22" width="156" height="36" rx="8" fill="#5e2208" stroke="#f6d77b" stroke-width="2.4"/><path d="M8 40h40M112 40h40" stroke="#f6d77b" stroke-width="2.4" stroke-dasharray="2 4" stroke-linecap="round"/>
+<g fill="#f6d77b"><circle cx="12" cy="30" r="2"/><circle cx="12" cy="50" r="2"/><circle cx="148" cy="30" r="2"/><circle cx="148" cy="50" r="2"/></g>
+<ellipse cx="80" cy="40" rx="36" ry="32" fill="url(#__ID__)" stroke="#fff3d6" stroke-width="2.4"/><ellipse cx="80" cy="40" rx="29" ry="25" fill="none" stroke="#7a4a10" stroke-width="1.6" stroke-dasharray="2 3"/><ellipse cx="80" cy="40" rx="24" ry="20" fill="none" stroke="#7a4a10" stroke-width="2"/>
+<text x="80" y="47" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="20" fill="#5e2208">III</text></svg>`;
 const CHECK = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 const IC = {
   pause: '', fs: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>'
@@ -1678,9 +1767,10 @@ function say(key, force, nameArg) {
   let line;
   if (key === 'win') line = [WIN_TR(nameArg), WIN_EN(nameArg)];
   else if (key === 'points') line = ['Sayıyla ' + nameArg + ' kazandı!', nameArg + ' wins on points!'];
+  else if (key === 'fact') line = nameArg;
   else { const arr = CAZ[key]; if (!arr) return; line = arr[Math.floor(Math.random() * arr.length)]; }
   const el = $('#subs'); el.innerHTML = '<div><small>' + t('cazgir') + '</small>' + (settings.lang === 'tr' ? line[0] : line[1]) + '</div>';
-  G.talk = 1; clearTimeout(subTimer); subTimer = setTimeout(() => { el.innerHTML = ''; G.talk = 0; }, 3800);
+  G.talk = 1; clearTimeout(subTimer); subTimer = setTimeout(() => { el.innerHTML = ''; G.talk = 0; }, key === 'fact' ? 6500 : 3800);
 }
 function banner(text) { const b = $('#banner'); b.textContent = text; b.classList.remove('on'); void b.offsetWidth; b.classList.add('on'); }
 
@@ -1695,9 +1785,9 @@ function buildScreens() {
   const best = store.best; const bestTxt = (best.wins || best.titles) ? `${t('best')}: ${best.wins} ${t('bestWins')} · ${best.titles} ${t('bestTitles')}${best.fastest ? ' · ' + fmtTime(best.fastest) + ' ' + t('bestFast') : ''}` : '';
   mkScreen('title', 'grad', `<div class="title-wrap">${CREST}<h1>Kırkpınar</h1><div class="tag">${t('tagline')}</div><p class="how">${t('how')}</p>
     <div class="menu" id="mTitle"><div id="loadBox" style="width:100%"><div style="text-align:center;color:var(--ink2);font-size:14px" id="loadTxt">${t('loading')}</div><div class="loadbar"><i id="loadI"></i></div></div>
-    ${menuBtn('play', t('play'), 'primary', 'id="bPlay" hidden')}${store.run ? menuBtn('continue', t('cont'), 'gold', 'id="bCont" hidden') : ''}
+    ${menuBtn('play', store.run && store.run.wins > 0 ? t('contRun') : t('play'), 'primary', 'id="bPlay" hidden')}${store.run ? menuBtn('continue', t('cont'), 'gold', 'id="bCont" hidden') : ''}
     <div class="row">${menuBtn('howto', t('howto'))}${menuBtn('settings', t('settings'))}</div>
-    ${menuBtn('lang', t('lang'))}</div><div class="best">${bestTxt}</div></div>
+    <div class="row">${menuBtn('mode', t('more'), '', 'id="bMore"')}${menuBtn('lang', t('lang'))}</div></div><div class="dykline" id="loadDyk">${dykHtml(dykN % FACTS.length)}</div><div class="best">${bestTxt}</div></div>
     <div class="foot">Claude Game Arena · built by <a href="https://furkiozknn.github.io/" target="_blank" rel="noopener">Claude Sonnet 5.5</a></div>`);
   mkScreen('mode', 'grad', `<div class="panel glass"><h2>${t('modeTitle')}</h2><p class="sub">${t('modeSub')}</p><div class="cards" style="grid-template-columns:1fr">
     <button class="card" data-act="career"><b>${t('career')}</b><small>${t('careerD')}</small></button>
@@ -1730,7 +1820,11 @@ function buildScreens() {
     <tr><td>${t('kPull')}</td><td><span class="kbd">G</span> · P2 <span class="kbd">L</span></td></tr>
     <tr><td>${t('kPush')}</td><td><span class="kbd">H</span> · P2 <span class="kbd">;</span></td></tr>
     <tr><td>${t('kCtx')}</td><td><span class="kbd">R</span> · P2 <span class="kbd">Enter</span></td></tr>
-    <tr><td>P · M · X · L</td><td>${settings.lang === 'tr' ? 'duraklat · müzik · efekt · dil' : 'pause · music · effects · language'}</td></tr></table>
+    <tr><td>${t('kPause')}</td><td><span class="kbd">P</span> / <span class="kbd">Esc</span></td></tr>
+    <tr><td>${t('kMusic')}</td><td><span class="kbd">M</span></td></tr>
+    <tr><td>${t('kSfx')}</td><td><span class="kbd">X</span></td></tr>
+    <tr><td>${t('kMute')}</td><td>${t('kMuteD')}</td></tr>
+    <tr><td>${t('kLang')}</td><td><span class="kbd">L</span></td></tr></table>
     <div class="row" style="margin-top:12px">${menuBtn('howback', t('back'), 'primary')}</div></div>`);
   applyStaticText();
 }
@@ -1741,7 +1835,7 @@ function applyStaticText() {
   $('#bSkip').textContent = t('skip');
   $('#hintline').textContent = G.versus ? t('hint2') : t('hint1');
   $('#tbCtxT').textContent = G.ctxName ? t(G.ctxName) : t('bMove');
-  $('#bPause').setAttribute('aria-label', t('paused')); $('#bSound').setAttribute('aria-label', t('music')); $('#bLang').setAttribute('aria-label', t('language'));
+  $('#bPause').setAttribute('aria-label', t('paused')); $('#bLang').setAttribute('aria-label', t('language')); $('#bCoachSkip').textContent = t('coachSkip'); syncSoundBtn();
   for (const [id, key] of [['Master', 'master'], ['Music', 'music'], ['Sfx', 'sfx']]) { const v = $('#v' + id); if (v) v.textContent = Math.round(settings[key] * 100); }
 }
 function showScreen(name) {
@@ -1749,22 +1843,36 @@ function showScreen(name) {
   if (name && name !== 'settings' && name !== 'howto') G.screen = name;
   if (name === 'settings') { SCREENS.settings.hidden = false; }
 }
+// Belt hall strip: pips for the years won, the real rule from the facts table (index 3), engraved belt once kept.
+function beltHallHtml(yearN) {
+  const b = store.belt, pips = [0, 1, 2].map(i => `<i class="${b.kept || i < b.streak ? 'on' : ''} ${!b.kept && i === yearN - 1 && i >= b.streak ? 'cur' : ''}"></i>`).join('');
+  return `<div class="beltrow ${b.kept ? 'kept' : ''}" id="beltHall">${beltSvg(b.kept)}<div><b>${t('belt')}</b>
+    <div class="yr"><span class="pips" aria-hidden="true">${pips}</span><span>${b.kept ? t('beltKept') : t('beltYear').replace('{n}', yearN)}</span></div>
+    <div class="rule">${factText(3)}</div></div></div>`;
+}
 function renderLadder() {
-  const run = store.run || { ci: 0, oi: 0 };
-  let h = `<h2>${t('ladderTitle')}</h2><p class="sub">${t('ladderSub')}</p><div class="beltrow">${beltSvg()}<div><b>${t('belt')}</b><div class="sub" style="margin:2px 0 0">${t('beltD')}</div></div></div><div class="ladder">`;
+  const run = store.run || { ci: 0, oi: 0 }, b = store.belt;
+  let h = `<h2>${t('ladderTitle')}</h2><p class="sub">${t('ladderSub')}</p>${beltHallHtml(Math.min(3, b.streak + 1))}<div class="ladder">`;
   for (let c = 0; c < 5; c++) {
     const state = c < run.ci ? 'done' : c === run.ci ? 'cur' : 'locked';
-    h += `<div class="rung ${state}"><div class="badge">${c < run.ci ? CHECK : c + 1}</div><div><div class="nm">${t(CLASSES[c].id)}</div><div class="ops">` +
+    h += `<div class="rung ${state}"><div class="badge">${c < run.ci ? CHECK : c + 1}</div><div><div class="nm">${t(CLASSES[c].id)}<span class="lim">${CLASS_LIMIT[c]}${t('secs')}</span></div><div class="ops">` +
       LADDER[c].map((o, i) => `<span class="op ${c < run.ci || (c === run.ci && i < run.oi) ? 'd' : (c === run.ci && i === run.oi ? 'c' : '')}">${o[0]} · ${t(o[1])}</span>`).join('') + '</div></div></div>';
   }
-  h += `</div><div class="row">${menuBtn('ladderGo', t('next'), 'primary')}${menuBtn('title', t('back'))}</div>`;
+  const risk = run.wins > 0 && !b.kept && b.streak > 0;
+  h += `</div><p class="sub">${t('boutLen')}: ${CLASS_LIMIT.join(' · ')}${t('secs')}. ${factText(2)}</p>
+    <div class="row">${menuBtn('ladderGo', t('next'), 'primary')}${run.wins > 0 ? menuBtn('newcareer', t('newCareer')) : ''}${menuBtn('title', t('back'))}</div>${risk ? `<p class="sub" style="margin-top:8px">${t('abandonWarn')}</p>` : ''}`;
   $('#ladderBox').innerHTML = h;
 }
 function renderVersus(m) {
   const [a, b] = m.specs;
   const who = (sp, label, bandCol) => `<div class="who"><div class="swatch" style="background:${bandCol}"></div><b>${sp.name}</b><small>${label}</small>${statBars(sp)}</div>`;
-  $('#versusBox').innerHTML = `<h2>${m.title}</h2><p class="sub">${m.sub}</p><div class="vs">${who(a, t(a.style === 'balanced' ? 'normal' : a.style), a.band)}<div class="x">×</div>${who(b, t(b.style), b.band)}</div>
-    <div class="row c">${menuBtn('vsGo', t('enter'), 'primary')}${menuBtn('vsBack', t('back'))}</div>`;
+  if (m.dyk === undefined) m.dyk = nextDyk();
+  const cazFact = m.factIdx >= 0;
+  $('#versusBox').innerHTML = `<h2>${m.title}</h2><p class="sub">${m.sub}</p><div class="row c" style="margin:0 0 2px"><span class="chip">${t('boutLen')}: <b>${m.limit || 90}${t('secs')}</b></span></div>
+    <div class="vs">${who(a, t(a.style === 'balanced' ? 'normal' : a.style), a.band)}<div class="x">×</div>${who(b, t(b.style), b.band)}</div>
+    <div class="fact"><small>${cazFact ? t('cazgir') : t('dyk')}</small>${factText(cazFact ? m.factIdx : m.dyk)}</div>
+    <div class="vsauto" id="vsAuto" ${G.vsAuto > 0 ? '' : 'hidden'}><b><i id="vsAutoI"></i></b><span>${t('vsStart')}</span></div>
+    <div class="row c" style="margin-top:8px">${menuBtn('vsGo', t('enter'), 'primary')}${menuBtn('vsBack', t('back'))}</div>`;
 }
 
 // ============================================================ game state
@@ -1773,11 +1881,11 @@ const G = {
   screen: 'title', paused: false, versus: false, mode: 'demo', demo: true, match: null, cfg: null, humans: [false, false], brains: [null, null],
   quick: { style: 'strong', cls: 2, diff: 'normal' }, settingsFrom: 'title', talk: 0, excite: 0, shake: 0, slowT: 0, introT: 0, acc: 0, time: 0,
   replay: null, rec: [], recN: 0, recOn: false, resultShown: false, ctxName: null, camX: 0, camDist: 8, fps: 0, assets: { mode: 'procedural', loaded: [], failed: [], note: 'all geometry, textures and sounds are generated in code' },
-  autoStats: { matches: 0, wins: 0, losses: 0, done: false, hows: {} }, lastStep: 0, demoRestart: 0, camT: 0, zoom: 1, ready: false
+  autoStats: { matches: 0, wins: 0, losses: 0, done: false, hows: {} }, lastStep: 0, demoRestart: 0, camT: 0, zoom: 1, ready: false, vsAuto: 0, coach: null
 };
 const REC_N = 120;
 for (let i = 0; i < REC_N; i++) G.rec.push([new Float32Array(66), new Float32Array(66)]);
-const stl = document.createElement('style'); stl.textContent = '#hud.rp .fbar,#hud.rp .bubble,#hud.rp #prompt,#hud.rp #prompt2,#hud.rp #hintline,#hud.rp #subs{display:none}#hud.nofb .fbar,#hud.nofb .bubble,#hud.nofb #prompt,#hud.nofb #prompt2,#hud.nofb #hintline{display:none}#prompt2{left:72%}#prompt.v{left:28%}'; document.head.appendChild(stl);
+const stl = document.createElement('style'); stl.textContent = '#hud.rp #coach,#hud.nofb #coach{display:none}#hud.rp .fbar,#hud.rp .bubble,#hud.rp #prompt,#hud.rp #prompt2,#hud.rp #hintline,#hud.rp #subs{display:none}#hud.nofb .fbar,#hud.nofb .bubble,#hud.nofb #prompt,#hud.nofb #prompt2,#hud.nofb #hintline{display:none}#prompt2{left:72%}#prompt.v{left:28%}'; document.head.appendChild(stl);
 const prompt1 = $('#prompt'); const prompt2 = prompt1.cloneNode(true); prompt2.id = 'prompt2'; prompt2.className = 'glass'; prompt1.after(prompt2);
 prompt2.style.cssText = 'position:fixed;bottom:calc(150px + var(--sa-b));z-index:22;transform:translateX(-50%) scale(.9);padding:10px 22px;font-weight:800;font-size:20px;opacity:0;pointer-events:none;transition:opacity .12s,transform .12s;display:flex;gap:12px;align-items:center;white-space:nowrap;border-color:rgba(255,200,120,.7)';
 prompt2.querySelector('kbd').id = 'pKey2'; prompt2.querySelector('span').id = 'pTxt2';
@@ -1796,18 +1904,19 @@ function setupMatch(cfg) {
   G.camX = 0; G.camDist = 7;
   const names = [cfg.specs[0], cfg.specs[1]];
   for (let i = 0; i < 2; i++) { const b = $('#fb' + i); b.querySelector('.n').textContent = names[i].name; b.querySelector('.dot').style.background = names[i].band; b.querySelector('.pts').textContent = '0'; }
-  G.matchLogT = 0;
+  G.matchLogT = 0; G.coach = null; renderCoach(); oilClear();
 }
 function startMatch(cfg) {
   AU.init();
   G.demo = false; G.paused = false; G.mode = cfg.mode; G.versus = !!cfg.versus;
-  setupMatch(cfg);
+  setupMatch(cfg); G.vsAuto = 0;
+  G.coach = cfg.coach && !store.coachDone ? { on: true, step: 0, pullT: 0, crouchT: 0 } : null; renderCoach();
   showScreen(null); G.screen = 'play'; setHUD(true);
   $('#hCls').textContent = cfg.clsName || ''; $('#hRound').textContent = cfg.roundName || '';
   $('#hintline').textContent = G.versus ? t('hint2') : t('hint1');
   MUS.intense = 1;
   $('#touch').hidden = !(IS_TOUCH && !G.versus);
-  banner(t('set1')); say('intro', true); AU.play('whistle', 0.5);
+  banner(t('set1')); if (cfg.factIdx >= 0) say('fact', true, FACTS[cfg.factIdx]); else say('intro', true); AU.play('whistle', 0.5);
   if (AUTO && Q.get('sim')) { const n = +Q.get('sim'); if (n > 0) setTimeout(() => window.kirkpinarSim(n), 50); }
 }
 function startDemo() {
@@ -1817,6 +1926,30 @@ function startDemo() {
   G.match.start(); G.recOn = false; MUS.intense = 0;
 }
 function setHUD(on) { $('#hud').hidden = !on; $('#hud').classList.remove('rp', 'nofb'); }
+
+// ---- first-bout coach: four steps that tick on real input; the bot never gets one
+const COACH_STEPS = [['cGrab', 'F', 'coachD0'], ['cPull', 'G', 'coachD1'], ['cCrouch', 'S', 'coachD2'], ['cStrike', 'R', 'coachD3']];
+function renderCoach() {
+  const c = G.coach, el = $('#coach'), hud = $('#hud');
+  if (!c || !c.on) { el.hidden = true; hud.classList.remove('coachOn'); return; }
+  el.hidden = false; hud.classList.add('coachOn');
+  $('#coachSteps').innerHTML = COACH_STEPS.map((st, i) => `<span class="cstep ${i < c.step ? 'ok' : i === c.step ? 'on' : ''}"><i>${i < c.step ? CHECK : i + 1}</i>${t(st[0])}</span>`).join('');
+  const cur = COACH_STEPS[c.step]; $('#coachTxt').innerHTML = `<kbd class="kbd">${cur[1]}</kbd> ${t(cur[2])}`;
+  $('#bCoachSkip').textContent = t('coachSkip');
+}
+function coachAdvance() {
+  const c = G.coach; if (!c || !c.on) return;
+  c.step++; AU.play('tick');
+  if (c.step >= COACH_STEPS.length) { toast(t('coachDone'), 'good'); coachFinish(); } else renderCoach();
+}
+function coachFinish() { store.coachDone = true; saveStore(); if (G.coach) G.coach.on = false; renderCoach(); }
+function coachTick(M, ia, dt) {
+  const c = G.coach; if (!c || !c.on || M.phase !== 'play') return;
+  const f = M.f[0], o = M.f[1];
+  if (c.step === 1) { if (ia.pull && gripCount(f)) c.pullT += dt; if ((c.pullT > 0.4 && o.bal < 0.4) || c.pullT > 4) coachAdvance(); }
+  else if (c.step === 2) { if (ia.down && f.crouch > 0.5) c.crouchT += dt; if (c.crouchT > 0.3) coachAdvance(); }
+}
+const coachWanted = () => !AUTO && !store.coachDone && !!store.run && store.run.ci === 0 && store.run.oi === 0;
 
 // ============================================================ input
 const keys = new Set(); const edges = [{ grab: 0, ctx: 0 }, { grab: 0, ctx: 0 }];
@@ -1887,7 +2020,17 @@ function togglePause() {
   else if (G.screen === 'pause') { G.paused = false; G.screen = 'play'; showScreen(null); }
 }
 function toggleLang() { settings.lang = settings.lang === 'tr' ? 'en' : 'tr'; saveSettings(); rebuild(); }
-function syncSoundBtn() { const off = !AU.musicOn && !AU.sfxOn; $('#bSound').classList.toggle('off', off); $('#bSound .w').style.display = off ? 'none' : ''; }
+function syncSoundBtn() {
+  const off = settings.muted || (!AU.musicOn && !AU.sfxOn), b = $('#bMute');
+  b.classList.toggle('off', off); b.setAttribute('aria-pressed', off ? 'true' : 'false'); b.setAttribute('aria-label', off ? t('unmute') : t('mute'));
+  b.querySelector('.w').style.display = off ? 'none' : ''; b.querySelector('.x').style.display = off ? '' : 'none';
+}
+// the speaker button mutes music and effects together and is saved in the settings
+function toggleMute() {
+  AU.init(); const off = settings.muted || (!AU.musicOn && !AU.sfxOn);
+  if (off) { settings.muted = false; AU.musicOn = AU.sfxOn = true; } else settings.muted = true;
+  saveSettings(); AU.apply(); syncSoundBtn();
+}
 function rebuild() {
   const cur = G.screen, vis = Object.keys(SCREENS).filter(k => !SCREENS[k].hidden);
   buildScreens(); if (G.ready) { $('#loadBox').hidden = true; $('#bPlay').hidden = false; if ($('#bCont')) $('#bCont').hidden = false; }
@@ -1899,14 +2042,26 @@ function rebuild() {
 }
 function careerSpecs() {
   const run = store.run, ci = run.ci, oi = run.oi, o = LADDER[ci][oi];
-  const you = makeSpec(t('you'), 'balanced', ci, 0.72, '#2563EB', SKINS[0]);
+  const you = makeSpec(t('you'), 'balanced', ci, 0.72, store.belt.kept ? '#E9B44C' : '#2563EB', SKINS[0]); // the kept belt turns the player's belt and armband gold
   const opp = makeSpec(o[0], o[1], ci, o[2], o[3], SKINS[(ci + oi + 1) % 5], 0.97 + 0.03 * oi);
   return { you, opp, level: o[2], o };
 }
-function openLadder() { if (!store.run) { store.run = { ci: 0, oi: 0, wins: 0 }; saveStore(); } renderLadder(); showScreen('ladder'); G.pendingVersus = null; }
+function openLadder() { if (!store.run) { store.run = { ci: 0, oi: 0, wins: 0 }; saveStore(); } renderLadder(); showScreen('ladder'); G.pendingVersus = null; G.vsAuto = 0; }
+// Play: straight to the current rung; the versus card starts the bout after 2.5 s or on any click
+function playCareer() {
+  G.mode = 'career';
+  if (!store.run) { store.run = { ci: 0, oi: 0, wins: 0 }; saveStore(); }
+  careerMatch(); G.vsAuto = 2.5; renderVersus(G.pendingVersus);
+  if (!AUTO) { const b = SCREENS.versus.querySelector('[data-act="vsGo"]'); if (b) b.focus(); }
+}
+function newCareer() {
+  if (store.run && store.run.wins > 0 && !store.belt.kept) store.belt.streak = 0; // abandoning a run resets the belt streak
+  store.run = { ci: 0, oi: 0, wins: 0 }; saveStore(); G.mode = 'career'; openLadder();
+}
 function careerMatch() {
-  const { you, opp, level } = careerSpecs(); const run = store.run;
-  const cfg = { specs: [you, opp], humans: [!AUTO, false], levels: [AUTO ? 0.92 : 0.7, level], mode: 'career', clsName: t(CLASSES[run.ci].id), roundName: t('round') + ' ' + (run.oi + 1) + '/' + LADDER[run.ci].length, title: t(CLASSES[run.ci].id) + ' · ' + t('round') + ' ' + (run.oi + 1), sub: opp.name + ' — ' + t(opp.style + 'D') };
+  const { you, opp, level } = careerSpecs(); const run = store.run; G.vsAuto = 0;
+  const coach = coachWanted(); // bout 1 of the first career: the rival plays ~25 % weaker until the tips are done
+  const cfg = { specs: [you, opp], humans: [!AUTO, false], levels: [AUTO ? 0.92 : 0.7, coach ? level * 0.75 : level], mode: 'career', limit: CLASS_LIMIT[run.ci], coach, factIdx: run.oi === 0 ? CLASS_FACT[run.ci] : -1, clsName: t(CLASSES[run.ci].id), roundName: t('round') + ' ' + (run.oi + 1) + '/' + LADDER[run.ci].length, title: t(CLASSES[run.ci].id) + ' · ' + t('round') + ' ' + (run.oi + 1), sub: opp.name + ' — ' + t(opp.style + 'D') };
   G.pendingVersus = cfg; renderVersus(cfg); showScreen('versus'); setHUD(false);
 }
 function quickMatch() {
@@ -1932,7 +2087,7 @@ function onAct(act, el) {
   AU.init(); AU.play('ui');
   const v = el && el.dataset ? el.dataset.v : null;
   switch (act) {
-    case 'play': showScreen('mode'); break;
+    case 'play': playCareer(); break;
     case 'continue': if (store.run) { G.mode = 'career'; openLadder(); } break;
     case 'howto': G.settingsFrom = G.screen; SCREENS.howto.hidden = false; $('#s-howto .btn').focus(); break;
     case 'howback': SCREENS.howto.hidden = true; break;
@@ -1944,7 +2099,8 @@ function onAct(act, el) {
     case 'fs': try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); } catch (e) { /* not allowed */ } break;
     case 'title': goTitle(); break;
     case 'mode': showScreen('mode'); break;
-    case 'career': store.run = { ci: 0, oi: 0, wins: 0 }; saveStore(); G.mode = 'career'; openLadder(); break;
+    case 'career': G.mode = 'career'; openLadder(); break;
+    case 'newcareer': newCareer(); break;
     case 'quickcfg': showScreen('quick'); break;
     case 'qstyle': G.quick.style = v; rebuild(); SCREENS.quick.hidden = false; break;
     case 'qcls': G.quick.cls = +v; rebuild(); SCREENS.quick.hidden = false; break;
@@ -1952,8 +2108,8 @@ function onAct(act, el) {
     case 'qstart': quickMatch(); break;
     case 'versus': versusMatch(); break;
     case 'ladderGo': careerMatch(); break;
-    case 'vsGo': startMatch(G.pendingVersus); break;
-    case 'vsBack': if (G.pendingVersus && G.pendingVersus.mode === 'career') { openLadder(); } else showScreen(G.pendingVersus && G.pendingVersus.mode === 'quick' ? 'quick' : 'mode'); break;
+    case 'vsGo': G.vsAuto = 0; startMatch(G.pendingVersus); break;
+    case 'vsBack': G.vsAuto = 0; if (G.pendingVersus && G.pendingVersus.mode === 'career') { openLadder(); } else showScreen(G.pendingVersus && G.pendingVersus.mode === 'quick' ? 'quick' : 'mode'); break;
     case 'resume': togglePause(); break;
     case 'restart': startMatch(G.cfg); break;
     case 'quit': goTitle(); break;
@@ -1964,14 +2120,18 @@ function onAct(act, el) {
     case 'again': if (G.cfg.mode === 'career') careerMatch(); else startMatch(G.cfg); break;
   }
 }
-scr.addEventListener('click', e => { const b = e.target.closest('[data-act]'); if (b && !b.disabled) onAct(b.dataset.act, b); });
+scr.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]');
+  if (b && !b.disabled) onAct(b.dataset.act, b); else if (G.vsAuto > 0 && G.screen === 'versus') onAct('vsGo'); // any click on the versus card starts the bout
+});
 scr.addEventListener('input', e => {
   const id = e.target.id; if (!id) return;
   if (id === 'sMaster') settings.master = +e.target.value; else if (id === 'sMusic') settings.music = +e.target.value; else if (id === 'sSfx') { settings.sfx = +e.target.value; AU.init(); AU.play('slap', 0.6); } else return;
   saveSettings(); AU.apply(); applyStaticText();
 });
 $('#bPause').addEventListener('click', () => { AU.init(); togglePause(); });
-$('#bSound').addEventListener('click', () => { AU.init(); const off = !AU.musicOn && !AU.sfxOn; AU.musicOn = AU.sfxOn = off; AU.apply(); syncSoundBtn(); });
+$('#bMute').addEventListener('click', toggleMute);
+$('#bCoachSkip').addEventListener('click', () => { coachFinish(); });
 $('#bLang').addEventListener('click', () => { AU.init(); toggleLang(); });
 $('#bSkip').addEventListener('click', () => skipReplay());
 function applyQuality() {
@@ -1989,13 +2149,13 @@ function handleEvents(M) {
   for (const e of M.events) {
     const f = M.f[e.w] || M.f[0], o = M.f[1 - (e.w < 0 ? 0 : e.w)], mx = (f.p.x + o.p.x) / 2, mz = (f.p.z + o.p.z) / 2, h = isHuman(e.w), snd = (n, k) => { if (q) AU.play(n, k); };
     switch (e.t) {
-      case 'grab': snd('grab'); emitP(mx, 1.05, mz, 3, 1.6, '#d9a441', 0.14, 0.5, 5); break;
+      case 'grab': snd('grab'); emitP(mx, 1.05, mz, 4, 1.6, '#e0b850', 0.14, 0.5, 5); if (h && !G.demo && G.coach && G.coach.on && G.coach.step === 0) coachAdvance(); break;
       case 'release': snd('slap', 0.4); break;
-      case 'slip': snd('slip'); emitP(mx, 1.0, mz, 5, 2, '#e0b850', 0.15, 0.6, 6); if (h && !G.demo) toast(t('tSlip'), 'bad'); say('slip'); break;
+      case 'slip': snd('slip'); emitP(f.p.x, 1.1, f.p.z, 6, 2.6, '#f0cf6a', 0.19, 0.8, 7); emitP(mx, 0.9, mz, 6, 1.8, '#d9a441', 0.15, 0.7, 6); if (h && !G.demo) toast(t('tSlip'), 'bad'); say('slip'); break;
       case 'whiff': f.rig.whiffT = 0.25; f.rig.whiffSide = f.whiffSide; snd('whoosh', 0.3); break;
       case 'step': if ((stepTick++ & 1) === 0) snd('step', 0.7); emitP(f.p.x, 0.05, f.p.z, 2, 0.8, '#b9a87a', 0.18, 0.6, 2); break;
       case 'trip': snd('whoosh', 0.7); snd('slap', 0.7); if (!G.demo) toast(t('tTrip'), 'info'); say('trip'); G.shake = Math.max(G.shake, 0.12); break;
-      case 'windup': snd('grunt'); if (!G.demo) { toast(t(e.type), 'info'); } break;
+      case 'windup': snd('grunt'); if (!G.demo) { toast(t(e.type), 'info'); if (h && G.coach && G.coach.on && G.coach.step === 3) coachAdvance(); } break;
       case 'throw': snd('whoosh'); G.excite = 1; G.shake = Math.max(G.shake, 0.3); if (!G.demo) say(e.type === 'caprast' ? 'caprast' : 'paca', true); emitP(o.p.x, 0.8, o.p.z, 8, 2.5, '#d9a441', 0.18, 0.7, 6); break;
       case 'fail': if (h && !G.demo) toast(t('tFail'), 'bad'); break;
       case 'lift': snd('gasp'); G.excite = Math.max(G.excite, 0.8); if (!G.demo) { toast(t('tLift'), 'good'); say('lift', true); } break;
@@ -2021,11 +2181,18 @@ function simStep(dt) {
   const M = G.match; if (!M) return;
   if (M.phase === 'ready' && !G.demo) {
     G.introT += dt;
-    if (G.introT > 2.6) { M.start(); banner(t('go')); say('start', true); AU.play('whistle'); G.excite = 0.5; }
+    if (G.introT > 2.6) { M.start(); banner(t('go')); if (!(G.cfg && G.cfg.factIdx >= 0)) say('start', true); AU.play('whistle'); G.excite = 0.5; }
   }
   const inp = [null, null];
   for (let i = 0; i < 2; i++) inp[i] = G.humans[i] ? readInput(i) : G.brains[i].tick(M, M.f[i], M.f[1 - i], dt);
   M.step(dt, inp);
+  if (G.coach) coachTick(M, inp[0], dt);
+  oilStampT -= dt; // stains are stamped in sim time (a few times a second), so fast-forwarding paints them too
+  if (oilStampT <= 0 && M.phase === 'play') {
+    oilStampT = 0.4;
+    for (let i = 0; i < 2; i++) { const f = M.f[i]; oilStamp(f.p.x, f.p.z, clamp((f.oil - 0.4) / 0.5, 0, 1)); }
+    oilTex.needsUpdate = true;
+  }
   edges[0].grab = edges[0].ctx = edges[1].grab = edges[1].ctx = 0;
   handleEvents(M);
   G.excite = Math.max(G.demo ? 0.1 : 0.15, G.excite - dt * 0.2);
@@ -2066,11 +2233,15 @@ function showResult() {
   if (!G.versus && youWin) {
     store.best.wins++; if (!store.best.fastest || M.total < store.best.fastest) { store.best.fastest = Math.round(M.total); newRec = true; }
     if (cfg.mode === 'career' && store.run) {
-      const run = store.run; run.oi++; run.wins++;
+      const run = store.run; if (cfg.coach) store.coachDone = true; run.oi++; run.wins++;
       if (run.oi >= LADDER[run.ci].length) { run.ci++; run.oi = 0; if (run.ci < 5) promoted = t('promoted') + t(CLASSES[run.ci].id); else endGame = true; }
     }
   }
-  if (endGame) { store.best.titles++; store.run = null; }
+  if (G.coach) { G.coach.on = false; renderCoach(); }
+  if (endGame) { // a finished career is one year of the belt; the third year in a row keeps it for good
+    store.best.titles++; store.run = null; store.belt.streak = Math.min(3, store.belt.streak + 1); if (store.belt.streak >= 3) store.belt.kept = true;
+  }
+  const dykI = nextDyk();
   saveStore();
   const render = () => {
     const title = G.versus ? R.winner === 0 ? t('p1') + t('wins') : t('p2') + t('wins') : youWin ? t('win') : t('lose');
@@ -2083,6 +2254,7 @@ function showResult() {
     $('#resultBox').innerHTML = `<div class="how">${t(howName(R.how))}</div><h2 style="color:${youWin === false ? '#ff9b86' : 'var(--gold)'}">${title}</h2>
       ${promoted ? `<div class="newrec">${promoted}</div>` : ''}${newRec ? `<div class="newrec">${t('newRecord')}</div>` : ''}
       <div class="kv"><div><b>${fmtTime(M.total)}</b><small>${t('time')}</small></div><div><b>${M.f[0].score} – ${M.f[1].score}</b><small>${t('points')}</small></div><div><b>${t(howName(R.how))}</b><small>${t('moves')}</small></div></div>
+      <div class="fact"><small>${t('dyk')}</small>${factText(dykI)}</div>
       <div class="row c">${btns.join('')}</div>`;
     const endBtn = $('#resultBox [data-end]'); if (endBtn) endBtn.dataset.act = 'ending';
   };
@@ -2092,7 +2264,7 @@ function showResult() {
 function showEnding() {
   AU.init(); AU.play('fanfare'); AU.play('cheer');
   G.lastEndingFn = () => {
-    $('#endingBox').innerHTML = `<div style="width:min(70vw,240px);margin:0 auto 8px">${beltSvg()}</div><h2 style="font-size:40px">${t('endTitle')}</h2><p class="sub">${t('endSub')}</p><div class="kv"><div><b>${store.best.titles}</b><small>${t('endTitles')}</small></div><div><b>${store.best.wins}</b><small>${t('bestWins')}</small></div></div><div class="row c">${menuBtn('title', t('menu'), 'primary')}</div>`;
+    $('#endingBox').innerHTML = `<div style="width:min(70vw,240px);margin:0 auto 8px">${beltSvg(store.belt.kept)}</div><h2 style="font-size:40px">${t('endTitle')}</h2><p class="sub">${t('endSub')}</p>${beltHallHtml(store.belt.streak)}<div class="kv"><div><b>${store.best.titles}</b><small>${t('endTitles')}</small></div><div><b>${store.best.wins}</b><small>${t('bestWins')}</small></div></div><div class="row c">${menuBtn('title', t('menu'), 'primary')}</div>`;
   };
   G.lastEndingFn(); showScreen('ending'); G.screen = 'ending'; startConfetti(); say('win', true, G.cfg.specs[0].name); $('#hud').classList.add('nofb');
 }
@@ -2152,6 +2324,9 @@ function updateHUD() {
     let g = 0, c = 0; for (const h of f.h) if (h.t) { g += clamp(h.capF, 0, 1); c++; }
     const gv = c ? g / c : 0; b.querySelector('.gr i').style.width = Math.round(gv * 100) + '%'; b.querySelector('.gr').classList.toggle('low', c > 0 && gv < 0.3);
     b.querySelector('.pts').textContent = f.score;
+    // oil limit: the grip bar cannot fill past this tick, and the tick creeps inward as both wrestlers get slicker
+    const oilLim = clamp(1 - 0.55 * 0.8 * (M.f[0].oil + M.f[1].oil) * 0.5, 0, 1) * 100;
+    b.querySelector('.oil').style[i === 0 ? 'left' : 'right'] = oilLim.toFixed(1) + '%';
     // balance bubble
     const bb = $('#bb' + i), L = SIMLIB.leanLimit(f);
     projectTo(bb, f.p.x, 0, f.p.z, 34);
@@ -2183,6 +2358,14 @@ function renderFrame(dt, nowS) {
     for (let i = 0; i < 2; i++) { const f = M.f[i]; solvePose(f, M.f[1 - i], f.rig, M, nowS, dt); applyJ(f.rig, f.rig.J); }
     recordFrame();
   }
+  // oil: skin gets glossier as sweat and oil build up; the ground darkens where they stand
+  let oilSum = 0;
+  for (let i = 0; i < 2; i++) {
+    const f = M.f[i], r = f.rig, u = clamp((f.oil - 0.4) / 0.5, 0, 1); oilSum += u;
+    r.skinM.roughness = lerp(0.58, 0.14, u); r.skinM.envMapIntensity = lerp(0.8, 2.2, u);
+    r.headM.roughness = lerp(0.62, 0.2, u); r.headM.envMapIntensity = lerp(0.8, 1.8, u);
+  }
+  oilMat.opacity = 0.4 + 0.3 * oilSum * 0.5;
   // lighting follows the pair
   const cx = (M.f[0].p.x + M.f[1].p.x) / 2; sun.position.set(cx - 7, 13, 8); sun.target.position.set(cx, 0, 0); sun.target.updateMatrixWorld();
   updateCrowd(nowS, G.excite); updateParticles(dt);
@@ -2209,6 +2392,12 @@ function frame(now) {
   fpsAcc += dt; fpsN++; if (fpsAcc >= 0.5) { G.fps = Math.round(fpsN / fpsAcc); fpsAcc = 0; fpsN = 0; if (DEBUG) debugOut(); }
   if (document.hidden) return;
   G.time += dt;
+  if (G.vsAuto > 0) {
+    if (G.screen === 'versus') {
+      G.vsAuto -= dt; const bar = $('#vsAutoI'); if (bar) bar.style.width = Math.max(0, G.vsAuto / 2.5 * 100) + '%';
+      if (G.vsAuto <= 0) { G.vsAuto = 0; onAct('vsGo'); }
+    } else G.vsAuto = 0;
+  }
   if (!G.paused && G.screen !== 'pause') {
     const slow = G.slowT > 0 ? 0.3 : 1, spd = AUTO ? (+Q.get('fast') || 6) : 1;
     G.acc += dt * slow * spd;
@@ -2238,7 +2427,7 @@ function finishAutoMatch() {
 function autoDriver() {
   const st = G.autoStats; if (st.done) return;
   const s = G.screen;
-  if (s === 'title' && G.ready) { const b = $('#bPlay'); if (b && !b.hidden) b.click(); }
+  if (s === 'title' && G.ready) { const b = Q.get('mode') === 'quick' ? $('#bMore') : $('#bPlay'); if (b && !b.hidden) b.click(); }
   else if (s === 'mode') { if (Q.get('mode') === 'quick') $('[data-act="quickcfg"]').click(); else $('[data-act="career"]').click(); }
   else if (s === 'quick') { $('[data-act="qstart"]').click(); }
   else if (s === 'ladder') { $('[data-act="ladderGo"]').click(); }
@@ -2261,16 +2450,16 @@ function boot() {
     adv();
     setTimeout(() => {
       adv(); G.ready = true; const lb = $('#loadBox'); if (lb) lb.hidden = true; const p = $('#bPlay'); if (p) { p.hidden = false; } const c = $('#bCont'); if (c) c.hidden = false;
-      const first = $('#bCont') && !$('#bCont').hidden ? $('#bCont') : p; if (first && !AUTO) first.focus();
+      if (p && !AUTO) p.focus();
     }, 60);
   });
   requestAnimationFrame(frame);
   if (AUTO) setInterval(autoDriver, 400);
   const dtab = () => { const b = $('#bPlay'); };
   window.kirkpinar = {
-    get state() { const M = G.match; return M ? { phase: M.phase, clock: M.clock, golden: M.golden, score: [M.f[0].score, M.f[1].score], states: M.f.map(f => f.state), bal: M.f.map(f => +f.bal.toFixed(2)), sta: M.f.map(f => +f.sta.toFixed(2)), result: M.result } : null; },
+    get state() { const M = G.match; return M ? { phase: M.phase, clock: M.clock, limit: M.limit, limits: CLASS_LIMIT, golden: M.golden, score: [M.f[0].score, M.f[1].score], states: M.f.map(f => f.state), bal: M.f.map(f => +f.bal.toFixed(2)), sta: M.f.map(f => +f.sta.toFixed(2)), result: M.result } : null; },
     get screen() { return G.screen; }, get fps() { return G.fps; }, get drawCalls() { return renderer.info.render.calls; }, get triangles() { return renderer.info.render.triangles; },
-    assets: G.assets, auto: G.autoStats, G, store, version: '1.0', get errors() { return window.__errs || []; }, quality: () => settings.quality, humans: G.humans
+    assets: G.assets, auto: G.autoStats, G, store, version: '2.0', get coach() { return G.coach; }, get belt() { return store.belt; }, limits: CLASS_LIMIT, facts: FACTS.length, get errors() { return window.__errs || []; }, quality: () => settings.quality, humans: G.humans
   };
 }
 boot();
