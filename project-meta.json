@@ -16,7 +16,7 @@
     "Canvas 2D",
     "Web Audio API"
   ],
-  "version": null,
+  "version": "2.0.0",
   "license": "MIT",
   "topics": [
     "browser-game",
@@ -27,13 +27,13 @@
     "claude-code",
     "claude-game-arena"
   ],
-  "summary": "3D physics oil-wrestling game inspired by Kırkpınar, built by Claude Sonnet 5.5 · Kırkpınar'dan esinlenen 3D fizikli yağlı güreş oyunu, Claude Sonnet 5.5 yaptı",
+  "summary": "3D physics oil-wrestling game inspired by Kırkpınar, v2 with a versus card, visible oil and a three-year golden belt, built by Claude Sonnet 5.5 · Kırkpınar'dan esinlenen 3D fizikli yağlı güreş, v2'de rakip kartı, görünen yağ ve üç yıllık altın kemer, Claude Sonnet 5.5 yaptı",
   "key_features": [
-    "Oiled grips slip: grip strength decays with hold time, oil and sweat, effort and stamina",
+    "Oiled grips slip: grip strength decays with hold time, oil and sweat, effort and stamina; v2 shows the oil as skin gloss, droplets, grass stains and a grip-bar tick",
     "Readable balance: a centre-of-mass lean over the feet decides steps and falls onto the back, side or front",
     "Classic finishing moves as context moves: paça kazık, çaprast, künde, lift and carry, yere çal and a leg hook",
-    "Career through five weight classes to the golden belt, quick match and 2 players on one keyboard; touch and gamepad",
-    "The AI uses the same inputs as a player; the ?auto bot played a 26-bout career with 18 wins to the golden belt"
+    "v2: one-click Play with a 2.5 s versus card and a first-bout coach, bouts of 60-120 s that grow with the class, a three-year golden belt and cazgır facts; five weight classes, quick match and 2 players",
+    "The AI uses the same inputs as a player; the ?auto bot played a career to the golden belt (v2: 23 bouts, 18 wins)"
   ],
   "media": {
     "hero": "docs/03-kunde.png",
@@ -76,8 +76,9 @@
     "primary_link": "https://furkiozknn.github.io/kirkpinar/"
   },
   "provenance": {
-    "generated_at": "2026-10-27",
+    "generated_at": "2026-10-28",
     "generator": "hand-written",
-    "rule": "mechanical fields read from the repository; editorial fields hand-written from the README and index.html; no field is generated from a guess"
+    "rule": "mechanical fields read from the repository; editorial fields hand-written from the README and index.html; no field is generated from a guess",
+    "note": "v2 upgrade 2026-10-28"
   }
 }

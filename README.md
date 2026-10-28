@@ -13,7 +13,7 @@
 <p align="center"><b>A 3D physics oil-wrestling (yağlı güreş) game inspired by the Kırkpınar tradition near Edirne: two oiled pehlivans in leather kıspet trousers grip, pull, push and throw until one wrestler's back touches the grass.</b></p>
 
 <p align="center">
-  <img src="docs/gameplay.gif" width="640" alt="Kırkpınar gameplay: two oiled wrestlers grip and push each other on the grass in front of the crowd">
+  <img src="docs/gameplay.gif" width="640" alt="Kırkpınar gameplay: the versus card, then two oiled wrestlers grip and push each other on the grass">
 </p>
 
 <p align="center"><b>Play online: <a href="https://furkiozknn.github.io/kirkpinar/">https://furkiozknn.github.io/kirkpinar/</a></b> (desktop and phone, no install)</p>
