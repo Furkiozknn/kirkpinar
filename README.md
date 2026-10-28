@@ -202,3 +202,5 @@ cazgırın anlattığı gerçek bilgiler.
 ## License
 
 MIT, see [LICENSE](LICENSE).
+
+Like the game? You can support new rounds on [Buy Me a Coffee](https://buymeacoffee.com/furkiozkann). The game stays free.
