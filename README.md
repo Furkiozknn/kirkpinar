@@ -124,11 +124,24 @@ language.
     <td width="33%"><img src="docs/03-kunde.png" alt="Kündeye aldı: the rival is down and pinned while the cazgır calls it"><br><sub>Künde: the rival is down</sub></td>
   </tr>
   <tr>
-    <td><img src="docs/04-ladder.png" alt="Career ladder with five weight classes and the golden belt"><br><sub>Career ladder to the golden belt</sub></td>
+    <td><img src="docs/04-ladder.png" alt="Quick match setup panel"><br><sub>Quick match setup</sub></td>
     <td><img src="docs/05-phone.png" alt="Kırkpınar on a phone"><br><sub>On a phone</sub></td>
-    <td><img src="docs/06-ending.png" alt="Başpehlivan ending with the golden belt"><br><sub>Başpehlivan: the golden belt</sub></td>
+    <td><img src="docs/06-ending.png" alt="Pause menu"><br><sub>Pause menu</sub></td>
   </tr>
 </table>
+
+## Redesign (2026-11)
+
+**Art direction:** cinematic sports broadcast. Golden-hour light over a mown field (grass `#3E8E41`, kispet leather `#4E342E`, oil sheen `#E0C068`, flag red `#D32F2F`, broadcast navy `#0D1B2A`), with a TV-style HUD.
+
+**What changed (visuals only, rules, controls, bot and saves are untouched):**
+- Scene: mown grass stripes and sand track, tiered stands with hoardings, flags, light towers, skyline, and an instanced animated crowd with camera flashes. A davul-zurna band plays on its own stage.
+- Wrestlers: smoother capsule-limb rig with an oiled sheen.
+- UI: broadcast score bug, lower thirds, navy and gold panels for every screen, phone HUD in one row.
+
+**Measured** on an Intel UHD 620 (headless Chrome, 1280x720): draw calls 52 -> 65, page rAF about 58-60 fps in gameplay (before: 52-60). Phone 500x900: 64 calls, 61 fps. `?auto&mode=quick` finishes with 0 JS errors, with assets and with `?noassets`; `?lang=en` shows 0 errors.
+
+![Before and after](docs/redesign-before-after.png)
 
 ## Running locally
 
