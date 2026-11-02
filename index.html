@@ -272,7 +272,18 @@ svg{display:block}
   #coach{width:clamp(300px,calc(100vw - 2*min(23vw,290px) - 60px),440px)}
   #subs{width:min(92vw,640px,calc(100vw - 660px))}
 }
-@media (max-width:760px){.fbar{clip-path:none}}
+@media (max-width:760px){
+  .fbar{clip-path:none;top:calc(60px + var(--sa-t));width:46vw}
+  .topbar{flex-wrap:nowrap;padding:4px 52px 4px 8px;gap:6px;min-height:52px}
+  .live{display:none}
+  .stats{gap:6px}
+  .timer{min-width:72px;font-size:22px;padding:2px 8px}
+  .score{font-size:19px;padding:2px 8px}
+  .chip{font-size:12px;padding:3px 7px}
+  .acts .ibtn{width:40px}
+  #hud{--coach-top:150px}
+  .title-wrap .tag{margin-top:12px}
+}
 #prompt{border-color:var(--gold);border-radius:3px;font-family:var(--hd);text-transform:uppercase;letter-spacing:.06em}
 #prompt.on{box-shadow:0 0 0 2px var(--gold),0 0 34px rgba(224,192,104,.55)}
 #prompt kbd,.kbd{border-radius:3px;background:rgba(224,192,104,.16);border-color:rgba(224,192,104,.6)}
@@ -280,7 +291,7 @@ svg{display:block}
 .toast.good{border-left-color:var(--green)}.toast.bad{border-left-color:var(--red)}
 #subs div{display:inline-flex;flex-direction:column;align-items:flex-start;text-align:left;border-radius:2px;background:rgba(13,27,42,.94);border-left:5px solid var(--accent);font-family:var(--hd);font-style:normal;font-size:17px;padding:6px 16px;color:var(--ink)}
 #subs small{color:var(--gold);font-family:var(--hd)}
-#banner{font-family:var(--hd);text-transform:uppercase;letter-spacing:.08em;font-weight:800;text-shadow:0 4px 0 #8e1b1b,0 0 0 #000,0 12px 30px rgba(0,0,0,.65);-webkit-text-stroke:2px rgba(13,27,42,.55)}
+#banner{font-family:var(--hd);text-transform:uppercase;letter-spacing:.08em;font-weight:800;text-shadow:0 4px 0 #8e1b1b,0 0 0 #000,0 12px 30px rgba(0,0,0,.65);-webkit-text-stroke:3px rgba(13,27,42,.7);paint-order:stroke fill}
 #hintline{border-radius:2px;background:rgba(13,27,42,.7)}
 .replaytag{background:linear-gradient(180deg,#e53935,#b71c1c);border:0;border-radius:2px;color:#fff;font-family:var(--hd)}
 .replaytag .rec{background:#fff}
@@ -1559,9 +1570,10 @@ let crowdN = CROWD_ALL;
 const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _qa = new THREE.Quaternion(), _p = new THREE.Vector3(), _s = new THREE.Vector3(1, 1, 1), _e = new THREE.Euler(), _s2 = new THREE.Vector3();
 // photographers in the stands: a short white burst at a random seat
 function crowdFlash(n) { for (let k = 0; k < n; k++) { const c = CR[(Math.random() * crowdN) | 0]; emitP(c.x, c.y + 0.9, c.z, 1, 0, '#fff6dc', 0.9, 0.14, 0, 0); } }
+let crowdPar = 0;
 function updateCrowd(time, excite) {
-  const cheer = clamp(excite * 1.15 + 0.1, 0, 1);
-  for (let i = 0; i < crowdN; i++) {
+  const cheer = clamp(excite * 1.15 + 0.1, 0, 1); crowdPar ^= 1; // each frame animates half of the spectators (30 Hz each)
+  for (let i = crowdPar; i < crowdN; i += 2) {
     const c = CR[i];
     const wv = Math.max(0, Math.sin(c.ang * 4.5 - time * 2.2)), wave = wv * wv * wv * (0.18 + 0.82 * cheer);
     const bounce = Math.max(0, Math.sin(time * (3.4 + 4 * cheer) + c.ph)) * (0.012 + 0.16 * cheer * c.act) + wave * 0.07;
@@ -1699,7 +1711,7 @@ function wrestlerHeadGeo(skin) {
   const parts = [
     G(new THREE.SphereGeometry(0.118, 14, 10).scale(0.95, 1.08, 1.0), sk),
     G(new THREE.SphereGeometry(0.084, 10, 8).scale(1, 0.82, 1).translate(0, -0.07, 0.034), shade(0.93)),
-    G(new THREE.SphereGeometry(0.127, 14, 8, 0, Math.PI * 2, 0, Math.PI * 0.5).rotateX(-0.28).translate(0, 0.022, -0.012), dark),
+    G(new THREE.SphereGeometry(0.124, 14, 8, 0, Math.PI * 2, 0, Math.PI * 0.43).rotateX(-0.32).translate(0, 0.026, -0.016), dark),
     G(new THREE.SphereGeometry(0.03, 7, 6).scale(0.5, 1, 0.8).translate(0.117, -0.005, 0), shade(0.9)), G(new THREE.SphereGeometry(0.03, 7, 6).scale(0.5, 1, 0.8).translate(-0.117, -0.005, 0), shade(0.9)),
     G(new THREE.SphereGeometry(0.03, 8, 6).scale(0.85, 1.05, 1.25).translate(0, -0.016, 0.118), shade(1.06)),
     G(new THREE.BoxGeometry(0.052, 0.013, 0.014).rotateZ(0.12).translate(0.041, 0.04, 0.108), dark), G(new THREE.BoxGeometry(0.052, 0.013, 0.014).rotateZ(-0.12).translate(-0.041, 0.04, 0.108), dark),
