@@ -86,7 +86,8 @@ svg{display:block}
 .bubble.warn i{background:#f0c040}.bubble.bad i{background:#ee5a44}
 .bubble .gt{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);font-size:10px;font-weight:700;white-space:nowrap;color:var(--ink2);letter-spacing:.04em}
 @media (max-width:760px){.bubble{width:42px;height:42px;margin:-21px 0 0 -21px}.bubble i{width:13px;height:13px;margin:-6px 0 0 -6px}}
-#prompt{position:fixed;left:50%;bottom:calc(150px + var(--sa-b));transform:translateX(-50%) scale(.9);padding:10px 22px;z-index:22;font-weight:800;font-size:20px;letter-spacing:.02em;opacity:0;pointer-events:none;transition:opacity .12s,transform .12s;border-color:rgba(255,200,120,.7);display:flex;gap:12px;align-items:center;white-space:nowrap}
+/* keep action prompt above the 200px #touch controls even when hover:hover is active on touch-capable devices */
+#prompt{position:fixed;left:50%;bottom:calc(210px + var(--sa-b));transform:translateX(-50%) scale(.9);padding:10px 22px;z-index:22;font-weight:800;font-size:20px;letter-spacing:.02em;opacity:0;pointer-events:none;transition:opacity .12s,transform .12s;border-color:rgba(255,200,120,.7);display:flex;gap:12px;align-items:center;white-space:nowrap}
 #prompt.on{opacity:1;transform:translateX(-50%) scale(1);box-shadow:0 0 0 2px var(--gold),0 0 34px rgba(233,180,76,.55)}
 #prompt kbd,.kbd{display:inline-block;min-width:28px;padding:2px 8px;border-radius:7px;border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.14);font:700 14px/1.4 ui-monospace,Consolas,monospace;text-align:center}
 #prompt.p2 kbd{opacity:.9}
@@ -199,7 +200,8 @@ svg{display:block}
 #hud{--coach-top:74px}
 @media (max-width:1080px){#hud{--coach-top:190px}}
 @media (max-width:760px){#hud{--coach-top:144px}}
-#coach{position:fixed;top:calc(var(--coach-top) + var(--sa-t));left:50%;transform:translateX(-50%);width:clamp(300px,calc(100vw - 2*min(34vw,330px) - 40px),440px);z-index:19;padding:8px 10px}
+/* constrain #coach height with overflow-y:auto so it cannot clip on short/landscape viewports */
+#coach{position:fixed;top:calc(var(--coach-top) + var(--sa-t));left:50%;transform:translateX(-50%);width:clamp(300px,calc(100vw - 2*min(34vw,330px) - 40px),440px);max-height:calc(100vh - var(--coach-top) - var(--sa-t) - var(--sa-b) - 12px);max-height:calc(100dvh - var(--coach-top) - var(--sa-t) - var(--sa-b) - 12px);overflow-y:auto;z-index:19;padding:8px 10px}
 @media (max-width:1080px){#coach{width:min(94vw,440px)}}
 #coach .cs{display:flex;gap:6px;justify-content:space-between}
 .cstep{flex:1;display:flex;align-items:center;gap:6px;padding:4px 8px 4px 4px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--line);font-size:12.5px;font-weight:700;color:var(--ink2);white-space:nowrap;min-width:0}
@@ -364,7 +366,7 @@ svg{display:block}
   #hud .lt .ltp{flex:0 1 150px;padding:3px 8px;border-left-width:5px}#hud .lt .ltp.r{border-right-width:5px}
   #hud .lt .ltp small{display:none}#hud .lt .ltp b{font-size:13px}#hud .lt .ltx{font-size:13px;padding:2px 6px}
   #hud{--coach-top:54px}
-  #coach{top:calc(54px + var(--sa-t));width:min(46vw,380px);padding:4px 6px}
+  #coach{top:calc(54px + var(--sa-t));width:min(46vw,380px);max-height:calc(100vh - 62px - var(--sa-t) - var(--sa-b));max-height:calc(100dvh - 62px - var(--sa-t) - var(--sa-b));overflow-y:auto;padding:4px 6px}
   #coach .cstep{font-size:11px;padding:2px 6px 2px 2px}#coach .cd{font-size:12px;margin-top:3px}#coach .cd .btn{min-height:36px;padding:3px 8px;font-size:12px}
   #prompt{bottom:calc(70px + var(--sa-b));font-size:15px;padding:6px 14px}
   .replaytag{top:calc(56px + var(--sa-t))}
@@ -2326,7 +2328,7 @@ const REC_N = 120;
 for (let i = 0; i < REC_N; i++) G.rec.push([new Float32Array(66), new Float32Array(66)]);
 const stl = document.createElement('style'); stl.textContent = '#hud.rp #coach,#hud.nofb #coach{display:none}#hud.rp .fbar,#hud.rp .bubble,#hud.rp #prompt,#hud.rp #prompt2,#hud.rp #hintline,#hud.rp #subs{display:none}#hud.nofb .fbar,#hud.nofb .bubble,#hud.nofb #prompt,#hud.nofb #prompt2,#hud.nofb #hintline{display:none}#prompt2{left:72%}#prompt.v{left:28%}'; document.head.appendChild(stl);
 const prompt1 = $('#prompt'); const prompt2 = prompt1.cloneNode(true); prompt2.id = 'prompt2'; prompt2.className = 'glass'; prompt1.after(prompt2);
-prompt2.style.cssText = 'position:fixed;bottom:calc(150px + var(--sa-b));z-index:22;transform:translateX(-50%) scale(.9);padding:10px 22px;font-weight:800;font-size:20px;opacity:0;pointer-events:none;transition:opacity .12s,transform .12s;display:flex;gap:12px;align-items:center;white-space:nowrap;border-color:rgba(255,200,120,.7)';
+prompt2.style.cssText = 'position:fixed;bottom:calc(210px + var(--sa-b));z-index:22;transform:translateX(-50%) scale(.9);padding:10px 22px;font-weight:800;font-size:20px;opacity:0;pointer-events:none;transition:opacity .12s,transform .12s;display:flex;gap:12px;align-items:center;white-space:nowrap;border-color:rgba(255,200,120,.7)';
 prompt2.querySelector('kbd').id = 'pKey2'; prompt2.querySelector('span').id = 'pTxt2';
 const specOf = i => G.match.specs ? G.match.specs[i] : G.cfg.specs[i];
 
