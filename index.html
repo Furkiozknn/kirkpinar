@@ -349,6 +349,26 @@ svg{display:block}
 .cstep{border-radius:3px}
 #bMute{border-radius:3px;background:rgba(13,27,42,.7)}
 #hud.rp .lt,#hud.nofb .lt{display:none!important}
+
+/* phone landscape: keep the HUD out of the wrestlers' band */
+@media (max-height:500px) and (orientation:landscape){
+  #hud .fbar{top:calc(56px + var(--sa-t));width:min(23vw,196px);padding:4px 8px;clip-path:none}
+  #hud .fbar .nm{font-size:13px}#hud .fbar .pts{font-size:17px}#hud .fbar .lab{display:none}#hud .meter{height:6px;margin-top:3px}
+  #hud #subs{bottom:calc(6px + var(--sa-b));width:calc(100vw - 480px);max-width:380px}
+  #hud #subs div{font-size:12px;padding:3px 10px}#hud #subs small{font-size:9px}
+  #hud #toasts{top:calc(118px + var(--sa-t));left:calc(8px + var(--sa-l));transform:none;align-items:flex-start;width:min(23vw,196px);gap:3px}
+  #hud.coachOn #toasts{top:calc(118px + var(--sa-t))}
+  #hud .toast{padding:3px 10px;font-size:12px}
+  #hud #banner{top:calc(54px + var(--sa-t));font-size:clamp(22px,5vw,38px);-webkit-text-stroke-width:2px}
+  #hud #lt{top:calc(54px + var(--sa-t));bottom:auto;gap:6px}
+  #hud .lt .ltp{flex:0 1 150px;padding:3px 8px;border-left-width:5px}#hud .lt .ltp.r{border-right-width:5px}
+  #hud .lt .ltp small{display:none}#hud .lt .ltp b{font-size:13px}#hud .lt .ltx{font-size:13px;padding:2px 6px}
+  #hud{--coach-top:54px}
+  #coach{top:calc(54px + var(--sa-t));width:min(46vw,380px);padding:4px 6px}
+  #coach .cstep{font-size:11px;padding:2px 6px 2px 2px}#coach .cd{font-size:12px;margin-top:3px}#coach .cd .btn{min-height:36px;padding:3px 8px;font-size:12px}
+  #prompt{bottom:calc(70px + var(--sa-b));font-size:15px;padding:6px 14px}
+  .replaytag{top:calc(56px + var(--sa-t))}
+}
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <script data-goatcounter="https://furkiozknn.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
@@ -1594,10 +1614,21 @@ function updateCrowd(time, excite) {
   }
   crowdBody.instanceMatrix.needsUpdate = crowdHead.instanceMatrix.needsUpdate = crowdHair.instanceMatrix.needsUpdate = crowdArms.instanceMatrix.needsUpdate = crowdFlag.instanceMatrix.needsUpdate = true;
 }
+// Low quality: far fewer spectators with coarse geometry (high keeps the full set and shapes)
+const CROWD_LOW = 150;
+const crowdGeoHigh = [bodyGeo, headGeo, hairGeo, armGeo];
+const crowdGeoLow = [
+  new THREE.CapsuleGeometry(0.15, 0.26, 1, 6).scale(1.12, 1, 0.78).translate(0, 0.3, 0),
+  new THREE.SphereGeometry(0.115, 6, 4).translate(0, 0.74, 0),
+  new THREE.SphereGeometry(0.125, 6, 3, 0, Math.PI * 2, 0, Math.PI * 0.55).translate(0, 0.76, 0),
+  new THREE.CylinderGeometry(0.045, 0.045, 0.34, 4).translate(0, -0.2, 0)
+];
 function setCrowdCount(n) {
+  const g = HIGH() ? crowdGeoHigh : crowdGeoLow;
+  crowdBody.geometry = g[0]; crowdHead.geometry = g[1]; crowdHair.geometry = g[2]; crowdArms.geometry = g[3];
   crowdN = n; crowdBody.count = crowdHead.count = crowdHair.count = n; crowdArms.count = n * 2; crowdFlag.count = Math.ceil(n / FLAG_EVERY);
 }
-setCrowdCount(HIGH() ? CROWD_ALL : Math.min(CROWD_ALL, 230));
+setCrowdCount(HIGH() ? CROWD_ALL : Math.min(CROWD_ALL, CROWD_LOW));
 
 // ---- clouds (warm-lit sprites)
 function cloudTex() {
@@ -2523,7 +2554,7 @@ $('#bSkip').addEventListener('click', () => skipReplay());
 function applyQuality() {
   renderer.shadowMap.enabled = HIGH(); sun.castShadow = HIGH();
   scene.traverse(o => { if (o.material) o.material.needsUpdate = true; });
-  setCrowdCount(HIGH() ? CROWD_ALL : Math.min(CROWD_ALL, 230));
+  setCrowdCount(HIGH() ? CROWD_ALL : Math.min(CROWD_ALL, CROWD_LOW));
 }
 
 // ============================================================ match events
@@ -2690,8 +2721,10 @@ function updateCamera(dt) {
   const cx = (a.p.x + b.p.x) / 2;
   G.camX += (cx - G.camX) * Math.min(1, dt * 4); G.camDist += (dist - G.camDist) * Math.min(1, dt * 2.6);
   const sh = G.shake; G.shake = Math.max(0, G.shake - dt * 1.6);
-  const ly = asp < 1 || IS_TOUCH ? 0.62 : 1.05;
-  camera.position.set(G.camX + (Math.random() - 0.5) * sh * 0.25, 1.35 + 0.15 * G.camDist + (Math.random() - 0.5) * sh * 0.2, G.camDist);
+  const land = innerHeight < 500 && asp > 1; // phone landscape: HUD sits over the top band
+  const ly = land ? 0.95 : asp < 1 || IS_TOUCH ? 0.62 : 1.05;
+  const cd = land ? G.camDist * 1.1 : G.camDist;
+  camera.position.set(G.camX + (Math.random() - 0.5) * sh * 0.25, 1.35 + 0.15 * cd + (Math.random() - 0.5) * sh * 0.2, cd);
   camera.lookAt(G.camX, ly, 0);
 }
 const _pv = new THREE.Vector3();
@@ -2847,7 +2880,7 @@ function boot() {
   window.kirkpinar = {
     get state() { const M = G.match; return M ? { phase: M.phase, clock: M.clock, limit: M.limit, limits: CLASS_LIMIT, golden: M.golden, score: [M.f[0].score, M.f[1].score], states: M.f.map(f => f.state), bal: M.f.map(f => +f.bal.toFixed(2)), sta: M.f.map(f => +f.sta.toFixed(2)), result: M.result } : null; },
     get screen() { return G.screen; }, get fps() { return G.fps; }, get drawCalls() { return renderer.info.render.calls; }, get triangles() { return renderer.info.render.triangles; },
-    assets: G.assets, auto: G.autoStats, G, store, version: '2.0', get coach() { return G.coach; }, get belt() { return store.belt; }, limits: CLASS_LIMIT, facts: FACTS.length, get errors() { return window.__errs || []; }, quality: () => settings.quality, humans: G.humans
+    assets: G.assets, auto: G.autoStats, G, store, version: '2.0', get coach() { return G.coach; }, get belt() { return store.belt; }, limits: CLASS_LIMIT, facts: FACTS.length, get errors() { return window.__errs || []; }, quality: () => settings.quality, humans: G.humans, scene
   };
 }
 boot();
