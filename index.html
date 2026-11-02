@@ -368,6 +368,33 @@ svg{display:block}
   #coach .cstep{font-size:11px;padding:2px 6px 2px 2px}#coach .cd{font-size:12px;margin-top:3px}#coach .cd .btn{min-height:36px;padding:3px 8px;font-size:12px}
   #prompt{bottom:calc(70px + var(--sa-b));font-size:15px;padding:6px 14px}
   .replaytag{top:calc(56px + var(--sa-t))}
+  /* fit versus, result and ending cards in phone landscape */
+  #s-versus,#s-result,#s-ending{padding:calc(4px + var(--sa-t)) 12px calc(4px + var(--sa-b))}
+  #versusBox,#resultBox,#endingBox{width:min(94vw,640px);max-height:calc(100vh - 8px);max-height:calc(100dvh - 8px - var(--sa-t) - var(--sa-b));padding:8px 16px;overflow-y:auto}
+  #versusBox h2,#resultBox h2,#endingBox h2{font-size:20px!important;margin:0 0 2px}
+  #versusBox h2::after,#resultBox h2::after,#endingBox h2::after{height:2px;margin-top:2px;width:48px}
+  #versusBox p.sub,#endingBox p.sub{margin:0 0 4px;font-size:12px;line-height:1.25}
+  #versusBox .chip{font-size:11px;padding:1px 7px}
+  #versusBox .vs{margin:4px 0;gap:8px}
+  #versusBox .vs .swatch{width:38px;height:14px;margin:0 auto 2px}
+  #versusBox .vs .who b{font-size:14px;line-height:1.1}
+  #versusBox .vs .who small{font-size:11px;line-height:1.1}
+  #versusBox .vs .x{font-size:16px;padding:1px 6px}
+  #versusBox .statbars{margin-top:3px;grid-template-columns:1fr 1fr;gap:2px 8px}
+  #versusBox .statbars div{font-size:9.5px;gap:4px}#versusBox .statbars span{width:28px;overflow:hidden;text-overflow:ellipsis}
+  #versusBox .fact,#resultBox .fact{margin:4px 0 2px;padding:4px 8px;font-size:11.5px;line-height:1.25}
+  #versusBox .fact small,#resultBox .fact small{display:inline;font-size:9.5px;margin:0 6px 0 0}
+  #versusBox .vsauto{margin:3px 0 1px;font-size:11px}
+  #resultBox .how{font-size:11px}#resultBox .newrec{font-size:11px;margin-top:1px}
+  #resultBox .kv,#endingBox .kv{margin:4px 0;gap:6px}
+  #resultBox .kv div,#endingBox .kv div{padding:4px 8px}
+  #resultBox .kv b,#endingBox .kv b{font-size:16px}#resultBox .kv small,#endingBox .kv small{font-size:10.5px}
+  #endingBox>div:first-child{width:84px!important;margin:0 auto 2px!important}
+  #endingBox .beltrow{padding:5px 10px;gap:10px;margin-bottom:4px}
+  #endingBox .beltrow svg{width:56px;height:28px}
+  #endingBox .beltrow b{font-size:14px}#endingBox .beltrow .yr{font-size:11.5px;margin-top:1px}#endingBox .beltrow .rule{font-size:11px;line-height:1.2;margin-top:1px}
+  #versusBox .row,#resultBox .row,#endingBox .row{margin-top:4px!important;gap:8px}
+  #versusBox .btn,#resultBox .btn,#endingBox .btn{min-height:34px;padding:5px 14px;font-size:13px}
 }
 </style>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
