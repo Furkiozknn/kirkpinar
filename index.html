@@ -971,7 +971,7 @@ const LS = {
 const $ = (s, r) => (r || document).querySelector(s);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, t) => a + (b - a) * t;
-const settings = Object.assign({ master: 0.8, music: 0.6, sfx: 0.8, muted: false, lang: 'tr', quality: IS_PHONE ? 'low' : 'high' }, LS.get('arena.kirkpinar.settings', {}));
+const settings = Object.assign({ master: 0.8, music: 0.6, sfx: 0.8, muted: false, lang: /^tr/i.test(navigator.language || '') ? 'tr' : 'en', quality: IS_PHONE ? 'low' : 'high' }, LS.get('arena.kirkpinar.settings', {}));
 if (Q.get('lang') === 'en' || Q.get('lang') === 'tr') settings.lang = Q.get('lang');
 if (LOWQ) settings.quality = 'low';
 const saveSettings = () => LS.set('arena.kirkpinar.settings', settings);
@@ -1127,47 +1127,79 @@ function stdMat(color, rough, metal, extra) {
   return new THREE.MeshStandardMaterial(Object.assign({ color, roughness: rough, metalness: metal || 0 }, extra || {}));
 }
 
-// sky + environment (canvas gradient, also used as the reflection source for oiled skin)
-function skyCanvas() {
-  const c = document.createElement('canvas'); c.width = 512; c.height = 256; const g = c.getContext('2d');
-  const gr = g.createLinearGradient(0, 0, 0, 256);
-  gr.addColorStop(0, '#3f7fd0'); gr.addColorStop(0.42, '#8dbbe8'); gr.addColorStop(0.5, '#f2dcae'); gr.addColorStop(0.56, '#e6cf9f'); gr.addColorStop(1, '#a89562');
-  g.fillStyle = gr; g.fillRect(0, 0, 512, 256);
-  const sun = g.createRadialGradient(150, 105, 2, 150, 105, 60); sun.addColorStop(0, 'rgba(255,248,220,1)'); sun.addColorStop(1, 'rgba(255,240,200,0)');
-  g.fillStyle = sun; g.fillRect(0, 0, 512, 256);
+/// sky + environment (canvas gradient; the env copy adds bright softboxes so oiled skin gets long highlight streaks)
+function skyCanvas(env) {
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 512; const g = c.getContext('2d');
+  const gr = g.createLinearGradient(0, 0, 0, 512);
+  gr.addColorStop(0, '#13306a'); gr.addColorStop(0.2, '#2c64ab'); gr.addColorStop(0.36, '#76a9d8'); gr.addColorStop(0.45, '#f3d3a0'); gr.addColorStop(0.5, '#f0b571'); gr.addColorStop(0.53, '#9d8c62'); gr.addColorStop(1, '#46552c');
+  g.fillStyle = gr; g.fillRect(0, 0, 1024, 512);
+  const sun = g.createRadialGradient(300, 228, 3, 300, 228, 150); sun.addColorStop(0, 'rgba(255,248,222,1)'); sun.addColorStop(0.25, 'rgba(255,226,170,.75)'); sun.addColorStop(1, 'rgba(255,214,150,0)');
+  g.fillStyle = sun; g.fillRect(0, 0, 1024, 512);
+  if (env) {
+    g.shadowColor = 'rgba(255,240,210,1)'; g.shadowBlur = 14; g.fillStyle = 'rgba(255,248,232,.97)';
+    for (let k = 0; k < 6; k++) g.fillRect(70 + k * 170, 92 + (k % 2) * 28, 96, 20); // stadium light bars
+    g.fillRect(250, 168, 220, 26); g.fillRect(690, 160, 190, 24); g.shadowBlur = 0;
+    g.fillStyle = 'rgba(120,150,70,.55)'; g.fillRect(0, 300, 1024, 212); // grass bounce from below
+  }
   return c;
 }
-const skyTex = new THREE.CanvasTexture(skyCanvas()); skyTex.colorSpace = THREE.SRGBColorSpace; skyTex.mapping = THREE.EquirectangularReflectionMapping;
+const skyTex = new THREE.CanvasTexture(skyCanvas(false)); skyTex.colorSpace = THREE.SRGBColorSpace; skyTex.mapping = THREE.EquirectangularReflectionMapping;
+const envTex = new THREE.CanvasTexture(skyCanvas(true)); envTex.colorSpace = THREE.SRGBColorSpace; envTex.mapping = THREE.EquirectangularReflectionMapping;
 const sky = new THREE.Mesh(new THREE.SphereGeometry(300, 24, 14), new THREE.MeshBasicMaterial({ map: skyTex, side: THREE.BackSide, fog: false, depthWrite: false }));
 sky.rotation.y = 0.6; scene.add(sky);
-scene.fog = new THREE.Fog(0xe4d3a8, 70, 230);
+scene.fog = new THREE.Fog(0xe6c597, 70, 230);
 try {
-  const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromEquirectangular(skyTex).texture; scene.environmentIntensity = 0.7; pm.dispose();
+  const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromEquirectangular(envTex).texture; scene.environmentIntensity = 0.75; pm.dispose();
 } catch (e) { /* environment is optional */ }
 
-const hemi = new THREE.HemisphereLight(0xcfe3ff, 0x9a8650, 1.35); scene.add(hemi);
-const sun = new THREE.DirectionalLight(0xfff0d2, 2.5); sun.position.set(-7, 13, 8); scene.add(sun); scene.add(sun.target);
+// golden-hour broadcast lighting: warm low key, cool sky fill, gold rim from behind the stands
+const hemi = new THREE.HemisphereLight(0xb9d3ff, 0x6a7f3c, 1.15); scene.add(hemi);
+const SUN_OFF = { x: -8, y: 11, z: 9 };
+const sun = new THREE.DirectionalLight(0xffd7a1, 2.9); sun.position.set(SUN_OFF.x, SUN_OFF.y, SUN_OFF.z); scene.add(sun); scene.add(sun.target);
 sun.castShadow = true; sun.shadow.mapSize.set(1024, 1024);
 Object.assign(sun.shadow.camera, { left: -7, right: 7, top: 5, bottom: -5, near: 2, far: 40 });
 sun.shadow.camera.updateProjectionMatrix(); sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.03;
+const rim = new THREE.DirectionalLight(0xe0c068, 1.05); rim.position.set(7, 5, -11); scene.add(rim);
 
-// ---- ground
+// ---- ground: mown stripes inside the ring, worn sand track, darker meadow outside
 function grassTexture() {
   const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
-  g.fillStyle = '#6c9a3c'; g.fillRect(0, 0, 256, 256);
-  for (let i = 0; i < 2600; i++) { const v = Math.random(); g.fillStyle = v < 0.5 ? 'rgba(52,96,30,.35)' : 'rgba(150,190,80,.28)'; g.fillRect(Math.random() * 256, Math.random() * 256, 1.4, 3.2); }
+  g.fillStyle = '#4f8a3a'; g.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 2600; i++) { const v = Math.random(); g.fillStyle = v < 0.5 ? 'rgba(34,78,30,.38)' : 'rgba(168,196,86,.26)'; g.fillRect(Math.random() * 256, Math.random() * 256, 1.4, 3.4); }
   const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(50, 50); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
 }
 const ground = new THREE.Mesh(new THREE.CircleGeometry(150, 48), new THREE.MeshLambertMaterial({ map: grassTexture() }));
 ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
+const FIELD_R = 12.3;
+function fieldTexture() {
+  const S = 1024, c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d');
+  g.fillStyle = '#3E8E41'; g.fillRect(0, 0, S, S);
+  const bands = 14, bh = S / bands; // mown stripes run across the view
+  for (let b = 0; b < bands; b++) { g.fillStyle = b % 2 ? 'rgba(20,70,28,.34)' : 'rgba(160,214,96,.20)'; g.fillRect(0, b * bh, S, bh); }
+  for (let i = 0; i < 9000; i++) { const v = Math.random(); g.fillStyle = v < 0.5 ? 'rgba(24,70,26,.30)' : 'rgba(176,220,104,.24)'; g.fillRect(Math.random() * S, Math.random() * S, 1.6, 4.2); }
+  for (let i = 0; i < 40; i++) { const x = Math.random() * S, y = Math.random() * S, r = 30 + Math.random() * 60, gr = g.createRadialGradient(x, y, 2, x, y, r); gr.addColorStop(0, 'rgba(210,200,110,.10)'); gr.addColorStop(1, 'rgba(210,200,110,0)'); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
+  const R = S / 2; g.strokeStyle = 'rgba(255,255,255,.85)'; g.lineWidth = 7; g.beginPath(); g.arc(R, R, R * (11.5 / FIELD_R), 0, 7); g.stroke();
+  g.strokeStyle = 'rgba(255,255,255,.22)'; g.lineWidth = 3; g.beginPath(); g.arc(R, R, R * (3.4 / FIELD_R), 0, 7); g.stroke();
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
+}
+const field = new THREE.Mesh(new THREE.CircleGeometry(FIELD_R, 64), new THREE.MeshLambertMaterial({ map: fieldTexture() }));
+field.rotation.x = -Math.PI / 2; field.position.y = 0.004; field.receiveShadow = true; scene.add(field);
+function sandTexture() {
+  const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
+  g.fillStyle = '#b79b66'; g.fillRect(0, 0, 256, 256);
+  for (let i = 0; i < 3000; i++) { g.fillStyle = Math.random() < 0.5 ? 'rgba(120,90,48,.35)' : 'rgba(240,220,170,.35)'; g.fillRect(Math.random() * 256, Math.random() * 256, 1.5, 1.5); }
+  const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(10, 10); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+const track = new THREE.Mesh(new THREE.RingGeometry(FIELD_R - 0.05, 14.3, 64, 1), new THREE.MeshLambertMaterial({ map: sandTexture() }));
+track.rotation.x = -Math.PI / 2; track.position.y = 0.002; track.receiveShadow = true; scene.add(track);
 function patchTexture() {
   const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
-  const gr = g.createRadialGradient(128, 128, 20, 128, 128, 128); gr.addColorStop(0, 'rgba(206,196,120,.55)'); gr.addColorStop(0.7, 'rgba(196,186,110,.35)'); gr.addColorStop(1, 'rgba(190,180,100,0)');
+  const gr = g.createRadialGradient(128, 128, 20, 128, 128, 128); gr.addColorStop(0, 'rgba(176,150,84,.50)'); gr.addColorStop(0.7, 'rgba(170,146,80,.30)'); gr.addColorStop(1, 'rgba(160,140,76,0)');
   g.fillStyle = gr; g.fillRect(0, 0, 256, 256);
-  for (let i = 0; i < 24; i++) { g.strokeStyle = 'rgba(255,255,255,.07)'; g.beginPath(); g.arc(128, 128, 20 + i * 4.4, 0, 7); g.stroke(); }
+  for (let i = 0; i < 24; i++) { g.strokeStyle = 'rgba(255,255,255,.06)'; g.beginPath(); g.arc(128, 128, 20 + i * 4.4, 0, 7); g.stroke(); }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
-const patch = new THREE.Mesh(new THREE.CircleGeometry(10.5, 40), new THREE.MeshLambertMaterial({ map: patchTexture(), transparent: true, depthWrite: false }));
+const patch = new THREE.Mesh(new THREE.CircleGeometry(9.5, 40), new THREE.MeshLambertMaterial({ map: patchTexture(), transparent: true, depthWrite: false }));
 patch.rotation.x = -Math.PI / 2; patch.position.y = 0.012; patch.receiveShadow = true; scene.add(patch);
 // v2: oil stains. One decal plane over the wrestling area; its canvas is stamped where the wrestlers stand (a few times a second, so the upload stays tiny).
 const OIL_W = 24, OIL_D = 6, oilCv = document.createElement('canvas'); oilCv.width = 512; oilCv.height = 128;
@@ -1180,7 +1212,7 @@ function oilClear() { oilCtx.clearRect(0, 0, 512, 128); oilTex.needsUpdate = tru
 function oilStamp(x, z, u) {
   const px = (x + OIL_W / 2) / OIL_W * 512, py = (z + OIL_D / 2) / OIL_D * 128, r = 24;
   const g = oilCtx.createRadialGradient(px, py, 1, px, py, r), a = 0.02 + 0.03 * u;
-  g.addColorStop(0, 'rgba(34,40,10,' + a + ')'); g.addColorStop(1, 'rgba(34,40,10,0)');
+  g.addColorStop(0, 'rgba(46,34,8,' + a + ')'); g.addColorStop(1, 'rgba(46,34,8,0)');
   oilCtx.fillStyle = g; oilCtx.fillRect(px - r, py - r, r * 2, r * 2);
 }
 
@@ -2376,7 +2408,7 @@ function renderFrame(dt, nowS) {
   }
   oilMat.opacity = 0.4 + 0.3 * oilSum * 0.5;
   // lighting follows the pair
-  const cx = (M.f[0].p.x + M.f[1].p.x) / 2; sun.position.set(cx - 7, 13, 8); sun.target.position.set(cx, 0, 0); sun.target.updateMatrixWorld();
+  const cx = (M.f[0].p.x + M.f[1].p.x) / 2; sun.position.set(cx + SUN_OFF.x, SUN_OFF.y, SUN_OFF.z); sun.target.position.set(cx, 0, 0); sun.target.updateMatrixWorld();
   updateCrowd(nowS, G.excite); updateParticles(dt);
   for (const fl of flagMeshes) {
     const pa = fl.m.geometry.attributes.position, b = fl.base;
