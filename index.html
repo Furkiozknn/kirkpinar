@@ -108,6 +108,7 @@ svg{display:block}
 @media (hover:none),(max-width:700px){#hintline{display:none}}
 .replaytag{position:fixed;top:calc(80px + var(--sa-t));left:50%;transform:translateX(-50%);z-index:26;padding:8px 18px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);display:flex;gap:14px;align-items:center}
 .replaytag .rec{width:10px;height:10px;border-radius:50%;background:var(--red);animation:blink 1s infinite}
+@media (prefers-reduced-motion: reduce){.replaytag .rec{animation:none}}
 @keyframes blink{50%{opacity:.25}}
 
 /* touch controls */
@@ -282,7 +283,7 @@ svg{display:block}
   .timer{min-width:72px;font-size:22px;padding:2px 8px}
   .score{font-size:19px;padding:2px 8px}
   .chip{font-size:12px;padding:3px 7px}
-  .acts .ibtn{width:40px}
+  .acts .ibtn{min-width:44px;min-height:44px;width:auto}
   #hud{--coach-top:150px}
   .title-wrap .tag{margin-top:12px}
 }
@@ -2420,6 +2421,27 @@ function readInput(i) {
   }
   return inp;
 }
+// trap keyboard focus within open modal screens
+addEventListener('keydown', e => {
+  if (e.key !== 'Tab') return;
+  const openScreen = Object.values(SCREENS).find(s => !s.hidden && s.id !== 's-title');
+  if (!openScreen) return;
+  const focusables = Array.from(openScreen.querySelectorAll('button:not([disabled]):not([hidden]), [tabindex]:not([tabindex="-1"]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), a[href]'))
+    .filter(el => el.offsetParent !== null);
+  if (!focusables.length) return;
+  const first = focusables[0], last = focusables[focusables.length - 1];
+  if (e.shiftKey) {
+    if (document.activeElement === first || !openScreen.contains(document.activeElement)) {
+      e.preventDefault();
+      last.focus();
+    }
+  } else {
+    if (document.activeElement === last || !openScreen.contains(document.activeElement)) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+});
 addEventListener('keydown', e => {
   AU.init();
   const c = e.code;
