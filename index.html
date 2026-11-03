@@ -1734,8 +1734,11 @@ mkBand('zurna', -0.65, 0.5, { hat: 'kavuk', hatCol: '#1c3350', vest: '#1c3350', 
 mkBand('zurna', 0.65, 0.5, { hat: 'kavuk', hatCol: '#1c3350', vest: '#1c3350', trousers: '#8e1b1b' });
 mkBand('davul', 1.9, 0.25, { hat: 'kavuk', hatCol: '#b3261e', sash: '#E0C068' });
 const camMen = camRigs.map(([px, pz, yaw]) => { const f = personFigure({ robe: '#2b303a', vest: '#2b303a', trousers: '#1b1f27', hat: 'cap', hatCol: '#0D1B2A', sash: '#e53935' }); f.position.set(px - Math.cos(yaw) * 0.55, 0, pz + Math.sin(yaw) * 0.55); f.rotation.y = yaw; f.userData.pr.rotation.x = -1.2; f.userData.pl.rotation.x = -1.2; scene.add(f); return f; });
-function updateNPCs(time, ph) {
-  // ph: cazgır state { talk 0..1, x, z }
+function updateNPCs(time, ph, cazX, cazZ) {
+  // cazgır state: accepts (time, talk, x, z) without per-frame object allocation
+  const talk = typeof ph === 'object' ? ph.talk : ph;
+  const cx = typeof ph === 'object' ? ph.x : cazX;
+  const cz = typeof ph === 'object' ? ph.z : cazZ;
   const c = cazgir.userData, b3 = (Math.sin(time * 4.4) + 1) * 0.5;
   for (const n of bandNPC) {
     const u = n.f.userData, s = time * 6.2 + n.ph;
@@ -1746,8 +1749,8 @@ function updateNPCs(time, ph) {
     } else { u.zurna.rotation.x = 1.15 + Math.sin(time * 3 + n.ph) * 0.06; u.body.rotation.y = Math.sin(time * 1.8 + n.ph) * 0.12; }
   }
   for (const m of camMen) m.userData.body.position.y = Math.sin(time * 1.3) * 0.006;
-  cazgir.position.x += (ph.x - cazgir.position.x) * 0.04; cazgir.position.z += (ph.z - cazgir.position.z) * 0.04;
-  c.pr.rotation.z = -0.4 - ph.talk * (1.3 + Math.sin(time * 6) * 0.25); c.pl.rotation.z = 0.2; c.body.position.y = (ph.talk ? Math.sin(time * 9) * 0.01 : 0);
+  cazgir.position.x += (cx - cazgir.position.x) * 0.04; cazgir.position.z += (cz - cazgir.position.z) * 0.04;
+  c.pr.rotation.z = -0.4 - talk * (1.3 + Math.sin(time * 6) * 0.25); c.pl.rotation.z = 0.2; c.body.position.y = (talk ? Math.sin(time * 9) * 0.01 : 0);
   cazgir.rotation.y = Math.atan2(-(cazgir.position.x), 8) * 0.3;
 }
 
@@ -1828,13 +1831,15 @@ function disposeRig(r) {
 // ---- pose solver
 const V = (x, y, z) => new THREE.Vector3(x, y, z);
 const _Y = V(0, 1, 0);
+// persistent scratch vectors for per-frame limb IK to avoid allocations
+const _ikDir = V(0, 0, 0), _ikN = V(0, 0, 0);
 function ik2(A, T, l1, l2, pole, mid, end) {
-  const d = A.distanceTo(T), dir = T.clone().sub(A);
+  const d = A.distanceTo(T), dir = _ikDir.copy(T).sub(A);
   if (d < 1e-5) dir.set(0, -1, 0); else dir.multiplyScalar(1 / d);
   const dd = clamp(d, Math.abs(l1 - l2) + 0.02, (l1 + l2) * 0.998);
   const a = (l1 * l1 - l2 * l2 + dd * dd) / (2 * dd), h = Math.sqrt(Math.max(l1 * l1 - a * a, 0));
-  const n = pole.clone().addScaledVector(dir, -pole.dot(dir));
-  if (n.lengthSq() < 1e-6) n.set(dir.y > 0.9 ? 1 : 0, dir.y > 0.9 ? 0 : 1, 0).addScaledVector(dir, 0);
+  const n = _ikN.copy(pole).addScaledVector(dir, -pole.dot(dir));
+  if (n.lengthSq() < 1e-6) n.set(dir.y > 0.9 ? 1 : 0, dir.y > 0.9 ? 0 : 1, 0);
   n.normalize();
   mid.copy(A).addScaledVector(dir, a).addScaledVector(n, h); end.copy(A).addScaledVector(dir, dd);
 }
@@ -1971,8 +1976,8 @@ function updateFeet(f, r, s, dt) {
   r.init = true;
 }
 
-// ---- apply joints to meshes
-const _va = V(0, 0, 0), _vb = V(0, 0, 0), _vc = V(0, 0, 0), _vd = V(0, 0, 0), _qq = new THREE.Quaternion(), _mm = new THREE.Matrix4(), _xv = V(0, 0, 0), _yv = V(0, 0, 0), _zv = V(0, 0, 0);
+// ---- apply joints to meshes (using scratch vectors to avoid per-frame allocations)
+const _va = V(0, 0, 0), _vb = V(0, 0, 0), _vc = V(0, 0, 0), _vd = V(0, 0, 0), _up = V(0, 0, 0), _pos = V(0, 0, 0), _ca = V(0, 0, 0), _ca2 = V(0, 0, 0), _qq = new THREE.Quaternion(), _mm = new THREE.Matrix4(), _xv = V(0, 0, 0), _yv = V(0, 0, 0), _zv = V(0, 0, 0);
 function boneTo(mesh, J, ia, ib, extra) {
   getJ(J, ia, _va); getJ(J, ib, _vb); _vc.copy(_vb).sub(_va); const len = _vc.length(); if (len < 1e-6) return;
   _vc.multiplyScalar(1 / len); _qq.setFromUnitVectors(_Y, _vc); mesh.quaternion.copy(_qq);
@@ -1985,15 +1990,22 @@ function basisMesh(mesh, J, pos, ax) { // ax: axis (Y) direction vector; X from 
 }
 function applyJ(r, J) {
   const P = r.P, s = r.s;
-  getJ(J, 0, _va); basisMesh(P.pelvis, J, _va.clone().addScaledVector(V(J[54], J[55], J[56]), 0.03), V(J[54], J[55], J[56]));
+  _up.set(J[54], J[55], J[56]);
+  getJ(J, 0, _va);
+  _pos.copy(_va).addScaledVector(_up, 0.03);
+  basisMesh(P.pelvis, J, _pos, _up);
   // belt on top of pelvis
-  const up = V(J[54], J[55], J[56]);
-  basisMesh(P.belt, J, _va.clone().addScaledVector(up, 0.1 * s), up);
+  _pos.copy(_va).addScaledVector(_up, 0.1 * s);
+  basisMesh(P.belt, J, _pos, _up);
   // abdomen
-  getJ(J, 0, _va); getJ(J, 1, _vb); const am = _va.clone().add(_vb).multiplyScalar(0.5).addScaledVector(up, 0.01);
-  basisMesh(P.abd, J, am, _vb.clone().sub(_va));
-  getJ(J, 1, _va); getJ(J, 3, _vb); const ca = _vb.clone().sub(_va);
-  getJ(J, 2, _vc); basisMesh(P.chest, J, _vc.clone().addScaledVector(ca.clone().normalize(), 0.03), ca);
+  getJ(J, 1, _vb);
+  _pos.copy(_va).add(_vb).multiplyScalar(0.5).addScaledVector(_up, 0.01);
+  _ca.copy(_vb).sub(_va);
+  basisMesh(P.abd, J, _pos, _ca);
+  getJ(J, 1, _va); getJ(J, 3, _vb); _ca.copy(_vb).sub(_va);
+  getJ(J, 2, _vc);
+  _pos.copy(_vc).addScaledVector(_ca2.copy(_ca).normalize(), 0.03);
+  basisMesh(P.chest, J, _pos, _ca);
   boneTo(P.neck, J, 3, 4); P.neck.position.lerp(getJ(J, 3, _vd), 0.2);
   getJ(J, 4, _vd); P.head.position.copy(_vd);
   // head orientation: look along torso forward
@@ -2406,9 +2418,17 @@ const MAP_ALL = { left: ['KeyA', 'ArrowLeft'], right: ['KeyD', 'ArrowRight'], up
 const touch = { mx: 0, up: 0, down: 0, pull: 0, push: 0 }; const pad = [{ prev: [] }, { prev: [] }];
 const GAMEKEYS = new Set(['KeyA', 'KeyD', 'KeyW', 'KeyS', 'KeyF', 'KeyG', 'KeyH', 'KeyR', 'KeyK', 'KeyL', 'Semicolon', 'Quote', 'Enter', 'Space', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown']);
 function mapFor(i) { return G.versus ? (i === 0 ? MAP1 : MAP2) : MAP_ALL; }
+const _inputs = [
+  { mx: 0, up: 0, down: 0, pull: 0, push: 0, grab: 0, release: 0, ctx: 0 },
+  { mx: 0, up: 0, down: 0, pull: 0, push: 0, grab: 0, release: 0, ctx: 0 }
+];
 function readInput(i) {
   const m = mapFor(i), has = a => a.some(c => keys.has(c));
-  const inp = { mx: (has(m.right) ? 1 : 0) - (has(m.left) ? 1 : 0), up: has(m.up) ? 1 : 0, down: has(m.down) ? 1 : 0, pull: has(m.pull) ? 1 : 0, push: has(m.push) ? 1 : 0, grab: edges[i].grab, release: 0, ctx: edges[i].ctx };
+  const inp = _inputs[i];
+  inp.mx = (has(m.right) ? 1 : 0) - (has(m.left) ? 1 : 0);
+  inp.up = has(m.up) ? 1 : 0; inp.down = has(m.down) ? 1 : 0;
+  inp.pull = has(m.pull) ? 1 : 0; inp.push = has(m.push) ? 1 : 0;
+  inp.grab = edges[i].grab; inp.release = 0; inp.ctx = edges[i].ctx;
   if (i === 0 && IS_TOUCH && !G.versus) { inp.mx = inp.mx || touch.mx; inp.up = inp.up || touch.up; inp.down = inp.down || touch.down; inp.pull = inp.pull || touch.pull; inp.push = inp.push || touch.push; }
   const gp = navigator.getGamepads ? navigator.getGamepads()[i] : null;
   if (gp) {
@@ -2645,16 +2665,16 @@ function handleEvents(M) {
 }
 
 // ============================================================ simulation loop
+const _simInp = [null, null];
 function simStep(dt) {
   const M = G.match; if (!M) return;
   if (M.phase === 'ready' && !G.demo) {
     G.introT += dt;
     if (G.introT > 2.6) { M.start(); banner(t('go')); if (!(G.cfg && G.cfg.factIdx >= 0)) say('start', true); AU.play('whistle'); G.excite = 0.5; }
   }
-  const inp = [null, null];
-  for (let i = 0; i < 2; i++) inp[i] = G.humans[i] ? readInput(i) : G.brains[i].tick(M, M.f[i], M.f[1 - i], dt);
-  M.step(dt, inp);
-  if (G.coach) coachTick(M, inp[0], dt);
+  for (let i = 0; i < 2; i++) _simInp[i] = G.humans[i] ? readInput(i) : G.brains[i].tick(M, M.f[i], M.f[1 - i], dt);
+  M.step(dt, _simInp);
+  if (G.coach) coachTick(M, _simInp[0], dt);
   oilStampT -= dt; // stains are stamped in sim time (a few times a second), so fast-forwarding paints them too
   if (oilStampT <= 0 && M.phase === 'play') {
     oilStampT = 0.4;
@@ -2849,7 +2869,7 @@ function renderFrame(dt, nowS) {
   clouds.forEach((c, i) => { c.position.x += dt * (0.6 + i * 0.1); if (c.position.x > 180) c.position.x = -180; });
   const talkTarget = G.talk ? 1 : 0; G.talkS = (G.talkS || 0) + (talkTarget - (G.talkS || 0)) * 0.1;
   const away = !G.demo && M.phase !== 'ready' ? 1 : 0;
-  updateNPCs(nowS, { talk: G.talkS, x: away ? 0.5 : 0, z: away ? -8.5 : -3.4 });
+  updateNPCs(nowS, G.talkS, away ? 0.5 : 0, away ? -8.5 : -3.4);
   if (AU.crowdG) AU.crowdG.gain.value = 0.03 + G.excite * 0.14;
   updateCamera(dt);
   updateHUD();
