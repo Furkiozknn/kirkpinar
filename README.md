@@ -1,81 +1,58 @@
 <p align="center">
-  <a href="https://furkiozknn.github.io/kirkpinar/"><img src="docs/banner.svg" width="100%" alt="Kırkpınar: a 3D physics oil-wrestling game on the grass near Edirne. Click to play in your browser."></a>
+  <a href="https://furkiozknn.github.io/kirkpinar/">
+    <img src="docs/card.jpg" width="100%" alt="Kırkpınar: a 3D physics oil-wrestling game on the grass near Edirne. Click to play in your browser.">
+  </a>
 </p>
 
 <p align="center">
-  <a href="https://furkiozknn.github.io/kirkpinar/"><img src="https://img.shields.io/badge/%E2%96%B6_Play_now-in_your_browser-C2410C?style=for-the-badge&labelColor=17120B" alt="Play now in your browser"></a>
+  <a href="https://furkiozknn.github.io/kirkpinar/"><img src="https://img.shields.io/badge/%E2%96%B6_Play_free-in_your_browser-C2410C?style=for-the-badge&logo=googlechrome&logoColor=white&labelColor=17120B" height="40" alt="Play free in your browser"></a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Three.js-r170-E9B44C?style=for-the-badge&logo=threedotjs&logoColor=white&labelColor=17120B" alt="Three.js r170">
   <img src="https://img.shields.io/badge/built_by-Claude_Sonnet_5.5-D4C3A2?style=for-the-badge&logo=claude&logoColor=white&labelColor=17120B" alt="Built by Claude Sonnet 5.5">
   <a href="LICENSE"><img src="https://img.shields.io/badge/licence-MIT-7FB26A?style=for-the-badge&labelColor=17120B" alt="MIT licence"></a>
   <img src="https://img.shields.io/badge/no_install-desktop_%C2%B7_phone-F7ECD6?style=for-the-badge&labelColor=17120B" alt="No install, desktop and phone">
 </p>
 
-<p align="center"><b>A 3D physics oil-wrestling (yağlı güreş) game inspired by the Kırkpınar tradition near Edirne: two oiled pehlivans in leather kıspet trousers grip, pull, push and throw until one wrestler's back touches the grass.</b></p>
-
-<p align="center">
-  <img src="docs/gameplay.gif" width="640" alt="Kırkpınar gameplay: the versus card, then two oiled wrestlers grip and push each other on the grass">
-</p>
-
-<p align="center"><b>Play online: <a href="https://furkiozknn.github.io/kirkpinar/">https://furkiozknn.github.io/kirkpinar/</a></b> (desktop and phone, no install)</p>
-
 <!-- portals:start -->
-<p align="center">Also on: <a href="https://furkiozknn.itch.io/kirkpinar">itch.io</a> &middot; <a href="https://playgama.ai/play/ciehj6cxilo2lg">Playgama</a></p>
+<p align="center">
+  Also on: <a href="https://furkiozknn.itch.io/kirkpinar"><strong>itch.io</strong></a> &middot; <a href="https://playgama.ai/play/ciehj6cxilo2lg"><strong>Playgama</strong></a>
+</p>
 <!-- portals:end -->
 
-## Highlights
+<p align="center">
+  <strong>A 3D physics oil-wrestling (yağlı güreş) game inspired by the Kırkpınar tradition near Edirne: two oiled pehlivans in leather kıspet trousers grip, pull, push and throw until one wrestler's back touches the grass.</strong>
+</p>
 
-- **Oil makes every hold slip.** Grip strength decays with hold time, oil and sweat, effort and stamina, and a grip
-  slips when it is overloaded. The kıspet hold is the most reliable under oil.
-- **Balance you can read.** Each wrestler is a rigid-segment body with a centre-of-mass lean over his feet. Lean past
-  the limit and he steps or falls, and the direction decides back, side or front. The bubble under each wrestler shows
-  his balance.
-- **The classic finishing moves.** Paça kazık, çaprast, kündeye almak (pin and roll a downed rival onto his back),
-  lift and carry three steps, yere çal (slam) and a crouched leg hook, each one a context move that lights up when the
-  grip and the rival's balance allow it.
-- **Career to the golden belt.** Five weight classes from Deste to Başpehlivan, 3-4 rivals each in four styles (strong,
-  fast, defensive, tricky). Plus a quick match and 2 players on one keyboard (behind "More modes"); touch and gamepad
-  work too.
-- **One click to the first grip (v2).** Play jumps straight to the current career bout: a 2.5 s versus card (any click
-  skips it), then the bout starts. A four-step coach strip in the very first bout ticks on real input and the rival plays
-  about 25 % weaker until it is done (or skipped).
-- **Longer bouts for bigger classes (v2).** Career bouts last 60 / 75 / 90 / 105 / 120 seconds from Deste to
-  Başpehlivan, as in the real sport where the final is the longest. Oil keeps building, so late bouts are about pacing.
-- **Three years and the belt is yours (v2).** A finished career is one year of the golden belt; three finished careers
-  in a row keep it for good (abandoning a run resets the streak) and turn your belt and armband gold.
-- **Oil you can see (v2).** Skin gets glossier as oil builds up, every slip throws droplets, the grass darkens where the
-  wrestlers stand, and the grip bar shows an oil-limit tick.
-- **Cazgır facts (v2).** The cazgır tells a different true fact before the first bout of each class, and result and
-  loading cards carry a "Did you know?" line (six sourced facts, TR / EN).
-- **Fair AI, tested by a bot.** The AI presses the same buttons through the same simulation as a player. The `?auto`
-  bot played a whole career: measured **23 bouts, 18 wins, golden belt** (v2, fast=30; zero JS errors with and without assets), 60 fps, 52 draw calls.
-- **One file, made in code.** One `index.html` with Three.js r170 from a CDN; the poses, the slow-motion replay, the
-  crowd and every sound are generated in code.
+<!-- gameplay gif -->
+
+## Features
+
+- **Career to the golden belt:** 5 weight classes from Deste to Başpehlivan, facing 3–4 rivals each across 4 styles (strong, fast, defensive, tricky) in a 26-bout tournament ladder, plus quick match and 2 players on one keyboard.
+- **Dynamic bout pacing & stamina:** Bouts scale across 60 / 75 / 90 / 105 / 120 seconds by class (90 s in quick match/2P; 45 s golden score tiebreaker); oil builds up constantly, requiring tactical pacing as grip strength decays.
+- **Authentic yağlı güreş moves:** Execute paça kazık, çaprast, kündeye almak (pin and roll a downed rival onto his back), yere çal (slam), crouched leg hooks, and lift & carry for 3 steps when rival balance allows.
+- **3-year championship streak:** Complete 3 consecutive career runs without abandoning to permanently secure the golden belt and turn your wrestler's belt and armband gold.
+- **Ultra-lean web performance:** A single `index.html` running Three.js r170 delivering 60 fps at 52–65 draw calls on Intel UHD 620 (64 calls, 61 fps on phone), verified by an automated bot across 23 bouts with 0 JS errors.
 
 ## How to play
 
 > [!TIP]
-> **Goal:** put your rival's back (both shoulders) on the grass, or lift him and carry him three steps. Grab first,
-> break his balance with pull and push, then strike when the move button lights up.
+> **Goal:** Put your rival's back (both shoulders) on the grass, or lift him and carry him three steps. Grab first, break his balance with pull and push, then strike when the move button lights up.
 
-1. **Close in and grab** (`F`). The first hand takes the arm, the next the waist; hold `S` (crouch) while grabbing to
-   take the kıspet.
-2. **Break the balance.** Pull (`G`) drags the rival towards you, push (`H`) shoves him away; walking away from a hold
-   drags him too. Pulling and pushing wear down your own grip and stamina.
-3. **Strike** (`R`) when the move button lights up: a finishing move needs the right grip and an off-balance rival.
+1. **Close in and grab (`F`):** The first hand takes the arm, the next the waist; hold `S` (crouch) while grabbing to take the kıspet.
+2. **Break the balance:** Pull (`G`) drags the rival towards you, push (`H`) shoves him away; walking away from a hold drags him too. Pulling and pushing wear down your own grip and stamina.
+3. **Strike (`R`):** Strike when the move button lights up—a finishing move needs the right grip and an off-balance rival.
 
 <details>
 <summary><b>Moves and rules</b></summary>
 
-- **Paça kazık:** kıspet hold, rival off balance.
-- **Çaprast:** cross hold (one arm hold, one waist hold), rival off balance.
-- **Kündeye al:** the rival is down on the grass: pin him and win the struggle (mash the move button) to roll him onto
-  his back.
-- **Lift:** hold push with a waist or kıspet hold on an off-balance rival. Carry him three steps to win, or slam him
-  (**yere çal**).
-- **Trip:** crouch + pull hooks the rival's leg (with a cooldown) and weakens his balance for a moment.
-- Falls onto the side or front only score a point for the rival, who can follow up with the künde. Career bouts last
-  60 / 75 / 90 / 105 / 120 seconds by class (quick match and 2 players: 90); if nobody wins, more points wins, and a tie
-  goes to a 45 second golden score round (first point wins).
+- **Paça kazık:** Kıspet hold, rival off balance.
+- **Çaprast:** Cross hold (one arm hold, one waist hold), rival off balance.
+- **Kündeye al:** The rival is down on the grass: pin him and win the struggle (mash the move button) to roll him onto his back.
+- **Lift:** Hold push with a waist or kıspet hold on an off-balance rival. Carry him three steps to win, or slam him (**yere çal**).
+- **Trip:** Crouch + pull hooks the rival's leg (with a cooldown) and weakens his balance for a moment.
+- **Scoring & rounds:** Falls onto the side or front only score a point for the rival, who can follow up with the künde. Career bouts last 60 / 75 / 90 / 105 / 120 seconds by class (quick match and 2 players: 90); if nobody wins, more points wins, and a tie goes to a 45 second golden score round (first point wins).
 
 </details>
 
@@ -90,28 +67,24 @@
 | Push (hold: lift) | `H` | `;` | `H` or `;` |
 | Context move | `R` | `Enter` or `'` | `R`, `Space` or `Enter` |
 
-Global: `P` / `Esc` pause, `M` music, `X` effects, `L` language (not during a 2-player bout, where it is Player 2's
-pull). The speaker button (top right on every screen) mutes music and effects together and is remembered. Touch: a virtual stick (left / right, down to crouch, up to stand tall) and four buttons. Gamepad: stick or
-d-pad, `A` grab, `X` pull, `B` push, `Y` move, Start pause.
-
-Settings (master / music / effects volume, mute, TR / EN, Low / High quality, fullscreen) are saved in `localStorage`
-under `arena.kirkpinar.settings`; the career run, best results, the coach flag and the golden-belt streak under
-`arena.kirkpinar.save`. Turkish is the default
-language.
+- **Global hotkeys:** `P` / `Esc` pause, `M` music, `X` effects, `L` language (not during a 2-player bout, where it is Player 2's pull).
+- **Audio control:** The speaker button (top right on every screen) mutes music and effects together and is remembered.
+- **Touch:** A virtual stick (left / right, down to crouch, up to stand tall) and four buttons.
+- **Gamepad:** Stick or d-pad, `A` grab, `X` pull, `B` push, `Y` move, `Start` pause.
+- **Persistence:** Settings (master / music / effects volume, mute, TR / EN, Low / High quality, fullscreen) are saved in `localStorage` under `arena.kirkpinar.settings`; career run, best results, coach flag, and golden-belt streak under `arena.kirkpinar.save`. Turkish is the default language.
 
 <details>
 <summary><b>URL flags for testing</b></summary>
 
 | Flag | Effect |
 |---|---|
-| `?auto` | a bot plays the whole career by itself, clicking the real menus; `&fast=N` sets the simulation speed (default 6), `&mode=quick` plays one quick match instead, `&sim=N` fast-forwards N seconds at the start of each bout |
-| `?debug` | fps, draw calls, triangles, fighter states and JS errors on screen; `window.kirkpinarSim(seconds)`; `&belt=N` (0-3) presets the golden-belt streak |
-| `?low` | shadows off, fewer particles and spectators |
-| `?lang=en` / `?lang=tr` | start language |
-| `?noassets` | accepted for the arena convention; the game uses no external assets anyway |
+| `?auto` | A bot plays the whole career by itself, clicking the real menus; `&fast=N` sets the simulation speed (default 6), `&mode=quick` plays one quick match instead, `&sim=N` fast-forwards N seconds at the start of each bout |
+| `?debug` | FPS, draw calls, triangles, fighter states and JS errors on screen; `window.kirkpinarSim(seconds)`; `&belt=N` (0-3) presets the golden-belt streak |
+| `?low` | Shadows off, fewer particles and spectators |
+| `?lang=en` / `?lang=tr` | Start language |
+| `?noassets` | Accepted for the arena convention; the game uses no external assets anyway |
 
-`window.kirkpinar` exposes the live state (`state` incl. the bout `limit` and per-class `limits`, `screen`, `fps`,
-`drawCalls`, `auto`, `coach`, `belt`, `assets`, `errors`).
+`window.kirkpinar` exposes the live state (`state` incl. the bout `limit` and per-class `limits`, `screen`, `fps`, `drawCalls`, `auto`, `coach`, `belt`, `assets`, `errors`).
 
 </details>
 
@@ -130,16 +103,20 @@ language.
   </tr>
 </table>
 
-## Redesign (2026-11)
+## Redesign & Performance
 
-**Art direction:** cinematic sports broadcast. Golden-hour light over a mown field (grass `#3E8E41`, kispet leather `#4E342E`, oil sheen `#E0C068`, flag red `#D32F2F`, broadcast navy `#0D1B2A`), with a TV-style HUD.
+**Art direction:** Cinematic sports broadcast. Golden-hour light over a mown field (grass `#3E8E41`, kıspet leather `#4E342E`, oil sheen `#E0C068`, flag red `#D32F2F`, broadcast navy `#0D1B2A`), with a TV-style HUD.
 
-**What changed (visuals only, rules, controls, bot and saves are untouched):**
-- Scene: mown grass stripes and sand track, tiered stands with hoardings, flags, light towers, skyline, and an instanced animated crowd with camera flashes. A davul-zurna band plays on its own stage.
-- Wrestlers: smoother capsule-limb rig with an oiled sheen.
-- UI: broadcast score bug, lower thirds, navy and gold panels for every screen, phone HUD in one row.
+**Visual updates (rules, controls, bot, and saves are untouched):**
+- **Scene:** Mown grass stripes and sand track, tiered stands with hoardings, flags, light towers, skyline, and an instanced animated crowd with camera flashes. A davul-zurna band plays on its own stage.
+- **Wrestlers:** Smoother capsule-limb rig with an oiled sheen.
+- **UI:** Broadcast score bug, lower thirds, navy and gold panels for every screen, phone HUD in one row.
 
-**Measured** on an Intel UHD 620 (headless Chrome, 1280x720): draw calls 52 -> 65, page rAF about 58-60 fps in gameplay (before: 52-60). Phone 500x900: 64 calls, 61 fps. `?auto&mode=quick` finishes with 0 JS errors, with assets and with `?noassets`; `?lang=en` shows 0 errors.
+**Measured on an Intel UHD 620 (headless Chrome, 1280x720):**
+- Draw calls: 52 &rarr; 65
+- Page rAF: ~58–60 fps in gameplay (before: 52–60 fps)
+- Phone (500x900): 64 calls, 61 fps
+- `?auto&mode=quick` finishes with 0 JS errors, with assets and with `?noassets`; `?lang=en` shows 0 errors.
 
 ![Before and after](docs/redesign-before-after.png)
 
@@ -147,74 +124,45 @@ language.
 
 Serve the folder over HTTP (ES modules do not load from `file://`):
 
-```
+```bash
 python -m http.server 8000
 ```
 
-then open <http://localhost:8000/>.
+Then open <http://localhost:8000/>.
 
-## How it was made
+## Made with Claude Code
 
-Built by **Claude Sonnet 5.5** with Claude Code from one prompt: [prompts/kirkpinar.md](prompts/kirkpinar.md). No
-third-party assets are used; Three.js is loaded from jsDelivr under its MIT licence.
+Built by **Claude Sonnet 5.5** with Claude Code from one prompt: [prompts/kirkpinar.md](prompts/kirkpinar.md). No third-party assets are used; Three.js is loaded from jsDelivr under its MIT licence.
 
 ### v2 update
 
-Upgraded by Claude Sonnet 5.5 with Claude Code from [prompts/kirkpinar-v2.md](prompts/kirkpinar-v2.md): one-click Play,
-a first-bout coach, a mute button on every screen, bout length that grows with the class, the three-year golden belt,
-visible oil (gloss, droplets, stains, grip-bar tick) and cazgır facts. Counts are unchanged (5 classes, the same rival
-lists, a 26-bout career). The facts come from the UNESCO listing and Wikipedia (sources are in the code comments).
+Upgraded by Claude Sonnet 5.5 with Claude Code from [prompts/kirkpinar-v2.md](prompts/kirkpinar-v2.md): one-click Play, a first-bout coach, a mute button on every screen, bout length that grows with the class, the three-year golden belt, visible oil (gloss, droplets, stains, grip-bar tick), and cazgır facts. Counts are unchanged (5 classes, the same rival lists, a 26-bout career). Sourced from the UNESCO Representative List (2010) and Wikipedia (sources documented in code comments).
+
+- **One click to the first grip:** Play jumps straight to the current career bout: a 2.5 s versus card (any click skips it), then the bout starts. A four-step coach strip in the very first bout ticks on real input and the rival plays about 25% weaker until it is done (or skipped).
+- **Fair AI tested by bot:** The AI presses the same buttons through the same simulation as a player. The `?auto` bot played a whole career: measured **23 bouts, 18 wins, golden belt** (v2, fast=30; zero JS errors with and without assets), 60 fps, 52 draw calls.
+- **UNESCO Cazgır facts:** The cazgır recites a true historical fact before the first bout of each class, and result and loading cards display a "Did you know?" line (six sourced facts, TR / EN).
 
 <details>
 <summary><b>Technical notes</b></summary>
 
-- **Simulation** (`SIMLIB`, pure JavaScript, no DOM): each wrestler is a rigid-segment body with a centre-of-mass lean
-  vector over his feet. Leaning past his balance limit makes him step (if he can) or fall; the direction decides back,
-  side or front. Grips have a strength that decays with hold time, oil and sweat, effort and stamina, and slip when
-  overloaded. Pull, push, trip, lift, carry and the finishing moves all act on the lean vectors and grips. Ground work
-  (künde) is a small tug-of-war meter.
-- **Pose solver:** joints are computed in code every frame (spine bend, tilt about the feet, two-bone IK for arms to
-  the grip points on the rival and for legs to planted, stepping feet), then low-poly capsule meshes are oriented
-  between the joints. Falls, throws, kneeling, pinning and carrying are the same solver with different parameters.
-- **Replay:** the last two seconds of joint arrays are recorded and played back in slow motion from an orbiting camera
-  after a decisive finish.
-- **Oil rendering (v2):** each wrestler's skin material runs roughness 0.58 to 0.14 (and a stronger reflection) from his
-  oil value; the stains are one transparent decal plane whose small canvas is stamped under the wrestlers a few times a
-  second, so it costs one extra draw call.
-- **Audio:** Web Audio only: a hicaz-flavoured zurna phrase over a 9/8 davul pattern with a drone, crowd murmur,
-  cheers, slaps, thuds and whistles.
-- **Rendering:** MeshLambert / MeshStandard, one directional light with a 1024 shadow map that follows the pair, merged
-  static scenery, instanced spectators, a soft-sprite particle system for oil and dust. No post-processing.
+- **Simulation (`SIMLIB`, pure JavaScript, no DOM):** Each wrestler is a rigid-segment body with a centre-of-mass lean vector over his feet. Leaning past his balance limit makes him step (if he can) or fall; the direction decides back, side or front. Grips have a strength that decays with hold time, oil and sweat, effort and stamina, and slip when overloaded. Pull, push, trip, lift, carry and the finishing moves all act on the lean vectors and grips. Ground work (künde) is a small tug-of-war meter.
+- **Pose solver:** Joints are computed in code every frame (spine bend, tilt about the feet, two-bone IK for arms to the grip points on the rival and for legs to planted, stepping feet), then low-poly capsule meshes are oriented between the joints. Falls, throws, kneeling, pinning and carrying are the same solver with different parameters.
+- **Replay:** The last two seconds of joint arrays are recorded and played back in slow motion from an orbiting camera after a decisive finish.
+- **Oil rendering:** Each wrestler's skin material runs roughness 0.58 to 0.14 (and a stronger reflection) from his oil value; the stains are one transparent decal plane whose small canvas is stamped under the wrestlers a few times a second, costing only one extra draw call.
+- **Audio (Web Audio only):** A hicaz-flavoured zurna phrase over a 9/8 davul pattern with a drone, crowd murmur, cheers, slaps, thuds and whistles.
+- **Rendering:** MeshLambert / MeshStandard, one directional light with a 1024 shadow map that follows the pair, merged static scenery, instanced spectators, and a soft-sprite particle system for oil and dust. No post-processing.
 
 </details>
 
-Kırkpınar is part of the **Claude Game Arena** series, where each game is built by a Claude model from one prompt. The
-other games: [Hisar](https://furkiozknn.github.io/kale-savunmasi/) ·
-[Çay Ocağı](https://furkiozknn.github.io/cay-ocagi/) · [Çini Ustası](https://furkiozknn.github.io/cini-ustasi/) ·
-[Martı](https://furkiozknn.github.io/marti/) · [Kervan](https://furkiozknn.github.io/kervan/) ·
-[Dolmuş](https://furkiozknn.github.io/dolmus/) · [Peri Golf](https://furkiozknn.github.io/peri-golf/) ·
-[Mehter](https://furkiozknn.github.io/mehter/) · [Boğaz Vapuru](https://furkiozknn.github.io/bogaz-vapuru/) ·
-[Simit Fırını](https://furkiozknn.github.io/simit-firini/) · [Karagöz](https://furkiozknn.github.io/karagoz/) ·
-[Lale Bahçesi](https://furkiozknn.github.io/lale-bahcesi/)
+### Claude Game Arena
 
-**Round 5:** [Kapadokya Balonu](https://furkiozknn.github.io/kapadokya-balonu/) ·
-[Ebru](https://furkiozknn.github.io/ebru/) · [Çarşı Kaçışı](https://furkiozknn.github.io/carsi-kacisi/)
+Kırkpınar is part of the **Claude Game Arena** series, where each game is built by a Claude model from one prompt.
 
-**Round 6:** [Topkapı Gecesi](https://furkiozknn.github.io/topkapi-gecesi/) ·
-[Hamsi](https://furkiozknn.github.io/hamsi/) · [Pamukkale](https://furkiozknn.github.io/pamukkale/) ·
-[Mimar Sinan](https://furkiozknn.github.io/mimar-sinan/)
+[Hisar](https://furkiozknn.github.io/kale-savunmasi/) · [Çay Ocağı](https://furkiozknn.github.io/cay-ocagi/) · [Çini Ustası](https://furkiozknn.github.io/cini-ustasi/) · [Martı](https://furkiozknn.github.io/marti/) · [Kervan](https://furkiozknn.github.io/kervan/) · [Dolmuş](https://furkiozknn.github.io/dolmus/) · [Peri Golf](https://furkiozknn.github.io/peri-golf/) · [Mehter](https://furkiozknn.github.io/mehter/) · [Boğaz Vapuru](https://furkiozknn.github.io/bogaz-vapuru/) · [Simit Fırını](https://furkiozknn.github.io/simit-firini/) · [Karagöz](https://furkiozknn.github.io/karagoz/) · [Lale Bahçesi](https://furkiozknn.github.io/lale-bahcesi/)
 
-## Türkçe
+**Round 5:** [Kapadokya Balonu](https://furkiozknn.github.io/kapadokya-balonu/) · [Ebru](https://furkiozknn.github.io/ebru/) · [Çarşı Kaçışı](https://furkiozknn.github.io/carsi-kacisi/)
 
-**Kırkpınar**, Edirne'deki Kırkpınar geleneğinden esinlenen 3D fizikli yağlı güreş oyunu. Kıspetli, yağlı iki
-pehlivan er meydanında tutar, çeker, iter ve atar; yağ yüzünden her tutuş yavaşça kayar. Paça kazık, çaprast ve
-künde gibi klasik oyunlarla rakibin sırtını yere getir. Deste'den Başpehlivan'a beş sınıflı kariyer ve altın kemer,
-hızlı maç ve aynı klavyede 2 oyuncu. Kurulum yok; masaüstünde ve telefonda tarayıcıda oynanır. Claude Sonnet 5.5
-tarafından Claude Code ile tek bir prompt'tan yapıldı. v2: tek tıkla ilk tutuşa geçiş, ilk maçta öğretici şerit,
-her ekranda ses düğmesi, sınıfla uzayan maç süresi, üç yıl üst üste kazanınca kalıcı altın kemer, gözle görülen yağ ve
-cazgırın anlattığı gerçek bilgiler.
-
-**Oyna:** https://furkiozknn.github.io/kirkpinar/
+**Round 6:** [Topkapı Gecesi](https://furkiozknn.github.io/topkapi-gecesi/) · [Hamsi](https://furkiozknn.github.io/hamsi/) · [Pamukkale](https://furkiozknn.github.io/pamukkale/) · [Mimar Sinan](https://furkiozknn.github.io/mimar-sinan/)
 
 ## License
 
