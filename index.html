@@ -3519,6 +3519,7 @@ function updateParticles(dt) {
 // ============================================================ i18n
 const TX = {
   tr: {
+    continueCareer: 'Kariyer Devam',
     tagline: 'Yağlı güreşin ruhu', how: 'Yağlı kıspetten tut, dengeyi boz, hamle yandığında vur. Sırtı yere gelen kaybeder.',
     play: 'Oyna', cont: 'Kariyer merdiveni', settings: 'Ayarlar', howto: 'Nasıl oynanır', back: 'Geri', lang: 'English', loading: 'Yükleniyor…', ready: 'Hazır',
     best: 'En iyi', bestFast: 'en hızlı galibiyet', bestTitles: 'başpehlivanlık', bestWins: 'galibiyet',
@@ -3560,6 +3561,7 @@ const TX = {
     oilLim: 'yağ sınırı', beltYear: 'Yıl {n} / 3', beltKept: 'Kemer kalıcı olarak senin', beltHall: 'Kemer salonu', abandonWarn: 'Devam eden kariyeri bırakmak kemer serisini sıfırlar.'
   },
   en: {
+    continueCareer: 'Continue Career',
     tagline: 'The spirit of oil wrestling', how: 'Grab the oiled kıspet, break your rival\'s balance, strike when the move lights up. A back on the grass loses.',
     play: 'Play', cont: 'Career ladder', settings: 'Settings', howto: 'How to play', back: 'Back', lang: 'Türkçe', loading: 'Loading…', ready: 'Ready',
     best: 'Best', bestFast: 'fastest win', bestTitles: 'titles', bestWins: 'wins',
@@ -3789,6 +3791,7 @@ function buildScreens() {
   mkScreen('title', 'grad', `<div class="title-wrap">${CREST}<h1>Kırkpınar</h1><div class="tag">${t('tagline')}</div><p class="how">${t('how')}</p>
     <div class="menu" id="mTitle"><div id="loadBox" style="width:100%"><div style="text-align:center;color:var(--ink2);font-size:14px" id="loadTxt">${t('loading')}</div><div class="loadbar"><i id="loadI"></i></div></div>
     ${menuBtn('play', store.run && store.run.wins > 0 ? t('contRun') : t('play'), 'primary', 'id="bPlay" hidden')}${store.run ? menuBtn('continue', t('cont'), 'gold', 'id="bCont" hidden') : ''}
+    ${menuBtn('continueCareer', store.run ? t('continueCareer') : t('continueCareer'), 'gold', 'id="bContinueCareer" ' + (store.run ? '' : 'hidden'))}
     <div class="row">${menuBtn('howto', t('howto'))}${menuBtn('settings', t('settings'))}</div>
     <div class="row">${menuBtn('mode', t('more'), '', 'id="bMore"')}${menuBtn('lang', t('lang'))}</div></div><div class="dykline" id="loadDyk">${dykHtml(dykN % FACTS.length)}</div><div class="best">${bestTxt}</div></div>
     <div class="foot">Claude Game Arena · built by <a href="https://github.com/Furkiozknn" target="_blank" rel="noopener">Claude Sonnet 5.5</a></div>`);
@@ -4093,10 +4096,11 @@ function playCareer() {
 }
 function newCareer() {
   if (store.run && store.run.wins > 0 && !store.belt.kept) store.belt.streak = 0; // abandoning a run resets the belt streak
-  store.run = { ci: 0, oi: 0, wins: 0 }; saveStore(); G.mode = 'career'; openLadder();
+  store.run = { ci: 0, oi: 0, wins: 0, class: 'deste', boutIndex: 0, winsCount: 0, lossesCount: 0 }; saveStore(); G.mode = 'career'; openLadder();
 }
 function careerMatch() {
   const { you, opp, level } = careerSpecs(); const run = store.run; G.vsAuto = 0;
+  run.class = CLASSES[run.ci].id; run.boutIndex = run.oi; run.winsCount = run.wins; run.lossesCount = run.lossesCount || 0; saveStore();
   const coach = coachWanted(); // bout 1 of the first career: the rival plays ~25 % weaker until the tips are done
   const cfg = { specs: [you, opp], humans: [!AUTO, false], levels: [AUTO ? 0.92 : 0.7, coach ? level * 0.75 : level], mode: 'career', limit: CLASS_LIMIT[run.ci], coach, factIdx: run.oi === 0 ? CLASS_FACT[run.ci] : -1, clsName: t(CLASSES[run.ci].id), roundName: t('round') + ' ' + (run.oi + 1) + '/' + LADDER[run.ci].length, title: t(CLASSES[run.ci].id) + ' · ' + t('round') + ' ' + (run.oi + 1), sub: opp.name + ' — ' + t(opp.style + 'D') };
   G.pendingVersus = cfg; renderVersus(cfg); showScreen('versus'); setHUD(false);
@@ -4126,6 +4130,7 @@ function onAct(act, el) {
   switch (act) {
     case 'play': playCareer(); break;
     case 'continue': if (store.run) { G.mode = 'career'; openLadder(); } break;
+    case 'continueCareer': if (store.run) { G.mode = 'career'; careerMatch(); } break;
     case 'howto': G.settingsFrom = G.screen; SCREENS.howto.hidden = false; $('#s-howto .btn').focus(); break;
     case 'howback': SCREENS.howto.hidden = true; break;
     case 'settings': G.settingsFrom = G.screen === 'pause' ? 'pause' : G.screen; SCREENS.settings.hidden = false; SCREENS.settings.querySelector('input').focus(); break;
@@ -4275,9 +4280,12 @@ function showResult() {
   if (!G.versus && youWin) {
     store.best.wins++; if (!store.best.fastest || M.total < store.best.fastest) { store.best.fastest = Math.round(M.total); newRec = true; }
     if (cfg.mode === 'career' && store.run) {
-      const run = store.run; if (cfg.coach) store.coachDone = true; run.oi++; run.wins++;
+      const run = store.run; if (cfg.coach) store.coachDone = true; run.oi++; run.wins++; run.winsCount = run.wins;
       if (run.oi >= LADDER[run.ci].length) { run.ci++; run.oi = 0; if (run.ci < 5) promoted = t('promoted') + t(CLASSES[run.ci].id); else endGame = true; }
+      run.class = CLASSES[run.ci].id; run.boutIndex = run.oi; saveStore();
     }
+  } else if (!G.versus && !youWin && cfg.mode === 'career' && store.run) {
+    const run = store.run; run.lossesCount = (run.lossesCount || 0) + 1; saveStore();
   }
   if (G.coach) { G.coach.on = false; renderCoach(); }
   if (endGame) { // a finished career is one year of the belt; the third year in a row keeps it for good
