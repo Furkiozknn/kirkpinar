@@ -3213,7 +3213,7 @@ function buildScreens() {
     ${menuBtn('play', store.run && store.run.wins > 0 ? t('contRun') : t('play'), 'primary', 'id="bPlay" hidden')}${store.run ? menuBtn('continue', t('cont'), 'gold', 'id="bCont" hidden') : ''}
     <div class="row">${menuBtn('howto', t('howto'))}${menuBtn('settings', t('settings'))}</div>
     <div class="row">${menuBtn('mode', t('more'), '', 'id="bMore"')}${menuBtn('lang', t('lang'))}</div></div><div class="dykline" id="loadDyk">${dykHtml(dykN % FACTS.length)}</div><div class="best">${bestTxt}</div></div>
-    <div class="foot">Claude Game Arena · built by <a href="https://furkiozknn.github.io/" target="_blank" rel="noopener">Claude Sonnet 5.5</a></div>`);
+    <div class="foot">Claude Game Arena · built by <a href="https://github.com/Furkiozknn" target="_blank" rel="noopener">Claude Sonnet 5.5</a></div>`);
   mkScreen('mode', 'grad', `<div class="panel glass"><h2>${t('modeTitle')}</h2><p class="sub">${t('modeSub')}</p><div class="cards" style="grid-template-columns:1fr">
     <button class="card" data-act="career"><b>${t('career')}</b><small>${t('careerD')}</small></button>
     <button class="card" data-act="quickcfg"><b>${t('quick')}</b><small>${t('quickD')}</small></button>
