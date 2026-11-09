@@ -567,6 +567,63 @@ svg { display: block; }
 }
 #prompt.p2 kbd { opacity: 0.9; }
 
+/* Grip balance (Tutuş Dengesi): two pressure bands, the gold zone between them, the grip marker */
+.tutp {
+  position: fixed;
+  left: calc(14px + var(--sa-l));
+  bottom: calc(160px + var(--sa-b));
+  z-index: 22;
+  width: min(30vw, 280px);
+  padding: 8px 12px 9px;
+  background: linear-gradient(180deg, rgba(46, 32, 16, 0.96), rgba(28, 19, 9, 0.96));
+  border: 1.5px solid var(--gold);
+  border-radius: 4px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+  color: var(--bone);
+  font-family: var(--font-sans);
+}
+.tutp.v1 { left: auto; right: calc(14px + var(--sa-r)); }
+@media (max-width: 760px) { /* the bars sit at the top here; the panel goes above the touch controls */
+  .tutp, .tutp.v1 { left: 50%; right: auto; transform: translateX(-50%); bottom: calc(135px + var(--sa-b)); width: min(92vw, 340px); }
+}
+.tutp .th { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 6px; }
+.tutp .th b { font-family: var(--font-serif); color: var(--gold-light); font-size: 17px; letter-spacing: 0.04em; white-space: nowrap; }
+.tutp .th span { font-size: 12.5px; color: var(--ink2); text-align: right; }
+.tutp .band { position: relative; height: 34px; border-radius: 3px; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--line); overflow: hidden; }
+.tutp .z {
+  position: absolute;
+  top: 0; bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 6px;
+  font-weight: 800;
+  font-size: 13px;
+  color: var(--ink2);
+  background: rgba(176, 73, 47, 0.18);
+  transition: background 0.12s, color 0.12s;
+}
+.tutp .z.l { left: 0; justify-content: flex-start; }
+.tutp .z.r { right: 0; justify-content: flex-end; }
+.tutp .z .kbd { min-width: 24px; padding: 1px 6px; font-size: 12px; }
+.tutp .safe { position: absolute; top: 0; bottom: 0; background: linear-gradient(180deg, rgba(233, 180, 76, 0.35), rgba(200, 155, 60, 0.18)); border-left: 1px solid var(--gold); border-right: 1px solid var(--gold); }
+.tutp .z.tl { background: rgba(245, 215, 138, 0.38); color: #fff; }
+.tutp .z.fk { animation: tutFk 0.16s steps(2) infinite; background: rgba(245, 215, 138, 0.5); color: #fff; }
+.tutp .z.rd { box-shadow: inset 0 0 0 2px #d8f0b0; color: #d8f0b0; }
+.tutp .mk { position: absolute; top: 3px; bottom: 3px; width: 6px; margin-left: -3px; border-radius: 3px; background: var(--bone); box-shadow: 0 0 8px rgba(255, 240, 200, 0.9); }
+.tutp .band.out .mk { background: var(--red); box-shadow: 0 0 10px var(--red); }
+.tutp .tbar { height: 3px; margin-top: 5px; background: rgba(255, 255, 255, 0.08); }
+.tutp .tbar i { display: block; height: 100%; background: var(--gold); }
+.tutp .hist { margin-top: 5px; font-size: 12px; color: var(--ink2); display: flex; gap: 6px; align-items: center; min-height: 16px; }
+.tutp .hist span { letter-spacing: 3px; color: var(--gold-light); font-weight: 800; }
+@keyframes tutFk { 50% { background: rgba(176, 73, 47, 0.35); } }
+@media (prefers-reduced-motion: reduce) {
+  /* a feint is shown with stripes instead of a flicker */
+  .tutp .z.fk { animation: none; background: repeating-linear-gradient(135deg, rgba(245, 215, 138, 0.55) 0 6px, rgba(176, 73, 47, 0.4) 6px 12px); }
+  .tutp .z { transition: none; }
+}
+
 /* Move Notifications & Toasts (Clean placement, no blocking wrestlers) */
 #toasts {
   position: fixed;
@@ -1307,6 +1364,8 @@ svg { display: block; }
   <div class="bubble" id="bb0"><i></i><span class="gt"></span></div>
   <div class="bubble" id="bb1"><i></i><span class="gt"></span></div>
   <div id="prompt"><kbd id="pKey">R</kbd><span id="pTxt"></span></div>
+  <div class="tutp" id="tut0" hidden><div class="th"><b></b><span></span></div><div class="band"><span class="z l"><kbd class="kbd"></kbd><em></em></span><span class="safe"></span><span class="z r"><em></em><kbd class="kbd"></kbd></span><i class="mk"></i></div><div class="tbar"><i></i></div><div class="hist"><small></small><span></span></div></div>
+  <div class="tutp" id="tut1" hidden><div class="th"><b></b><span></span></div><div class="band"><span class="z l"><kbd class="kbd"></kbd><em></em></span><span class="safe"></span><span class="z r"><em></em><kbd class="kbd"></kbd></span><i class="mk"></i></div><div class="tbar"><i></i></div><div class="hist"><small></small><span></span></div></div>
   <div id="toasts" aria-live="polite"></div>
   <div id="subs"></div>
   <div id="banner"></div>
@@ -1354,6 +1413,12 @@ const GR = {
   oil: { arm: 1.0, waist: 0.8, kispet: 0.5 },
   pow: { arm: 0.7, waist: 1.0, kispet: 0.85 }
 };
+// "Tutuş Dengesi" (grip balance): once both wrestlers hold each other for a moment, the bout turns into a few
+// beats of reading. Each beat one side loads up (pull = -1, push = +1); the first key press is the tell the
+// other side sees, a second, different press is a feint. The reader commits one read: right = counter, wrong = slip.
+// Both keep a grip-balance marker inside a gold zone that narrows with oil; outside it too long = slip.
+const TUT = { lock: 0.7, cd: 6, beats: 4, tell: 0.95, gap: 0.5, out: 0.5, shove: 0.7, fix: 1.7 };
+const TUT_PAT = { strong: [1, 1, -1], fast: [-1, 1], defensive: [-1, -1, 1], tricky: [1, -1, -1, 1], balanced: [1, -1, -1] };
 const STYLES = {
   balanced: { str: 1, spd: 1, sta: 1, grip: 1, def: 1, tech: 1 },
   strong: { str: 1.22, spd: 0.88, sta: 1.0, grip: 1.15, def: 0.92, tech: 0.82 },
@@ -1398,7 +1463,8 @@ function mkF(id, spec) {
     act: null, hint: null, bal: 1, n: 0, brace: false, struggle: 0,
     carryDist: 0, carrySteps: 0, liftU: 0, fall: null, down: null, roll: 0,
     score: 0, prev: { pull: 0, push: 0 }, e: { pull: 0, push: 0, grab: 0, ctx: 0, rel: 0, any: 0 },
-    tiltA: 0, tiltDir: { x: 0, z: 0 }, air: 0, kneel: 0, whiff: 0, whiffSide: 0, ctrlT: 0, gripT: 0, throws: 0
+    tiltA: 0, tiltDir: { x: 0, z: 0 }, air: 0, kneel: 0, whiff: 0, whiffSide: 0, ctrlT: 0, gripT: 0, throws: 0,
+    tutG: 0, tutV: 0, tutOut: 0, tutHist: [], reads: 0
   };
 }
 const gripCount = f => (f.h[0].t ? 1 : 0) + (f.h[1].t ? 1 : 0);
@@ -1418,7 +1484,8 @@ class Match {
     this.limit = opts.limit || 90; this.goldenLimit = opts.golden || 45;
     this.clock = 0; this.total = 0; this.phase = 'ready'; this.golden = false; this.readyT = 0;
     this.events = []; this.result = null; this.rng = mulberry(opts.seed || 1234); this.ground = null; this.endT = 0;
-    this.stats = { throws: 0 };
+    this.stats = { throws: 0, tut: 0, counters: 0, tutSlips: 0 };
+    this.tut = null; this.tutLock = 0; this.tutCd = 3; this.tutN = 0;
   }
   emit(t, w, x) { this.events.push(Object.assign({ t, w }, x || {})); }
   start() { if (this.phase === 'ready') { this.phase = 'play'; this.f[0].stun = this.f[1].stun = 0; } }
@@ -1430,6 +1497,7 @@ class Match {
   }
   winner(w, how) {
     if (this.result) return;
+    this.tut = null;
     this.result = { winner: w, how, time: this.total, scores: [this.f[0].score, this.f[1].score], golden: this.golden };
     this.phase = 'ending'; this.endT = 0;
     this.emit('end', w, { how });
@@ -1457,8 +1525,10 @@ class Match {
     if (this.phase === 'play' || this.phase === 'ending') this.total += dt;
     if (this.phase === 'play') this.clock += dt;
     this.faceUpdate(f0, f1); this.faceUpdate(f1, f0);
+    if (this.phase === 'play') this.tutCheck(dt);
     f0.hint = this.ctxAvail(f0, f1); f1.hint = this.ctxAvail(f1, f0);
     for (let i = 0; i < 2; i++) this.upd(this.f[i], this.f[1 - i], this.phase === 'play' ? (inp[i] || NOINP) : NOINP, dt);
+    if (this.tut) this.tutStep(dt);
     if (this.ground) this.gStep(dt);
     this.constrain(dt);
     for (const f of this.f) { f.prev.pull = (inp[f.id] && inp[f.id].pull) ? 1 : 0; f.prev.push = (inp[f.id] && inp[f.id].push) ? 1 : 0; this.visual(f, dt); }
@@ -1473,6 +1543,7 @@ class Match {
     const f0 = this.f[0], f1 = this.f[1];
     if (!this.golden) {
       if (f0.score !== f1.score) { this.winner(f0.score > f1.score ? 0 : 1, 'points'); return; }
+      if (this.tut) this.endTut('time');
       this.golden = true; this.clock = 0; this.phase = 'goldenReady'; this.readyT = 2.4;
       for (const f of this.f) {
         this.releaseAll(f); f.state = 'stand'; f.act = null; f.ground = null; this.ground = null; f.fall = null; f.down = null;
@@ -1524,7 +1595,7 @@ class Match {
     f.stun = Math.max(0, f.stun - dt); f.stepCd -= dt; f.footLock -= dt; f.tripCd -= dt; f.stT += dt; f.struggle = Math.max(0, f.struggle - dt * 4);
     for (const h of f.h) h.cd -= dt;
     switch (f.state) {
-      case 'stand': this.uStand(f, o, ia, dt); break;
+      case 'stand': if (this.tut) this.uTutStand(f, o, ia, dt); else this.uStand(f, o, ia, dt); break;
       case 'carry': this.uCarry(f, o, ia, dt); break;
       case 'lifted': this.uLifted(f, o, ia, dt); break;
       case 'fall': this.uFall(f, o, dt); break;
@@ -1734,7 +1805,7 @@ class Match {
   }
   // ---- context moves ----
   ctxAvail(f, o) {
-    if (this.phase !== 'play' || f.act || f.stun > 0) return null;
+    if (this.phase !== 'play' || f.act || f.stun > 0 || this.tut) return null;
     if (f.state === 'carry') return (o.liftU > 0.9 && f.bal > 0.2) ? 'slam' : null;
     if (f.state !== 'stand') return null;
     if (o.state === 'down' && o.down && o.down.kind !== 'back' && o.down.t < o.down.dur - 0.35 && f.d < 1.6 && f.sta > 0.1 && !this.ground) return 'kunde';
@@ -1894,6 +1965,115 @@ class Match {
       this.emit('escape', d.id);
     }
   }
+  // ---- grip balance (tutuş dengesi) ----
+  tutW(f) { // half-width of the gold zone: oil narrows it, a kıspet hold widens it (the least oil-sensitive grip)
+    const slick = (this.f[0].oil + this.f[1].oil) * 0.5;
+    return clamp(0.6 - 0.32 * slick + (hasT(f, 'kispet') ? 0.08 : 0), 0.25, 0.7);
+  }
+  tutOk() {
+    const a = this.f[0], b = this.f[1];
+    return this.phase === 'play' && !this.ground && a.state === 'stand' && b.state === 'stand' && gripCount(a) > 0 && gripCount(b) > 0;
+  }
+  tutCheck(dt) {
+    if (this.tut) return;
+    this.tutCd -= dt;
+    const a = this.f[0], b = this.f[1];
+    if (this.tutCd <= 0 && this.tutOk() && !a.act && !b.act && a.stun <= 0 && b.stun <= 0) this.tutLock += dt; else this.tutLock = 0;
+    if (this.tutLock >= TUT.lock) this.startTut();
+  }
+  startTut() {
+    const a = this.f[0], b = this.f[1];
+    this.tutLock = 0; this.stats.tut++;
+    for (const f of this.f) { f.tutG = 0; f.tutV = 0; f.tutOut = 0; f.v.x = 0; f.pushHold = 0; f.liftCharge = 0; }
+    // the side with the stronger hold loads up first, then they take turns
+    this.tut = { att: 0, beat: 0, n: 0, ph: 'tell', t: 0, tellT: TUT.tell, tell: 0, act: 0, shown: 0, flipped: false, read: 0, readT: 0, last: null };
+    this.tutBeat(this.gripPower(a) >= this.gripPower(b) ? 0 : 1);
+    this.emit('tutStart', -1, { att: this.tut.att });
+  }
+  tutBeat(att) {
+    const T = this.tut;
+    T.att = att; T.ph = 'tell'; T.t = 0; T.tell = 0; T.act = 0; T.shown = 0; T.flipped = false; T.read = 0; T.readT = 0; T.n = ++this.tutN;
+  }
+  endTut(res) {
+    this.tut = null; this.tutCd = TUT.cd; this.tutLock = 0;
+    for (const f of this.f) { f.tutG = 0; f.tutV = 0; f.tutOut = 0; }
+    this.emit('tutEnd', -1, { res });
+  }
+  // stand update while the phase runs: no walking, the holds are frozen, the marker is the fight
+  uTutStand(f, o, ia, dt) {
+    f.crouch += ((ia.down ? 1 : 0) - f.crouch) * Math.min(1, dt * 7);
+    f.v.x = 0; f.p.z += -f.p.z * Math.min(1, dt * 1.4);
+    const slick = (f.oil + o.oil) * 0.5;
+    // oil makes the hold wander; the wrestler steers it back with left / right
+    f.tutV = clamp(f.tutV + (this.rng() - 0.5) * 4 * slick * dt, -0.5 * slick, 0.5 * slick);
+    f.tutG = clamp(f.tutG + (f.tutV + ia.mx * TUT.fix * (0.7 + 0.3 * f.sta) - 0.3 * f.tutG) * dt, -1.1, 1.1);
+    f.sta -= dt * 0.012;
+    this.phys(f, o, dt);
+  }
+  tutStep(dt) {
+    const T = this.tut;
+    if (!this.tutOk()) { this.endTut('broken'); return; }
+    const A = this.f[T.att], Rd = this.f[1 - T.att];
+    // out of the gold zone for too long: the hand slips
+    for (const f of this.f) {
+      if (Math.abs(f.tutG) > this.tutW(f)) f.tutOut += dt; else f.tutOut = Math.max(0, f.tutOut - dt * 2);
+      if (f.tutOut > TUT.out) { this.tutSlip(f, Math.sign(f.tutG) || 1, 'band'); this.endTut('band'); return; }
+    }
+    T.t += dt;
+    if (T.ph === 'tell') {
+      // attacker: the first press is the tell, a second, different press is a feint (once per beat)
+      const ad = A.e.pull ? -1 : A.e.push ? 1 : 0;
+      if (ad) {
+        if (!T.tell) { T.tell = T.act = T.shown = ad; this.tutLean(A, ad); this.emit('tutTell', A.id, { dir: ad }); }
+        else if (!T.flipped && ad !== T.act) { T.act = T.shown = ad; T.flipped = true; this.tutLean(A, ad); this.emit('tutFlip', A.id, { dir: ad }); }
+      }
+      // reader: one read per beat, locked in
+      const rd = Rd.e.pull ? -1 : Rd.e.push ? 1 : 0;
+      if (rd && !T.read) { T.read = rd; T.readT = T.t; this.emit('tutRead', Rd.id, { dir: rd }); }
+      if (T.t >= T.tellT) this.tutResolve(A, Rd);
+    } else if (T.ph === 'gap') {
+      if (T.last && T.last.free) Rd.tutG += T.last.dir * 0.5 * dt; // an unread shove keeps pressing for a moment
+      if (T.t >= TUT.gap) { if (++T.beat >= TUT.beats) this.endTut('even'); else this.tutBeat(1 - T.att); }
+    }
+  }
+  tutLean(f, dir) { f.lean.x += f.F.x * dir * 0.05; f.lean.z += f.F.z * dir * 0.05; } // the body tell: a small lean
+  tutResolve(A, Rd) {
+    const T = this.tut;
+    const weak = !T.act; if (weak) T.act = this.rng() < 0.5 ? -1 : 1; // no commitment: a half-hearted random shove
+    const dir = T.act;
+    A.tutHist.push(dir); if (A.tutHist.length > 6) A.tutHist.shift();
+    T.last = { dir, att: A.id, read: T.read, feint: T.flipped, free: false, weak };
+    if (T.read === dir) {
+      // counter: the attacker's own load carries him (push: forward, pull: backward) and his hands tire
+      const early = clamp(1 - T.readT / T.tellT, 0, 1);
+      const k = (T.flipped ? 1.35 : 1) * (1 + 0.4 * early) * (weak ? 0.7 : 1) * (0.85 + 0.15 * Rd.s.tech);
+      const imp = 0.3 * k / Math.sqrt(A.s.mass);
+      A.lean.x += A.F.x * dir * imp; A.lean.z += A.F.z * dir * imp;
+      A.stun = Math.max(A.stun, 0.5); for (const h of A.h) if (h.t) h.fat = Math.min(0.9, h.fat + 0.18);
+      Rd.sta = Math.min(1, Rd.sta + 0.04); Rd.reads++; this.stats.counters++;
+      this.emit('tutCounter', Rd.id, { dir, feint: T.flipped, early, att: A.id });
+      this.endTut('counter');
+    } else if (T.read) {
+      this.emit('tutWrong', Rd.id, { dir, feinted: T.flipped && T.read === T.tell, att: A.id });
+      this.tutSlip(Rd, dir, 'tutus');
+      this.endTut('slip');
+    } else {
+      // nobody read it: the marker takes the shove and has to be steered back
+      const mag = TUT.shove * (weak ? 0.6 : 1) * (0.8 + 0.2 * A.sta) * Math.sqrt(A.s.str / Rd.s.mass);
+      Rd.tutG += dir * mag; T.last.free = true;
+      this.emit('tutShove', A.id, { dir });
+      T.ph = 'gap'; T.t = 0;
+    }
+  }
+  tutSlip(f, dir, why) {
+    // the weaker hand lets go and the body is thrown off in the shove's direction (push: away, pull: in)
+    let h = null; for (const x of f.h) if (x.t && (!h || x.capF < h.capF)) h = x;
+    if (h) { h.t = null; h.cd = 0.5; }
+    const o = this.f[1 - f.id];
+    f.stun = Math.max(f.stun, 0.5); f.lean.x += o.F.x * dir * 0.2; f.lean.z += o.F.z * dir * 0.2;
+    this.stats.tutSlips++;
+    this.emit('slip', f.id, { why });
+  }
 }
 
 // ---- AI: produces the same input record a player does ----
@@ -1922,6 +2102,7 @@ class Brain {
       }
     }
     this.carryDir = 0;
+    if (M.tut) return this.tutTick(M, f, o, dt);
     // fast reactions
     if (o.act && (o.act.type === 'paca' || o.act.type === 'caprast') && this.reactT <= 0 && f.stun <= 0) {
       this.reactT = 1.0;
@@ -2001,8 +2182,42 @@ class Brain {
     if (st === 'tricky' && R() < 0.06) { I.release = 1; this.waitT = 0.7; }
     return I;
   }
+  // grip balance: steer the marker, load up by the style's pattern (sometimes a feint), read the rival
+  tutTick(M, f, o, dt) {
+    const I = this.I, R = this.R, lv = this.lv, T = M.tut;
+    I.pull = I.push = I.up = I.down = 0; this.mode = 'rest'; this.timer = 0;
+    const g = f.tutG, W = M.tutW(f);
+    I.mx = Math.abs(g) > W * lerp(0.8, 0.45, lv) ? -Math.sign(g) : 0;
+    const press = d => { if (d < 0) I.pull = 1; else I.push = 1; };
+    if (T.ph !== 'tell') return I;
+    if (this.tutN !== T.n) { // a new beat: make a plan
+      this.tutN = T.n; this.tutP = null;
+      if (T.att === f.id) {
+        const pat = TUT_PAT[this.style] || TUT_PAT.balanced;
+        let d = pat[(this.tutI = (this.tutI || 0) + 1) % pat.length]; if (R() < 0.2) d = -d;
+        const feint = R() < 0.08 + (this.style === 'tricky' ? 0.22 : 0) + 0.12 * lv;
+        // a feint shows the other side first and switches late; better wrestlers switch later
+        this.tutP = feint ? { a: -d, at: 0.12 + R() * 0.15, b: d, bt: T.tellT - lerp(0.42, 0.24, lv) } : { a: d, at: 0.12 + R() * 0.3 };
+      } else if (R() < 0.3 + 0.55 * lv) this.tutP = { read: true, at: T.tellT * lerp(0.45, 0.88, R()) };
+    }
+    const P = this.tutP; if (!P) return I;
+    if (P.read) {
+      if (T.t >= P.at && !P.done) {
+        P.done = true;
+        // trust the visible tell, or fall back on the rival's habit (his last shoves)
+        let d = 0;
+        if (T.shown && R() < 0.5 + 0.35 * lv) d = T.shown;
+        else { const h = o.tutHist.slice(-3), s = h.reduce((a, b) => a + b, 0); d = s ? Math.sign(s) : (R() < 0.5 ? -1 : 1); }
+        press(d);
+      }
+    } else {
+      if (!P.ad && T.t >= P.at) { P.ad = 1; press(P.a); }
+      else if (P.b && !P.bd && T.t >= P.bt) { P.bd = 1; press(P.b); }
+    }
+    return I;
+  }
 }
-return { Match, Brain, makeSpec, LADDER, CLASSES, STYLES, SKINS, GR, NOINP, gripCount, hasT, liftGrip, leanLimit, clamp, lerp, mulberry };
+return { Match, Brain, makeSpec, LADDER, CLASSES, STYLES, SKINS, GR, TUT, NOINP, gripCount, hasT, liftGrip, leanLimit, clamp, lerp, mulberry };
 })();
 // ==== SIM END ====
 
@@ -2013,6 +2228,7 @@ const Q = new URLSearchParams(location.search);
 const DEBUG = Q.has('debug'), AUTO = Q.has('auto'), LOWQ = Q.has('low'), NOASSETS = Q.has('noassets');
 const IS_TOUCH = (window.matchMedia && matchMedia('(pointer:coarse)').matches) || 'ontouchstart' in window;
 const IS_PHONE = Math.min(innerWidth, innerHeight) < 520;
+const RM = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); // reduced motion: no camera shake for the grip-balance counter
 const LS = {
   get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* storage blocked */ } }
@@ -2984,6 +3200,9 @@ const TX = {
     coachSkip: 'İpuçlarını geç', coachDone: 'Tamam, hazırsın!', cGrab: 'Tut', cPull: 'Çek', cCrouch: 'Çömel', cStrike: 'Vur',
     coachD0: 'Rakibe yaklaş ve kavra', coachD1: 'Çek: rakibin baloncuğu kızarana kadar', coachD2: 'Çömel: daha dengeli durursun', coachD3: 'Hamle yanınca vur',
     mute: 'Sesi kapat', unmute: 'Sesi aç', kMusic: 'Müzik aç / kapat', kSfx: 'Efektleri aç / kapat', kMute: 'Hoparlör düğmesi', kMuteD: 'Tüm sesi kapat (kayıtlı)', kPause: 'Duraklat', kLang: 'Dil',
+    tutTitle: 'Tutuş Dengesi', tutRead: 'Rakibi oku: çekecek mi, itecek mi?', tutAtt: 'Sıra sende: yüklen (ikinci tuş = aldatma)', tutKeep: 'işaretçiyi altın bölgede tut', tutPull: 'ÇEK', tutPush: 'İT', tutHist: 'Son yüklenişleri',
+    tCounter: 'Okudun! Karşı hamle', tFeintRead: 'Aldatmayı okudun!', tWrong: 'Yanlış okuma!', tFeinted: 'Aldatıldın!', tCountered: 'Okundun!', tFeintOk: 'Aldatma tuttu!',
+    helpD: 'Tutuş Dengesi: iki taraf birbirini tutunca iki bant çıkar. Sol / sağ ile işaretçiyi altın bölgede tut; yağ bölgeyi daraltır. Rakip yüklenirken oku: çekecekse Çek, itecekse İt. Doğru okuma karşı hamle, yanlış okuma kayma. Yanıp sönen bant aldatmadır; erken okuyan daha sert karşılar ama aldatılabilir.',
     oilLim: 'yağ sınırı', beltYear: 'Yıl {n} / 3', beltKept: 'Kemer kalıcı olarak senin', beltHall: 'Kemer salonu', abandonWarn: 'Devam eden kariyeri bırakmak kemer serisini sıfırlar.'
   },
   en: {
@@ -3022,6 +3241,9 @@ const TX = {
     coachSkip: 'Skip tips', coachDone: 'Nice, you are ready!', cGrab: 'Grab', cPull: 'Pull', cCrouch: 'Crouch', cStrike: 'Strike',
     coachD0: 'Close in on your rival and grab', coachD1: 'Pull until the rival’s bubble turns red', coachD2: 'Crouch: you stand steadier', coachD3: 'Strike when the move lights up',
     mute: 'Mute', unmute: 'Unmute', kMusic: 'Music on / off', kSfx: 'Effects on / off', kMute: 'Speaker button', kMuteD: 'Mute everything (saved)', kPause: 'Pause', kLang: 'Language',
+    tutTitle: 'Grip Balance', tutRead: 'Read him: will he pull or push?', tutAtt: 'Your turn: load up (second key = feint)', tutKeep: 'keep the marker in the gold zone', tutPull: 'PULL', tutPush: 'PUSH', tutHist: 'His last loads',
+    tCounter: 'Read it! Counter', tFeintRead: 'Saw through the feint!', tWrong: 'Wrong read!', tFeinted: 'Feinted!', tCountered: 'He read you!', tFeintOk: 'The feint worked!',
+    helpD: 'Grip Balance: when both wrestlers hold each other, two bands appear. Keep the marker in the gold zone with left / right; oil narrows the zone. Read the rival as he loads up: Pull if he will pull, Push if he will push. A right read is a counter, a wrong read is a slip. A flickering band is a feint; an early read hits harder but can be fooled.',
     oilLim: 'oil limit', beltYear: 'Year {n} of 3', beltKept: 'Belt kept for good', beltHall: 'Belt hall', abandonWarn: 'Abandoning a run in progress resets your belt streak.'
   }
 };
@@ -3038,7 +3260,9 @@ const CAZ = {
   fall: [['Sırtı yere geldi! Bitti!', 'His back is down! It is over!']],
   carry: [['Üç adım! Taşıdı, taşıdı!', 'Three steps! He carried him!']],
   golden: [['Süre doldu, sayılar eşit! Altın puana gidiyoruz!', 'Time is up, the score is level! Golden score!']],
-  trip: [['Ayak kancası! Dengesi gitti!', 'A leg hook! The balance is gone!']]
+  trip: [['Ayak kancası! Dengesi gitti!', 'A leg hook! The balance is gone!']],
+  tutus: [['Kol kola girdiler! Kim kimi okuyacak?', 'Locked together! Who will read whom?']],
+  counter: [['Okudu! Rakibin yüklenişini kendi aleyhine çevirdi!', 'He read it! He turned the rival\'s own load against him!']]
 };
 // Facts for the cazgır lines and the "Did you know" cards. Only these six (TR / EN), from the v2 brief.
 // [0] https://ich.unesco.org/en/RL/kirkpinar-oil-wrestling-festival-00386
@@ -3238,7 +3462,7 @@ function buildScreens() {
     <div class="field"><label>${t('quality')}</label><div class="seg"><button class="${settings.quality === 'low' ? 'on' : ''}" data-act="setq" data-v="low">${t('low')}</button><button class="${settings.quality === 'high' ? 'on' : ''}" data-act="setq" data-v="high">${t('high')}</button></div></div>
     <div class="field"><label>${t('fullscreen')}</label>${menuBtn('fs', IC.fs + t('fullscreen'))}</div>
     <div class="row" style="margin-top:14px">${menuBtn('setback', t('back'), 'primary')}</div></div>`);
-  mkScreen('howto', 'dim', `<div class="panel wide glass"><h2>${t('helpTitle')}</h2><p class="sub">${t('helpA')}</p><p class="sub">${t('helpB')}</p><p class="sub">${t('helpC')}</p>
+  mkScreen('howto', 'dim', `<div class="panel wide glass"><h2>${t('helpTitle')}</h2><p class="sub">${t('helpA')}</p><p class="sub">${t('helpB')}</p><p class="sub">${t('helpC')}</p><p class="sub">${t('helpD')}</p>
     <table class="keys"><tr><td>${t('kMove')}</td><td><span class="kbd">A</span> <span class="kbd">D</span> / <span class="kbd">←</span> <span class="kbd">→</span></td></tr>
     <tr><td>${t('kCrouch')}</td><td><span class="kbd">S</span> / <span class="kbd">W</span> · <span class="kbd">↓</span> <span class="kbd">↑</span></td></tr>
     <tr><td>${t('kGrab')}</td><td><span class="kbd">F</span> · P2 <span class="kbd">K</span></td></tr>
@@ -3629,6 +3853,11 @@ function handleEvents(M) {
       case 'escape': if (!G.demo) toast(t('tEscape'), 'info'); break;
       case 'golden': if (!G.demo) { banner(t('goldenT')); say('golden', true); snd('whistle'); } $('#hGold').textContent = t('golden'); break;
       case 'goldenGo': if (!G.demo) banner(t('go')); break;
+      case 'tutStart': if (!G.demo) { if (isHuman(0) || isHuman(1)) toast(t('tutTitle'), 'info'); say('tutus'); snd('tick'); } break;
+      case 'tutTell': case 'tutFlip': if (!G.demo && isHuman(1 - e.w)) snd('tick', e.t === 'tutFlip' ? 0.9 : 0.5); break;
+      case 'tutCounter': snd('slap'); G.excite = Math.max(G.excite, 0.8); if (!RM) G.shake = Math.max(G.shake, 0.15); emitP(mx, 1.1, mz, 6, 2, '#f5d78a', 0.16, 0.6, 5);
+        if (!G.demo) { if (h) toast(t(e.feint ? 'tFeintRead' : 'tCounter'), 'good'); else if (isHuman(e.att)) toast(t('tCountered'), 'bad'); say('counter', true); } break;
+      case 'tutWrong': if (!G.demo) { if (h) toast(t(e.feinted ? 'tFeinted' : 'tWrong'), 'bad'); else if (isHuman(e.att) && e.feinted) toast(t('tFeintOk'), 'good'); } break;
       case 'end': G.excite = 1; crowdFlash(10); if (!G.demo) { snd('cheer'); const how = e.how; if (how === 'points' || how === 'judges' || how === 'golden') say('points', true, f.name); else say('win', true, f.name); } break;
     }
   }
@@ -3796,6 +4025,7 @@ function updateHUD() {
     bb.classList.toggle('warn', ok && f.bal < 0.6 && f.bal >= 0.35); bb.classList.toggle('bad', !ok || f.bal < 0.35); bb.style.opacity = M.phase === 'ready' ? 0.5 : 1;
   }
   $('#hScore').textContent = ptsOf(M);
+  renderTut(M);
   // prompts
   const p1 = prompt1, p2 = prompt2, vs = G.versus;
   p1.classList.toggle('v', vs);
@@ -3803,6 +4033,36 @@ function updateHUD() {
   p1.classList.toggle('on', !!h0); if (h0) { $('#pTxt').textContent = t(M.f[0].hint); $('#pKey').textContent = 'R'; }
   prompt2.style.opacity = h1 ? 1 : 0; prompt2.style.transform = h1 ? 'translateX(-50%) scale(1)' : 'translateX(-50%) scale(.9)'; if (h1) { $('#pTxt2').textContent = t(M.f[1].hint); $('#pKey2').textContent = 'Enter'; }
   if (!vs) prompt2.style.opacity = 0;
+}
+// grip balance panel, one per human: pull band (left), gold zone, push band (right), the marker, the rival's last loads
+const TUT_KEYS = [['G', 'H'], ['L', ';']];
+function renderTut(M) {
+  const T = M.tut;
+  for (let i = 0; i < 2; i++) {
+    const el = $('#tut' + i), on = !!T && isHuman(i) && M.phase === 'play';
+    if (el.hidden !== !on) el.hidden = !on;
+    if (!on) continue;
+    const f = M.f[i], o = M.f[1 - i], att = T.att === i, W = M.tutW(f);
+    const set = (sel, txt) => { const n = el.querySelector(sel); if (n.textContent !== txt) n.textContent = txt; };
+    el.classList.toggle('v1', i === 1);
+    set('.th b', t('tutTitle')); set('.th span', att ? t('tutAtt') : t('tutRead'));
+    const k = IS_TOUCH && !G.versus ? ['', ''] : TUT_KEYS[G.versus ? i : 0], kb = el.querySelectorAll('.z .kbd');
+    for (let j = 0; j < 2; j++) { kb[j].textContent = k[j]; kb[j].style.display = k[j] ? '' : 'none'; }
+    set('.z.l em', t('tutPull')); set('.z.r em', t('tutPush'));
+    const pct = v => (v + 1.3) / 2.6 * 100; // the band shows -1.3..1.3
+    const zl = el.querySelector('.z.l'), zr = el.querySelector('.z.r'), sf = el.querySelector('.safe');
+    sf.style.left = pct(-W) + '%'; sf.style.width = (pct(W) - pct(-W)) + '%'; zl.style.width = zr.style.width = pct(-W) + '%';
+    el.querySelector('.mk').style.left = pct(f.tutG) + '%';
+    el.querySelector('.band').classList.toggle('out', Math.abs(f.tutG) > W);
+    // the tell the attacker shows; a switched tell (feint) flickers, or shows stripes with reduced motion
+    const tell = T.ph === 'tell' ? T.shown : 0, mine = att ? T.act : T.read;
+    for (const [z, d] of [[zl, -1], [zr, 1]]) {
+      z.classList.toggle('tl', tell === d && !T.flipped); z.classList.toggle('fk', tell === d && T.flipped);
+      z.classList.toggle('rd', T.ph === 'tell' && mine === d);
+    }
+    el.querySelector('.tbar i').style.width = (T.ph === 'tell' ? clamp(1 - T.t / T.tellT, 0, 1) * 100 : 0) + '%';
+    set('.hist small', t('tutHist')); set('.hist span', o.tutHist.slice(-4).map(d => d < 0 ? '←' : '→').join(' '));
+  }
 }
 function recordFrame() {
   const M = G.match; if (!G.recOn || !M) return;
@@ -3920,7 +4180,7 @@ function boot() {
   if (AUTO) setInterval(autoDriver, 400);
   const dtab = () => { const b = $('#bPlay'); };
   window.kirkpinar = {
-    get state() { const M = G.match; return M ? { phase: M.phase, clock: M.clock, limit: M.limit, limits: CLASS_LIMIT, golden: M.golden, score: [M.f[0].score, M.f[1].score], states: M.f.map(f => f.state), bal: M.f.map(f => +f.bal.toFixed(2)), sta: M.f.map(f => +f.sta.toFixed(2)), result: M.result } : null; },
+    get state() { const M = G.match; return M ? { phase: M.phase, clock: M.clock, limit: M.limit, limits: CLASS_LIMIT, golden: M.golden, score: [M.f[0].score, M.f[1].score], states: M.f.map(f => f.state), bal: M.f.map(f => +f.bal.toFixed(2)), sta: M.f.map(f => +f.sta.toFixed(2)), result: M.result, tut: M.tut ? { att: M.tut.att, ph: M.tut.ph, beat: M.tut.beat, shown: M.tut.shown, flipped: M.tut.flipped, read: M.tut.read } : null, tutStats: Object.assign({}, M.stats), reads: M.f.map(f => f.reads) } : null; },
     get screen() { return G.screen; }, get fps() { return G.fps; }, get drawCalls() { return renderer.info.render.calls; }, get triangles() { return renderer.info.render.triangles; },
     assets: G.assets, auto: G.autoStats, G, store, version: '2.0', get coach() { return G.coach; }, get belt() { return store.belt; }, limits: CLASS_LIMIT, facts: FACTS.length, get errors() { return window.__errs || []; }, quality: () => settings.quality, humans: G.humans, scene
   };
