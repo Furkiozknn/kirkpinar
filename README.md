@@ -67,7 +67,7 @@
 | Push (hold: lift) | `H` | `;` | `H` or `;` |
 | Context move | `R` | `Enter` or `'` | `R`, `Space` or `Enter` |
 
-- **Global hotkeys:** `P` / `Esc` pause, `M` music, `X` effects, `L` language (not during a 2-player bout, where it is Player 2's pull).
+- **Global hotkeys:** `P` / `Esc` pause, `M` music, `X` effects, `L` language (menus only; during any bout, including pause and replay, `L` is pull).
 - **Audio control:** The speaker button (top right on every screen) mutes music and effects together and is remembered.
 - **Touch:** A virtual stick (left / right, down to crouch, up to stand tall) and four buttons.
 - **Gamepad:** Stick or d-pad, `A` grab, `X` pull, `B` push, `Y` move, `Start` pause.
