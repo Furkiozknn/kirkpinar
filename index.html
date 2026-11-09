@@ -349,6 +349,9 @@ svg { display: block; }
   padding: 4px 12px;
 }
 .acts { display: flex; gap: 6px; }
+/* #bMute is fixed at the top-right corner above the HUD; reserve its width so it never covers #bLang */
+#hud .topbar .acts { margin-right: 34px; } /* 14 (mute right) + 44 (mute) + 6 (gap) - 12 (bar right) - 18 (bar padding) */
+@media (max-width: 760px) { #hud .topbar .acts { margin-right: 46px; } } /* bar right 8 + padding 10 */
 
 @media (max-width: 760px) {
   .topbar {
@@ -673,7 +676,7 @@ svg { display: block; }
   z-index: 19;
   pointer-events: none;
 }
-#subs .cazgir-speech, #subs div {
+#subs > .cazgir-speech {
   display: inline-flex;
   align-items: center;
   gap: 14px;
@@ -703,7 +706,13 @@ svg { display: block; }
   font-weight: 800;
   margin-bottom: 2px;
 }
+#subs > .cazgir-speech > div { min-width: 0; }
 @media (hover: none) { #subs { bottom: calc(140px + var(--sa-b)); } }
+@media (max-width: 600px) {
+  #subs > .cazgir-speech { gap: 8px; padding: 6px 10px; font-size: 14px; line-height: 1.3; max-height: 22vh; overflow: hidden; }
+  #subs > .cazgir-speech .cazgir-mini { width: 30px; height: 30px; flex: none; }
+  #subs small { font-size: 10px; }
+}
 
 /* Central Match Banner */
 #banner {
@@ -1297,7 +1306,7 @@ svg { display: block; }
   #hud .fbar .lab { display: none; }
   #hud .meter { height: 6px; margin-top: 2px; }
   #hud #subs { bottom: calc(6px + var(--sa-b)); width: calc(100vw - 460px); max-width: 400px; }
-  #hud #subs div { font-size: 13px; padding: 4px 12px; }
+  #hud #subs > .cazgir-speech { font-size: 13px; padding: 4px 12px; }
   #hud #toasts { top: calc(115px + var(--sa-t)); width: min(23vw, 190px); gap: 3px; }
   #hud #banner { top: calc(52px + var(--sa-t)); font-size: clamp(24px, 5vw, 40px); }
   #hud #lt { top: calc(52px + var(--sa-t)); gap: 6px; }
@@ -1319,7 +1328,7 @@ svg { display: block; }
 #fatal { position: fixed; inset: 0; z-index: 99; display: none; align-items: center; justify-content: center; background: #140d05; color: #f7ecd6; text-align: center; padding: 24px; font-size: 16px; }
 #dbg { position: fixed; left: 6px; bottom: 6px; z-index: 60; font: 11px/1.3 ui-monospace, Consolas, monospace; color: #9f9; background: rgba(0, 0, 0, 0.7); padding: 4px 7px; border-radius: 4px; pointer-events: none; max-width: 60vw; white-space: pre-wrap; }
 </style>
-<script>/*ARENA-KIT:BEGIN v1.0.0 sha256:a9b9a8b52b3e*/
+<script>/*ARENA-KIT:BEGIN v1.0.1 sha256:bc575c398c95*/
 /* ARENA-KIT v1 — shared layer for the 21 Claude Game Arena games.
  *
  * Injected inline into each game's index.html (between begin/end marker comments) by
@@ -1329,7 +1338,8 @@ svg { display: block; }
  *   Arena.perf.attach(renderer)        dynamic pixel ratio for weak GPUs (Intel UHD)
  *   Arena.hint(id, text)               one-time hint toast (first 30 s guidance)
  *   Arena.endCard({...})               end-of-session card: reason, score, "again", another game
- *   Arena.daily(game)                  UTC-day seed + mulberry32 rng + streak
+ *   Arena.daily(game, {dayKey})        UTC-day seed (or the game's own day key) + mulberry32 rng + streak
+ *   Arena.quiet                        true on ?auto / ?nosave / ?demo: nothing is written to localStorage
  *   Arena.share({...})                 Web Share / clipboard text + optional PNG card
  *   Arena.profile(), Arena.award(id)   cross-game passport (shared origin localStorage)
  *   Arena.settings / openSettings()    accessibility panel (text size, contrast, motion, vibration, auto-pause)
@@ -1340,7 +1350,7 @@ svg { display: block; }
 (function (root) {
   'use strict';
   if (root.Arena && root.Arena.version) return; // injected twice (e.g. iframe) -> keep the first
-  var VERSION = '1.0.0';
+  var VERSION = '1.0.1';
   var hasDOM = typeof document !== 'undefined';
 
   /* ---------- core (pure, Node-testable) ---------- */
@@ -1350,6 +1360,12 @@ svg { display: block; }
     var d = date || new Date();
     return d.getUTCFullYear() * 10000 + (d.getUTCMonth() + 1) * 100 + d.getUTCDate();
   };
+  core.localDayKey = function (date) { // local-time YYYYMMDD (for games whose own daily turns at local midnight)
+    var d = date || new Date();
+    return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+  };
+  // Bot / demo / no-save runs must not touch the player's storage: ?auto, ?nosave, ?demo (any value).
+  core.isQuiet = function (search) { return /[?&](auto|nosave|demo)(=|&|$)/.test(search || ''); };
   core.prevDayKey = function (key) {
     var y = Math.floor(key / 10000), m = Math.floor(key / 100) % 100, d = key % 100;
     return core.dayKey(new Date(Date.UTC(y, m - 1, d) - 86400000));
@@ -1404,7 +1420,9 @@ svg { display: block; }
 
   /* ---------- storage ---------- */
   var mem = {};
-  function store() { try { return root.localStorage; } catch (e) { return null; } }
+  var quiet = false;
+  try { quiet = hasDOM && core.isQuiet(location.search); } catch (e) {}
+  function store() { if (quiet) return null; try { return root.localStorage; } catch (e) { return null; } }
   function get(key, fallback) {
     var s = store(), raw = null;
     try { raw = s ? s.getItem('arena.' + key) : (key in mem ? mem[key] : null); } catch (e) { raw = null; }
@@ -1565,11 +1583,12 @@ svg { display: block; }
     return close;
   }
 
-  function daily(game) {
+  function daily(game, opts) {
     game = game || gameId;
+    var own = opts && /^\d{8}$/.test(String(opts.dayKey || '')) ? +opts.dayKey : 0;
     var q = null;
     try { q = hasDOM && new URLSearchParams(location.search).get('d'); } catch (e) {}
-    var day = /^\d{8}$/.test(q || '') ? +q : core.dayKey();
+    var day = /^\d{8}$/.test(q || '') ? +q : (own || core.dayKey());
     var seed = core.hash(game + ':' + day);
     var recs = get('daily.v1', {});
     var rec = recs[game] || { last: 0, streak: 0, best: 0 };
@@ -1665,7 +1684,7 @@ svg { display: block; }
   }
 
   root.Arena = {
-    version: VERSION, game: gameId, games: GAMES.slice(), lang: function (l) { if (l) lang = l === 'tr' ? 'tr' : 'en'; return lang; },
+    version: VERSION, quiet: quiet, game: gameId, games: GAMES.slice(), lang: function (l) { if (l) lang = l === 'tr' ? 'tr' : 'en'; return lang; },
     perf: perf, hint: hint, toast: toast, endCard: endCard, daily: daily, share: share, shareCard: shareCard,
     profile: profile, award: award, settings: settings, openSettings: openSettings, mountSettingsButton: mountSettingsButton,
     on: function (name, fn) { (listeners[name] = listeners[name] || []).push(fn); },
@@ -3535,7 +3554,7 @@ const TX = {
     next: 'Sıradaki maç', round: 'Tur', yourTurn: 'Sıradaki', done: 'tamam', locked: 'kilitli', newCareer: 'Yeni kariyer',
     vsTitle: 'Karşılaşma', strength: 'Güç', speed: 'Hız', defense: 'Savunma', tech: 'Teknik', enter: 'Meydana çık',
     you: 'Sen', p1: 'Oyuncu 1', p2: 'Oyuncu 2',
-    stamina: 'Dayanıklılık', grip: 'Kavrama', bGrab: 'Tut', bPull: 'Çek', bPush: 'İt/Kaldır', bMove: 'Hamle',
+    stamina: 'Dayanıklılık', grip: 'Kavrama', bGrab: 'Tut', bPull: 'Çek', bPush: 'İt/Kaldır', bMove: 'Hamle', coachStickDown: 'Çubuk ↓',
     paca: 'Paça kazık', caprast: 'Çaprast', kunde: 'Kündeye al', slam: 'Yere çal',
     hFall: 'Sırt yere', hCarry: 'Üç adım taşıma', hSlam: 'Yere çalma', hPaca: 'Paça kazık', hCaprast: 'Çaprast', hKunde: 'Kündeye alma', hPoints: 'Sayıyla', hGolden: 'Altın puan', hJudges: 'Hakem kararı',
     win: 'Kazandın!', lose: 'Yenildin', wins: ' kazandı', time: 'Süre', points: 'Sayı', moves: 'Bitiren hamle', newRecord: 'Yeni rekor', retry: 'Tekrar dene', nextMatch: 'Devam', menu: 'Ana menü', rematch: 'Rövanş', again: 'Tekrar oyna',
@@ -3579,7 +3598,7 @@ const TX = {
     next: 'Next match', round: 'Round', yourTurn: 'Up next', done: 'done', locked: 'locked', newCareer: 'New career',
     vsTitle: 'The bout', strength: 'Strength', speed: 'Speed', defense: 'Defence', tech: 'Technique', enter: 'Enter the field',
     you: 'You', p1: 'Player 1', p2: 'Player 2',
-    stamina: 'Stamina', grip: 'Grip', bGrab: 'Grab', bPull: 'Pull', bPush: 'Push/Lift', bMove: 'Move',
+    stamina: 'Stamina', grip: 'Grip', bGrab: 'Grab', bPull: 'Pull', bPush: 'Push/Lift', bMove: 'Move', coachStickDown: 'Stick ↓',
     paca: 'Paça kazık', caprast: 'Çaprast', kunde: 'Take to künde', slam: 'Slam',
     hFall: 'Back on the ground', hCarry: 'Three-step carry', hSlam: 'Slam', hPaca: 'Paça kazık', hCaprast: 'Çaprast', hKunde: 'Künde lock', hPoints: 'On points', hGolden: 'Golden score', hJudges: 'Judges\' decision',
     win: 'You win!', lose: 'You lost', wins: ' wins', time: 'Time', points: 'Points', moves: 'Finishing move', newRecord: 'New record', retry: 'Try again', nextMatch: 'Continue', menu: 'Main menu', rematch: 'Rematch', again: 'Play again',
@@ -3950,12 +3969,13 @@ function setHUD(on) { $('#hud').hidden = !on; $('#hud').classList.remove('rp', '
 
 // ---- first-bout coach: four steps that tick on real input; the bot never gets one
 const COACH_STEPS = [['cGrab', 'F', 'coachD0'], ['cPull', 'G', 'coachD1'], ['cCrouch', 'S', 'coachD2'], ['cStrike', 'R', 'coachD3']];
+const COACH_TOUCH = ['bGrab', 'bPull', 'coachStickDown', 'bMove']; // on-screen control names shown instead of keys on touch
 function renderCoach() {
   const c = G.coach, el = $('#coach'), hud = $('#hud');
   if (!c || !c.on) { el.hidden = true; hud.classList.remove('coachOn'); return; }
   el.hidden = false; hud.classList.add('coachOn');
   $('#coachSteps').innerHTML = COACH_STEPS.map((st, i) => `<span class="cstep ${i < c.step ? 'ok' : i === c.step ? 'on' : ''}"><i>${i < c.step ? CHECK : i + 1}</i>${t(st[0])}</span>`).join('');
-  const cur = COACH_STEPS[c.step]; $('#coachTxt').innerHTML = `<kbd class="kbd">${cur[1]}</kbd> ${t(cur[2])}`;
+  const cur = COACH_STEPS[c.step]; $('#coachTxt').innerHTML = `<kbd class="kbd">${IS_TOUCH ? t(COACH_TOUCH[c.step]) : cur[1]}</kbd> ${t(cur[2])}`;
   $('#bCoachSkip').textContent = t('coachSkip');
 }
 function coachAdvance() {
@@ -4035,7 +4055,7 @@ addEventListener('keydown', e => {
   }
   if (c === 'KeyM' && !e.repeat) { AU.musicOn = !AU.musicOn; AU.apply(); syncSoundBtn(); return; }
   if (c === 'KeyX' && !e.repeat) { AU.sfxOn = !AU.sfxOn; AU.apply(); syncSoundBtn(); return; }
-  if (c === 'KeyL' && !(G.screen === 'play' && G.versus)) { if (!e.repeat) toggleLang(); return; }
+  if (c === 'KeyL' && G.screen !== 'play' && G.screen !== 'pause' && G.screen !== 'replay') { if (!e.repeat) toggleLang(); return; }
   if (G.screen === 'play' && !G.paused && GAMEKEYS.has(c)) {
     e.preventDefault();
     if (!e.repeat) { keys.add(c); for (let i = 0; i < 2; i++) { if (!G.versus && i === 1) break; const m = mapFor(i); if (m.grab.includes(c)) edges[i].grab = 1; if (m.ctx.includes(c)) edges[i].ctx = 1; } }
