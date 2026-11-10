@@ -1846,7 +1846,7 @@ svg { display: block; }
   <div id="prompt"><kbd id="pKey">R</kbd><span id="pTxt"></span></div>
   <div class="tutp" id="tut0" hidden><div class="th"><b></b><span></span></div><div class="band"><span class="z l"><kbd class="kbd"></kbd><em></em></span><span class="safe"></span><span class="z r"><em></em><kbd class="kbd"></kbd></span><i class="mk"></i></div><div class="tbar"><i></i></div><div class="hist"><small></small><span></span></div></div>
   <div class="tutp" id="tut1" hidden><div class="th"><b></b><span></span></div><div class="band"><span class="z l"><kbd class="kbd"></kbd><em></em></span><span class="safe"></span><span class="z r"><em></em><kbd class="kbd"></kbd></span><i class="mk"></i></div><div class="tbar"><i></i></div><div class="hist"><small></small><span></span></div></div>
-  <div id="toasts" aria-live="polite"></div>
+  <div id="toasts" role="status" aria-live="polite"></div>
   <div id="subs"></div>
   <div id="banner"></div>
   <div id="lt" class="lt" aria-hidden="true"></div>
@@ -4725,7 +4725,7 @@ function updateHUD() {
   const p1 = prompt1, p2 = prompt2, vs = G.versus;
   p1.classList.toggle('v', vs);
   const h0 = M.f[0].hint && isHuman(0) && M.phase === 'play', h1 = M.f[1].hint && isHuman(1) && M.phase === 'play';
-  p1.classList.toggle('on', !!h0); if (h0) { $('#pTxt').textContent = t(M.f[0].hint); $('#pKey').textContent = 'R'; }
+  p1.classList.toggle('on', !!h0); if (h0) { $('#pTxt').textContent = t(M.f[0].hint); $('#pKey').textContent = IS_TOUCH && !G.versus ? t('bMove') : 'R'; }
   prompt2.style.opacity = h1 ? 1 : 0; prompt2.style.transform = h1 ? 'translateX(-50%) scale(1)' : 'translateX(-50%) scale(.9)'; if (h1) { $('#pTxt2').textContent = t(M.f[1].hint); $('#pKey2').textContent = 'Enter'; }
   if (!vs) prompt2.style.opacity = 0;
 }
