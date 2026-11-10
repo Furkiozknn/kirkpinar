@@ -49,6 +49,7 @@
   --sa-b: env(safe-area-inset-bottom, 0px);
   --sa-l: env(safe-area-inset-left, 0px);
   --sa-r: env(safe-area-inset-right, 0px);
+  --hud-text-scale: 1;
 }
 * { box-sizing: border-box; }
 html, body {
@@ -286,7 +287,7 @@ svg { display: block; }
 .brand svg { width: 28px; height: 28px; }
 .brand span {
   font-family: var(--font-serif);
-  font-size: 22px;
+  font-size: calc(22px * var(--hud-text-scale, 1));
   letter-spacing: 0.04em;
   color: var(--gold-light);
 }
@@ -306,7 +307,7 @@ svg { display: block; }
   border: 1px solid var(--line);
   white-space: nowrap;
   font-family: var(--font-sans);
-  font-size: 13.5px;
+  font-size: calc(13.5px * var(--hud-text-scale, 1));
   font-weight: 700;
   color: var(--bone);
   letter-spacing: 0.03em;
@@ -314,7 +315,7 @@ svg { display: block; }
 .chip b { color: var(--gold-light); }
 .timer {
   font-family: var(--font-sans);
-  font-size: 26px;
+  font-size: calc(26px * var(--hud-text-scale, 1));
   font-weight: 800;
   color: var(--gold-light);
   font-variant-numeric: tabular-nums;
@@ -330,7 +331,7 @@ svg { display: block; }
 .timer.low { color: var(--red); border-color: var(--red); }
 .timer small {
   display: block;
-  font-size: 10.5px;
+  font-size: calc(10.5px * var(--hud-text-scale, 1));
   font-weight: 800;
   color: var(--gold);
   letter-spacing: 0.1em;
@@ -339,7 +340,7 @@ svg { display: block; }
 }
 .score {
   font-family: var(--font-sans);
-  font-size: 22px;
+  font-size: calc(22px * var(--hud-text-scale, 1));
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   color: var(--bone);
@@ -365,9 +366,9 @@ svg { display: block; }
   .brand span { display: none; }
   .stats { gap: 6px; }
   .chip.cls { display: none; }
-  .timer { font-size: 20px; min-width: 66px; padding: 2px 8px; }
-  .score { font-size: 18px; padding: 3px 8px; }
-  .chip { font-size: 12px; padding: 3px 7px; }
+  .timer { font-size: calc(20px * var(--hud-text-scale, 1)); min-width: 66px; padding: 2px 8px; }
+  .score { font-size: calc(18px * var(--hud-text-scale, 1)); padding: 3px 8px; }
+  .chip { font-size: calc(12px * var(--hud-text-scale, 1)); padding: 3px 7px; }
 }
 
 /* Fighter Stamina & Grip Cartouches (.fbar) */
@@ -391,7 +392,7 @@ svg { display: block; }
   gap: 8px;
   font-family: var(--font-serif);
   font-weight: 700;
-  font-size: 17px;
+  font-size: calc(17px * var(--hud-text-scale, 1));
   color: var(--bone);
 }
 .fbar.r .nm { flex-direction: row-reverse; }
@@ -406,14 +407,14 @@ svg { display: block; }
 .fbar .pts {
   margin-left: auto;
   font-family: var(--font-sans);
-  font-size: 22px;
+  font-size: calc(22px * var(--hud-text-scale, 1));
   font-weight: 800;
   color: var(--gold-light);
 }
 .fbar.r .pts { margin-left: 0; margin-right: auto; }
 .fbar .lab {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: calc(11px * var(--hud-text-scale, 1));
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -466,8 +467,8 @@ svg { display: block; }
     width: 45vw;
     padding: 6px 10px;
   }
-  .fbar .nm { font-size: 14px; }
-  .fbar .pts { font-size: 18px; }
+  .fbar .nm { font-size: calc(14px * var(--hud-text-scale, 1)); }
+  .fbar .pts { font-size: calc(18px * var(--hud-text-scale, 1)); }
   .fbar .lab { display: none; }
   .meter { height: 7px; }
 }
@@ -538,7 +539,7 @@ svg { display: block; }
   z-index: 22;
   font-family: var(--font-serif);
   font-weight: 700;
-  font-size: 22px;
+  font-size: calc(22px * var(--hud-text-scale, 1));
   letter-spacing: 0.04em;
   opacity: 0;
   pointer-events: none;
@@ -565,7 +566,7 @@ svg { display: block; }
   border: 1.5px solid var(--gold);
   background: rgba(200, 155, 60, 0.15);
   color: var(--bone);
-  font: 700 14px/1.3 var(--font-sans);
+  font: 700 calc(14px * var(--hud-text-scale, 1))/1.3 var(--font-sans);
   text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
@@ -592,8 +593,8 @@ svg { display: block; }
   .tutp, .tutp.v1 { left: 50%; right: auto; transform: translateX(-50%); bottom: calc(135px + var(--sa-b)); width: min(92vw, 340px); }
 }
 .tutp .th { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 6px; }
-.tutp .th b { font-family: var(--font-serif); color: var(--gold-light); font-size: 17px; letter-spacing: 0.04em; white-space: nowrap; }
-.tutp .th span { font-size: 12.5px; color: var(--ink2); text-align: right; }
+.tutp .th b { font-family: var(--font-serif); color: var(--gold-light); font-size: calc(17px * var(--hud-text-scale, 1)); letter-spacing: 0.04em; white-space: nowrap; }
+.tutp .th span { font-size: calc(12.5px * var(--hud-text-scale, 1)); color: var(--ink2); text-align: right; }
 .tutp .band { position: relative; height: 34px; border-radius: 3px; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--line); overflow: hidden; }
 .tutp .z {
   position: absolute;
@@ -603,14 +604,14 @@ svg { display: block; }
   gap: 6px;
   padding: 0 6px;
   font-weight: 800;
-  font-size: 13px;
+  font-size: calc(13px * var(--hud-text-scale, 1));
   color: var(--ink2);
   background: rgba(176, 73, 47, 0.18);
   transition: background 0.12s, color 0.12s;
 }
 .tutp .z.l { left: 0; justify-content: flex-start; }
 .tutp .z.r { right: 0; justify-content: flex-end; }
-.tutp .z .kbd { min-width: 24px; padding: 1px 6px; font-size: 12px; }
+.tutp .z .kbd { min-width: 24px; padding: 1px 6px; font-size: calc(12px * var(--hud-text-scale, 1)); }
 .tutp .safe { position: absolute; top: 0; bottom: 0; background: linear-gradient(180deg, rgba(233, 180, 76, 0.35), rgba(200, 155, 60, 0.18)); border-left: 1px solid var(--gold); border-right: 1px solid var(--gold); }
 .tutp .z.tl { background: rgba(245, 215, 138, 0.38); color: #fff; }
 .tutp .z.fk { animation: tutFk 0.16s steps(2) infinite; background: rgba(245, 215, 138, 0.5); color: #fff; }
@@ -646,7 +647,7 @@ svg { display: block; }
   border-radius: 4px;
   font-family: var(--font-sans);
   font-weight: 700;
-  font-size: 14.5px;
+  font-size: calc(14.5px * var(--hud-text-scale, 1));
   letter-spacing: 0.02em;
   animation: tin 0.25s ease-out;
   background: rgba(28, 19, 9, 0.95);
@@ -687,7 +688,7 @@ svg { display: block; }
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 12px rgba(200, 155, 60, 0.25);
   color: var(--bone);
   font-family: var(--font-serif);
-  font-size: 18px;
+  font-size: calc(18px * var(--hud-text-scale, 1));
   font-style: italic;
   line-height: 1.4;
   text-align: left;
@@ -699,7 +700,7 @@ svg { display: block; }
   display: block;
   font-family: var(--font-sans);
   font-style: normal;
-  font-size: 11.5px;
+  font-size: calc(11.5px * var(--hud-text-scale, 1));
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--gold-light);
@@ -709,9 +710,9 @@ svg { display: block; }
 #subs > .cazgir-speech > div { min-width: 0; }
 @media (hover: none) { #subs { bottom: calc(140px + var(--sa-b)); } }
 @media (max-width: 600px) {
-  #subs > .cazgir-speech { gap: 8px; padding: 6px 10px; font-size: 14px; line-height: 1.3; max-height: 22vh; overflow: hidden; }
+  #subs > .cazgir-speech { gap: 8px; padding: 6px 10px; font-size: calc(14px * var(--hud-text-scale, 1)); line-height: 1.3; max-height: 22vh; overflow: hidden; }
   #subs > .cazgir-speech .cazgir-mini { width: 30px; height: 30px; flex: none; }
-  #subs small { font-size: 10px; }
+  #subs small { font-size: calc(10px * var(--hud-text-scale, 1)); }
 }
 
 /* Central Match Banner */
@@ -746,7 +747,7 @@ svg { display: block; }
   bottom: calc(8px + var(--sa-b));
   transform: translateX(-50%);
   z-index: 19;
-  font-size: 13px;
+  font-size: calc(13px * var(--hud-text-scale, 1));
   font-weight: 600;
   color: var(--bone);
   padding: 5px 16px;
@@ -924,7 +925,7 @@ svg { display: block; }
   background: rgba(28, 19, 9, 0.75);
   font-family: var(--font-sans);
   font-weight: 800;
-  font-size: 12px;
+  font-size: calc(12px * var(--hud-text-scale, 1));
   line-height: 1.1;
   touch-action: none;
   display: flex;
@@ -1885,6 +1886,7 @@ svg { display: block; }
 </head>
 <body>
 <canvas id="c" tabindex="-1"></canvas>
+<canvas id="cUI" tabindex="-1" style="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:21;display:block"></canvas>
 <div id="vig"></div>
 
 <!-- Tezhip Folio Border Frame -->
@@ -2841,7 +2843,7 @@ const LS = {
 const $ = (s, r) => (r || document).querySelector(s);
 const clamp = (v, a, b) => v < a ? a : v > b ? b : v;
 const lerp = (a, b, t) => a + (b - a) * t;
-const settings = Object.assign({ master: 0.8, music: 0.6, sfx: 0.8, muted: false, lang: /^tr/i.test(navigator.language || '') ? 'tr' : 'en', quality: IS_PHONE ? 'low' : 'high' }, LS.get('arena.kirkpinar.settings', {}));
+const settings = Object.assign({ master: 0.8, music: 0.6, sfx: 0.8, muted: false, lang: /^tr/i.test(navigator.language || '') ? 'tr' : 'en', quality: IS_PHONE ? 'low' : 'high', colorBlind: 'off', textScale: 1.0 }, LS.get('arena.kirkpinar.settings', {}));
 if (Q.get('lang') === 'en' || Q.get('lang') === 'tr') settings.lang = Q.get('lang');
 if (LOWQ) settings.quality = 'low';
 const saveSettings = () => LS.set('arena.kirkpinar.settings', settings);
@@ -2972,6 +2974,8 @@ document.addEventListener('visibilitychange', () => { if (AU.ctx) { if (document
 
 // ============================================================ renderer / scene
 const canvas = $('#c');
+const canvasUI = $('#cUI');
+const ctxUI = canvasUI ? canvasUI.getContext('2d') : null;
 let renderer;
 try {
   renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -2996,6 +3000,118 @@ function mat(color, rough, metal, extra) {
 }
 function stdMat(color, rough, metal, extra) {
   return new THREE.MeshStandardMaterial(Object.assign({ color, roughness: rough, metalness: metal || 0 }, extra || {}));
+}
+
+// Color-blind shader uniform (0: off, 1: deuteranopia, 2: protanopia)
+const cbUniform = { value: 0 };
+const cbMaterials = new Set();
+
+function hookColorBlindShader(mat) {
+  if (!mat || mat._cbHooked) return mat;
+  mat._cbHooked = true;
+  cbMaterials.add(mat);
+  const prevCompile = mat.onBeforeCompile;
+  mat.onBeforeCompile = function (shader, renderer) {
+    if (prevCompile) prevCompile.call(this, shader, renderer);
+    shader.uniforms.uColorBlind = cbUniform;
+    const pars = `
+uniform int uColorBlind;
+vec3 applyColorBlind(vec3 col, int mode) {
+  if (mode == 1) { // Deuteranopia shift: shifts green towards amber/gold and contrasts against deep navy
+    vec3 deut = vec3(col.r * 0.625 + col.g * 0.375, col.r * 0.70 + col.g * 0.30, col.b);
+    vec3 err = col - deut;
+    return clamp(col + vec3(err.r * 0.4 + err.g * 0.2, err.g * 0.8 + err.r * 0.5, err.r * 0.8 + col.b * 0.3), 0.0, 1.0);
+  } else if (mode == 2) { // Protanopia shift: shifts red towards dark blue/cyan and contrasts against warm bronze
+    vec3 prot = vec3(col.r * 0.567 + col.g * 0.433, col.r * 0.558 + col.g * 0.442, col.b);
+    vec3 err = col - prot;
+    return clamp(col + vec3(err.r * 0.8 + col.b * 0.2, err.r * 0.5 + err.g * 0.5, err.r * 1.0 + err.g * 0.2), 0.0, 1.0);
+  }
+  return col;
+}
+`;
+    shader.fragmentShader = pars + shader.fragmentShader;
+    if (shader.fragmentShader.includes('#include <dithering_fragment>')) {
+      shader.fragmentShader = shader.fragmentShader.replace(
+        '#include <dithering_fragment>',
+        '#include <dithering_fragment>\n  gl_FragColor.rgb = applyColorBlind(gl_FragColor.rgb, uColorBlind);'
+      );
+    } else {
+      shader.fragmentShader = shader.fragmentShader.replace(
+        /}\s*$/,
+        '  gl_FragColor.rgb = applyColorBlind(gl_FragColor.rgb, uColorBlind);\n}'
+      );
+    }
+  };
+  return mat;
+}
+
+function applyColorBlind(mode) {
+  settings.colorBlind = mode || 'off';
+  saveSettings();
+  const val = settings.colorBlind === 'deuteranopia' ? 1 : (settings.colorBlind === 'protanopia' ? 2 : 0);
+  cbUniform.value = val;
+
+  // Immediate grass hue shift
+  if (typeof ground !== 'undefined' && ground && ground.material) {
+    if (settings.colorBlind === 'deuteranopia') {
+      ground.material.color.set('#d4bb60'); // Golden-amber turf
+    } else if (settings.colorBlind === 'protanopia') {
+      ground.material.color.set('#488e9e'); // Teal-cyan meadow
+    } else {
+      ground.material.color.set('#ffffff'); // Default olive grass
+    }
+    ground.material.needsUpdate = true;
+  }
+
+  if (typeof field !== 'undefined' && field && field.material) {
+    if (settings.colorBlind === 'deuteranopia') {
+      field.material.color.set('#ccb452');
+    } else if (settings.colorBlind === 'protanopia') {
+      field.material.color.set('#408290');
+    } else {
+      field.material.color.set('#ffffff');
+    }
+    field.material.needsUpdate = true;
+  }
+
+  // Immediate kıspet hue shift for all active wrestlers
+  const updateRigKispet = (r) => {
+    if (!r || !r.kispM) return;
+    if (settings.colorBlind === 'deuteranopia') {
+      r.kispM.color.set('#18223c'); // Slate navy leather (high-contrast against golden turf)
+    } else if (settings.colorBlind === 'protanopia') {
+      r.kispM.color.set('#5e3c12'); // Rich bronze leather (high-contrast against teal meadow)
+    } else {
+      r.kispM.color.set('#3a2c14'); // Classic dark brown leather
+    }
+    r.kispM.needsUpdate = true;
+  };
+
+  if (typeof G !== 'undefined' && G.match && G.match.f) {
+    for (const f of G.match.f) {
+      if (f && f.rig) updateRigKispet(f.rig);
+    }
+  }
+  if (typeof scene !== 'undefined' && scene) {
+    scene.traverse(o => {
+      if (o.isMesh && o.material && o.material.isMeshStandardMaterial && o.material.roughness === 0.5 && o.material.envMapIntensity === 0.75) {
+        if (settings.colorBlind === 'deuteranopia') o.material.color.set('#18223c');
+        else if (settings.colorBlind === 'protanopia') o.material.color.set('#5e3c12');
+        else o.material.color.set('#3a2c14');
+        o.material.needsUpdate = true;
+      }
+    });
+  }
+}
+
+function applyTextScale(scale) {
+  if (scale !== undefined) settings.textScale = clamp(+scale, 0.85, 1.6);
+  const s = settings.textScale || 1.0;
+  document.documentElement.style.setProperty('--hud-text-scale', String(s));
+  document.documentElement.style.setProperty('--arena-text-scale', String(s));
+  if (window.Arena && Arena.settings) {
+    Arena.settings.textScale = s;
+  }
 }
 
 // sky + environment (canvas gradient; miniature flat dusk light + warm gold rim)
@@ -3040,7 +3156,7 @@ function grassTexture() {
   for (let i = 0; i < 2600; i++) { const v = Math.random(); g.fillStyle = v < 0.5 ? 'rgba(38,50,22,.38)' : 'rgba(180,205,100,.24)'; g.fillRect(Math.random() * 256, Math.random() * 256, 1.4, 3.4); }
   const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(50, 50); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t;
 }
-const ground = new THREE.Mesh(new THREE.CircleGeometry(150, 48), new THREE.MeshLambertMaterial({ map: grassTexture() }));
+const ground = new THREE.Mesh(new THREE.CircleGeometry(150, 48), hookColorBlindShader(new THREE.MeshLambertMaterial({ map: grassTexture() })));
 ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
 const FIELD_R = 12.3;
 function fieldTexture() {
@@ -3054,7 +3170,7 @@ function fieldTexture() {
   g.strokeStyle = 'rgba(240,226,192,.25)'; g.lineWidth = 3; g.beginPath(); g.arc(R, R, R * (3.4 / FIELD_R), 0, 7); g.stroke();
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
 }
-const field = new THREE.Mesh(new THREE.CircleGeometry(FIELD_R, 64), new THREE.MeshLambertMaterial({ map: fieldTexture() }));
+const field = new THREE.Mesh(new THREE.CircleGeometry(FIELD_R, 64), hookColorBlindShader(new THREE.MeshLambertMaterial({ map: fieldTexture() })));
 field.rotation.x = -Math.PI / 2; field.position.y = 0.004; field.receiveShadow = true; scene.add(field);
 function sandTexture() {
   const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
@@ -3062,7 +3178,7 @@ function sandTexture() {
   for (let i = 0; i < 3000; i++) { g.fillStyle = Math.random() < 0.5 ? 'rgba(120,90,48,.35)' : 'rgba(240,220,170,.35)'; g.fillRect(Math.random() * 256, Math.random() * 256, 1.5, 1.5); }
   const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(10, 10); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
-const track = new THREE.Mesh(new THREE.RingGeometry(FIELD_R - 0.05, 14.3, 64, 1), new THREE.MeshLambertMaterial({ map: sandTexture() }));
+const track = new THREE.Mesh(new THREE.RingGeometry(FIELD_R - 0.05, 14.3, 64, 1), hookColorBlindShader(new THREE.MeshLambertMaterial({ map: sandTexture() })));
 track.rotation.x = -Math.PI / 2; track.position.y = 0.002; track.receiveShadow = true; scene.add(track);
 function patchTexture() {
   const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
@@ -3071,7 +3187,7 @@ function patchTexture() {
   for (let i = 0; i < 24; i++) { g.strokeStyle = 'rgba(255,255,255,.06)'; g.beginPath(); g.arc(128, 128, 20 + i * 4.4, 0, 7); g.stroke(); }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
 }
-const patch = new THREE.Mesh(new THREE.CircleGeometry(9.5, 40), new THREE.MeshLambertMaterial({ map: patchTexture(), transparent: true, depthWrite: false }));
+const patch = new THREE.Mesh(new THREE.CircleGeometry(9.5, 40), hookColorBlindShader(new THREE.MeshLambertMaterial({ map: patchTexture(), transparent: true, depthWrite: false })));
 patch.rotation.x = -Math.PI / 2; patch.position.y = 0.012; patch.receiveShadow = true; scene.add(patch);
 // v2: oil stains. One decal plane over the wrestling area; its canvas is stamped where the wrestlers stand (a few times a second, so the upload stays tiny).
 const OIL_W = 24, OIL_D = 6, oilCv = document.createElement('canvas'); oilCv.width = 512; oilCv.height = 128;
@@ -3492,7 +3608,8 @@ const BONE = { thigh: 0.46, shin: 0.46, ua: 0.29, fa: 0.27 };
 function makeRig(spec) {
   const s = spec.scale, heavy = clamp((spec.mass - 0.85) / 0.45, 0, 1), hv = 1 + 0.1 * heavy;
   const skinM = new THREE.MeshStandardMaterial({ color: spec.skin, vertexColors: true, roughness: 0.55, metalness: 0, envMapIntensity: 0.9, emissive: new THREE.Color('#c89b3c'), emissiveIntensity: 0.03 });
-  const kispM = new THREE.MeshStandardMaterial({ color: '#3a2c14', vertexColors: true, roughness: 0.5, envMapIntensity: 0.75 });
+  const kispColor = settings.colorBlind === 'deuteranopia' ? '#18223c' : (settings.colorBlind === 'protanopia' ? '#5e3c12' : '#3a2c14');
+  const kispM = hookColorBlindShader(new THREE.MeshStandardMaterial({ color: kispColor, vertexColors: true, roughness: 0.5, envMapIntensity: 0.75 }));
   const trimM = stdMat('#c89b3c', 0.5);
   const bandM = stdMat(spec.band, 0.5);
   const headM = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, envMapIntensity: 0.9, emissive: new THREE.Color('#c89b3c'), emissiveIntensity: 0.03 });
@@ -3790,6 +3907,7 @@ const TX = {
     promoted: 'Terfi: ', replay: 'Tekrar', skip: 'Geç',
     paused: 'Duraklatıldı', resume: 'Devam', restart: 'Baştan', mainMenu: 'Ana menü',
     set: 'Ayarlar', master: 'Ana ses', music: 'Müzik', sfx: 'Efektler', language: 'Dil', quality: 'Kalite', low: 'Düşük', high: 'Yüksek', fullscreen: 'Tam ekran',
+    colorBlind: 'Renk körlüğü', cbOff: 'Kapalı', cbDeut: 'Deuteranopi', cbProt: 'Protanopi', hudTextScale: 'Metin ölçeği',
     endTitle: 'Başpehlivan!', endSub: 'Altın kemer senin. Edirne meydanı seni alkışlıyor.', endTitles: 'Başpehlivanlık sayısı',
     helpTitle: 'Nasıl oynanır', helpA: 'Yaklaş ve tut (kollar, bel, kıspet). Çek ya da it: rakibin dengesi (altındaki baloncuk) bozulur. Hamle düğmesi yandığında kullan.',
     helpB: 'Yağ yüzünden tutuş zamanla kayar; kıspet tutuşu en sağlamıdır. Aşağı = çömel (daha dengeli, kıspet tutar). Çömelip Çek = ayak kancası. İt tuşunu basılı tut = kaldır.',
@@ -3852,6 +3970,7 @@ const TX = {
     promoted: 'Promoted: ', replay: 'Replay', skip: 'Skip',
     paused: 'Paused', resume: 'Resume', restart: 'Restart', mainMenu: 'Main menu',
     set: 'Settings', master: 'Master volume', music: 'Music', sfx: 'Effects', language: 'Language', quality: 'Quality', low: 'Low', high: 'High', fullscreen: 'Fullscreen',
+    colorBlind: 'Color-blind mode', cbOff: 'Off', cbDeut: 'Deuteranopia', cbProt: 'Protanopia', hudTextScale: 'Text scale',
     endTitle: 'Başpehlivan!', endSub: 'The golden belt is yours. The Edirne field applauds you.', endTitles: 'Titles won',
     helpTitle: 'How to play', helpA: 'Close in and grab (arms, waist, kıspet). Pull or push: the rival\'s balance (the bubble under them) breaks. Use the move button when it lights up.',
     helpB: 'Oil makes grips slip over time; the kıspet hold is the most reliable. Down = crouch (steadier, grabs the kıspet). Crouch + Pull = leg hook. Hold Push = lift.',
@@ -4111,6 +4230,8 @@ function buildScreens() {
     <div class="field"><label for="sSfx">${t('sfx')}</label><input type="range" id="sSfx" min="0" max="1" step="0.05" value="${settings.sfx}"><span class="val" id="vSfx"></span></div>
     <div class="field"><label>${t('language')}</label><div class="seg"><button class="${settings.lang === 'tr' ? 'on' : ''}" data-act="setlang" data-v="tr">TR</button><button class="${settings.lang === 'en' ? 'on' : ''}" data-act="setlang" data-v="en">EN</button></div></div>
     <div class="field"><label>${t('quality')}</label><div class="seg"><button class="${settings.quality === 'low' ? 'on' : ''}" data-act="setq" data-v="low">${t('low')}</button><button class="${settings.quality === 'high' ? 'on' : ''}" data-act="setq" data-v="high">${t('high')}</button></div></div>
+    <div class="field"><label>${t('colorBlind')}</label><div class="seg"><button class="${settings.colorBlind === 'off' ? 'on' : ''}" data-act="setcb" data-v="off">${t('cbOff')}</button><button class="${settings.colorBlind === 'deuteranopia' ? 'on' : ''}" data-act="setcb" data-v="deuteranopia">${t('cbDeut')}</button><button class="${settings.colorBlind === 'protanopia' ? 'on' : ''}" data-act="setcb" data-v="protanopia">${t('cbProt')}</button></div></div>
+    <div class="field"><label for="sTextScale">${t('hudTextScale')}</label><input type="range" id="sTextScale" min="0.85" max="1.5" step="0.05" value="${settings.textScale || 1.0}"><span class="val" id="vTextScale"></span></div>
     <div class="field"><label>${t('fullscreen')}</label>${menuBtn('fs', IC.fs + t('fullscreen'))}</div>
     ${window.Arena ? `<div class="field"><label>${t('a11y')}</label>${menuBtn('a11y', t('a11y'))}</div>` : ''}
     <div class="row" style="margin-top:14px">${menuBtn('setback', t('back'), 'primary')}</div></div>`);
@@ -4172,6 +4293,7 @@ function applyStaticText() {
   const bMl = $('#bMoveList'); if (bMl) { bMl.setAttribute('aria-label', t('moveList')); bMl.setAttribute('title', t('moveList')); }
   const tbTxt = $('#trainBadgeTxt'); if (tbTxt) tbTxt.textContent = t('training') + ' · ' + t('moveList');
   for (const [id, key] of [['Master', 'master'], ['Music', 'music'], ['Sfx', 'sfx']]) { const v = $('#v' + id); if (v) v.textContent = Math.round(settings[key] * 100); }
+  const vTs = $('#vTextScale'); if (vTs) vTs.textContent = Math.round((settings.textScale || 1.0) * 100) + '%';
 }
 function showScreen(name) {
   for (const k in SCREENS) SCREENS[k].hidden = (k !== name && !(name === 'settings' && k === G.settingsFrom && G.settingsFrom === 'pause') && !(name === 'movelist' && k === G.movelistFrom));
@@ -4514,6 +4636,7 @@ function onAct(act, el) {
     case 'lang': toggleLang(); break;
     case 'setlang': settings.lang = v; saveSettings(); rebuild(); SCREENS.settings.hidden = false; break;
     case 'setq': settings.quality = v; saveSettings(); applyQuality(); rebuild(); SCREENS.settings.hidden = false; break;
+    case 'setcb': applyColorBlind(v); rebuild(); SCREENS.settings.hidden = false; break;
     case 'fs': try { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen(); } catch (e) { /* not allowed */ } break;
     case 'title': goTitle(); break;
     case 'mode': showScreen('mode'); break;
@@ -4551,7 +4674,11 @@ $('#hud').addEventListener('click', e => {
 });
 scr.addEventListener('input', e => {
   const id = e.target.id; if (!id) return;
-  if (id === 'sMaster') settings.master = +e.target.value; else if (id === 'sMusic') settings.music = +e.target.value; else if (id === 'sSfx') { settings.sfx = +e.target.value; AU.init(); AU.play('slap', 0.6); } else return;
+  if (id === 'sMaster') settings.master = +e.target.value;
+  else if (id === 'sMusic') settings.music = +e.target.value;
+  else if (id === 'sSfx') { settings.sfx = +e.target.value; AU.init(); AU.play('slap', 0.6); }
+  else if (id === 'sTextScale') { applyTextScale(+e.target.value); saveSettings(); const v = $('#vTextScale'); if (v) v.textContent = Math.round(settings.textScale * 100) + '%'; return; }
+  else return;
   saveSettings(); AU.apply(); applyStaticText();
 });
 $('#bPause').addEventListener('click', () => { AU.init(); togglePause(); });
@@ -4840,6 +4967,87 @@ function projectTo(el, x, y, z, dy) {
   _pv.set(x, y, z).project(camera); const sx = (_pv.x * 0.5 + 0.5) * innerWidth, sy = (-_pv.y * 0.5 + 0.5) * innerHeight;
   el.style.left = sx + 'px'; el.style.top = (sy + dy) + 'px';
 }
+const _uiPt0 = { x: 0, y: 0, visible: false }, _uiPt1 = { x: 0, y: 0, visible: false };
+function projectCoords(x, y, z, out) {
+  _pv.set(x, y, z).project(camera);
+  out.x = (_pv.x * 0.5 + 0.5) * innerWidth;
+  out.y = (-_pv.y * 0.5 + 0.5) * innerHeight;
+  out.visible = _pv.z < 1;
+  return out;
+}
+function renderCanvasUI(dt, nowS) {
+  if (!ctxUI || !canvasUI) return;
+  ctxUI.clearRect(0, 0, innerWidth, innerHeight);
+
+  const ts = settings.textScale || 1.0;
+  const cb = settings.colorBlind || 'off';
+  const M = G.match;
+
+  // 1. Accessibility mode indicator badge when color-blind mode is active
+  if (cb !== 'off' && G.screen === 'play' && !$('#hud').hidden) {
+    ctxUI.save();
+    const label = cb === 'deuteranopia' ? 'DEUTERANOPIA' : 'PROTANOPIA';
+    const badgeColor = cb === 'deuteranopia' ? '#d4bb60' : '#488e9e';
+    const fontSize = Math.round(11 * ts);
+    ctxUI.font = `700 ${fontSize}px sans-serif`;
+    const textW = ctxUI.measureText(label).width;
+    const padX = Math.round(8 * ts), padY = Math.round(4 * ts);
+    const badgeW = textW + padX * 2, badgeH = fontSize + padY * 2;
+    const badgeX = Math.round(innerWidth / 2 - badgeW / 2);
+    const badgeY = Math.round(52 + (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sa-t')) || 0));
+
+    ctxUI.fillStyle = 'rgba(18, 12, 6, 0.84)';
+    ctxUI.strokeStyle = badgeColor;
+    ctxUI.lineWidth = 1.5;
+    ctxUI.beginPath();
+    if (ctxUI.roundRect) ctxUI.roundRect(badgeX, badgeY, badgeW, badgeH, 3);
+    else ctxUI.rect(badgeX, badgeY, badgeW, badgeH);
+    ctxUI.fill();
+    ctxUI.stroke();
+
+    ctxUI.fillStyle = badgeColor;
+    ctxUI.fillText(label, badgeX + padX, badgeY + badgeH - padY);
+    ctxUI.restore();
+  }
+
+  // 2. In-bout dynamic canvas reticles around wrestlers
+  if (M && G.screen === 'play' && !$('#hud').hidden && M.phase === 'play') {
+    ctxUI.save();
+    for (let i = 0; i < 2; i++) {
+      const f = M.f[i];
+      if (!f) continue;
+      projectCoords(f.p.x, 0.05, f.p.z, i === 0 ? _uiPt0 : _uiPt1);
+      const pt = i === 0 ? _uiPt0 : _uiPt1;
+      if (!pt.visible || pt.x < -100 || pt.x > innerWidth + 100 || pt.y < -100 || pt.y > innerHeight + 100) continue;
+
+      const ringR = 24 * (f.spec ? f.spec.scale || 1 : 1);
+      let ringCol;
+      if (cb === 'deuteranopia') {
+        ringCol = i === 0 ? 'rgba(56, 189, 248, 0.55)' : 'rgba(212, 187, 96, 0.55)';
+      } else if (cb === 'protanopia') {
+        ringCol = i === 0 ? 'rgba(72, 142, 158, 0.6)' : 'rgba(253, 224, 71, 0.6)';
+      } else {
+        ringCol = i === 0 ? 'rgba(37, 99, 235, 0.45)' : 'rgba(200, 155, 60, 0.45)';
+      }
+
+      ctxUI.beginPath();
+      ctxUI.ellipse(pt.x, pt.y, ringR, ringR * 0.45, 0, 0, Math.PI * 2);
+      ctxUI.strokeStyle = ringCol;
+      ctxUI.lineWidth = 2 * ts;
+      ctxUI.stroke();
+
+      if (f.bal < 0.55) {
+        ctxUI.beginPath();
+        const startAng = nowS * 3;
+        ctxUI.ellipse(pt.x, pt.y, ringR + 4 * ts, (ringR + 4 * ts) * 0.45, 0, startAng, startAng + Math.PI * (1 - f.bal));
+        ctxUI.strokeStyle = cb === 'deuteranopia' ? '#d4bb60' : (cb === 'protanopia' ? '#fde047' : '#b0492f');
+        ctxUI.lineWidth = 3 * ts;
+        ctxUI.stroke();
+      }
+    }
+    ctxUI.restore();
+  }
+}
 function updateHUD() {
   const M = G.match; if (!M || $('#hud').hidden) return;
   const tm = $('#hTime');
@@ -4912,7 +5120,7 @@ function recordFrame() {
   const slot = G.rec[G.recN % REC_N]; slot[0].set(M.f[0].rig.J); slot[1].set(M.f[1].rig.J); G.recHead = G.recN + 1; G.recN++;
 }
 function renderFrame(dt, nowS) {
-  const M = G.match; if (!M) { renderer.render(scene, camera); return; }
+  const M = G.match; if (!M) { renderCanvasUI(dt, nowS); renderer.render(scene, camera); return; }
   if (G.replay) {
     const rp = G.replay; rp.pos += dt * 60 * 0.42;
     const idx = (rp.start + Math.min(rp.n - 1, Math.floor(rp.pos))) % REC_N;
@@ -4966,6 +5174,7 @@ function renderFrame(dt, nowS) {
   if (AU.crowdG) AU.crowdG.gain.value = 0.03 + G.excite * 0.14;
   updateCamera(dt);
   updateHUD();
+  renderCanvasUI(dt, nowS);
   renderer.render(scene, camera);
 }
 
@@ -4998,6 +5207,14 @@ addEventListener('resize', resize);
 function resize() {
   const w = innerWidth, h = innerHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
   pMat.uniforms.scale.value = h * renderer.getPixelRatio() / (2 * Math.tan(camera.fov * Math.PI / 360));
+  if (canvasUI) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvasUI.width = Math.round(w * dpr);
+    canvasUI.height = Math.round(h * dpr);
+    if (ctxUI) {
+      ctxUI.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+  }
 }
 
 // ============================================================ auto bot (self test)
@@ -5028,7 +5245,9 @@ function autoDriver() {
 // ============================================================ boot
 function boot() {
   settings.quality = settings.quality === 'high' ? 'high' : 'low';
+  applyTextScale(settings.textScale || 1.0);
   buildScreens(); resize(); applyQuality(); syncSoundBtn();
+  applyColorBlind(settings.colorBlind || 'off');
   showScreen('title');
   startDemo();
   const bar = () => $('#loadI'); let step = 0; const N = 3;
@@ -5049,6 +5268,11 @@ function boot() {
   window.resolveMove = resolveMove;
   window.kirkpinar = {
     applyThrow, resolveMove,
+    setColorBlind: applyColorBlind,
+    setTextScale: (s) => { applyTextScale(s); saveSettings(); applyStaticText(); },
+    get colorBlind() { return settings.colorBlind || 'off'; },
+    get textScale() { return settings.textScale || 1.0; },
+    canvasUI,
     get state() { const M = G.match; return M ? { phase: M.phase, clock: M.clock, limit: M.limit, limits: CLASS_LIMIT, golden: M.golden, score: [M.f[0].score, M.f[1].score], states: M.f.map(f => f.state), bal: M.f.map(f => +f.bal.toFixed(2)), sta: M.f.map(f => +f.sta.toFixed(2)), result: M.result, tut: M.tut ? { att: M.tut.att, ph: M.tut.ph, beat: M.tut.beat, shown: M.tut.shown, flipped: M.tut.flipped, read: M.tut.read } : null, tutStats: Object.assign({}, M.stats), reads: M.f.map(f => f.reads), training: !!M.training } : null; },
     get screen() { return G.screen; }, get fps() { return G.fps; }, get drawCalls() { return renderer.info.render.calls; }, get triangles() { return renderer.info.render.triangles; },
     assets: G.assets, auto: G.autoStats, G, store, version: '2.0', get coach() { return G.coach; }, get belt() { return store.belt; }, get reducedMotion() { return RM; }, limits: CLASS_LIMIT, facts: FACTS.length, get errors() { return window.__errs || []; }, quality: () => settings.quality, humans: G.humans, scene,
