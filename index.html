@@ -2415,15 +2415,19 @@ class Match {
   }
   actStep(f, o, dt) {
     const a = f.act; a.t += dt;
-    if (!a.done && a.t >= a.hit) { a.done = true; this.resolveAct(f, o, a); }
+    if (!a.done && a.t >= a.hit) { a.done = true; this.resolveMove(f, o, a); }
     if (a.t >= a.dur) { f.act = null; }
   }
+  resolveMove(f, o, a) { return this.resolveAct(f, o, a); }
   resolveAct(f, o, a) {
     const tech = f.s.tech, dx = o.F.x, dz = o.F.z; // o.F points toward f; "back" for o is -o.F
     if (a.type === 'slam') {
       if (f.state !== 'carry') return;
       f.sta -= 0.1; this.stats.throws++;
-      if (f.bal > 0.2) { this.dropCarried(f, o, 'back', { peak: 2.0, air: 0.5, thrown: true, pts: 2, how: 'slam', dur: 0.6 }); }
+      if (f.bal > 0.2) {
+        this.dropCarried(f, o, 'back', { peak: 2.0, air: 0.5, thrown: true, pts: 2, how: 'slam', dur: 0.6 });
+        this.emit('throw', f.id, { type: 'slam', kind: 'back' });
+      }
       else { this.dropCarried(f, o, 'side', { pts: 0 }); f.lean.x += (this.rng() - 0.5) * 0.8; }
       f.state = 'stand'; f.stun = 0.7;
       return;
@@ -2488,7 +2492,7 @@ class Match {
     f.v.x += (mx * vmax - f.v.x) * Math.min(1, dt * 8);
     f.p.x += f.v.x * dt;
     const dd = Math.abs(f.v.x) * dt; f.carryDist += dd;
-    if (f.carryDist >= 0.7) { f.carryDist -= 0.7; f.carrySteps++; this.emit('carrystep', f.id, { n: f.carrySteps }); if (f.carrySteps >= 3 && play) { this.stats.throws++; f.throws++; this.dropCarried(f, o, 'back', { peak: 1.7, air: 0.25, thrown: true, pts: 0, how: 'carry', dur: 0.75 }); f.state = 'stand'; f.stun = 0.6; return; } }
+    if (f.carryDist >= 0.7) { f.carryDist -= 0.7; f.carrySteps++; this.emit('carrystep', f.id, { n: f.carrySteps }); if (f.carrySteps >= 3 && play) { this.stats.throws++; f.throws++; this.dropCarried(f, o, 'back', { peak: 1.7, air: 0.25, thrown: true, pts: 0, how: 'carry', dur: 0.75 }); this.emit('throw', f.id, { type: 'carry', kind: 'back' }); f.state = 'stand'; f.stun = 0.6; return; } }
     f.sta -= dt * 0.1;
     // slam
     if (can && ia.ctx && f.hint === 'slam') this.startAct(f, o, 'slam');
@@ -3518,8 +3522,8 @@ function makeRig(spec) {
   P.ftR = mk(ftG(), skinM, false); P.ftL = mk(ftG(), skinM, false);
   // runtime state
   return {
-    g, P, spec, s, skinM, headM, J: new Float32Array(66), feet: [{ x: 0, z: 0, fx: 0, fz: 0, tx: 0, tz: 0, t: 1, y: 0 }, { x: 0, z: 0, fx: 0, fz: 0, tx: 0, tz: 0, t: 1, y: 0 }],
-    rk: 0, init: false, whiffT: 0, whiffSide: 0, grabT: [0, 0], phase: Math.random() * 6
+    g, P, spec, s, skinM, headM, kispM, J: new Float32Array(66), feet: [{ x: 0, z: 0, fx: 0, fz: 0, tx: 0, tz: 0, t: 1, y: 0 }, { x: 0, z: 0, fx: 0, fz: 0, tx: 0, tz: 0, t: 1, y: 0 }],
+    rk: 0, init: false, whiffT: 0, whiffSide: 0, grabT: [0, 0], flashT: 0, phase: Math.random() * 6
   };
 }
 function disposeRig(r) {
@@ -4564,6 +4568,60 @@ function applyQuality() {
   setCrowdCount(HIGH() ? CROWD_ALL : Math.min(CROWD_ALL, CROWD_LOW));
 }
 
+// ============================================================ throw feedback & juice
+function flashRivalMaterial(rival) {
+  if (!rival) return;
+  if (rival.emissive) {
+    rival.emissive.setRGB(1.0, 0.95, 0.7);
+    rival.emissiveIntensity = 0.95;
+    return;
+  }
+  const r = rival.rig || (rival.skinM ? rival : null);
+  if (!r) return;
+  r.flashT = 0.28;
+  if (r.skinM) {
+    r.skinM.emissive.setRGB(1.0, 0.95, 0.7);
+    r.skinM.emissiveIntensity = 0.95;
+  }
+  if (r.headM) {
+    r.headM.emissive.setRGB(1.0, 0.95, 0.7);
+    r.headM.emissiveIntensity = 0.95;
+  }
+  if (r.kispM) {
+    r.kispM.emissive.set('#b0492f');
+    r.kispM.emissiveIntensity = 0.7;
+  }
+}
+
+function applyThrow(thrower, rival, type) {
+  const M = G.match;
+  const f = (typeof thrower === 'object' && thrower) ? thrower : (M ? M.f[typeof thrower === 'number' ? thrower : 0] : null);
+  const o = (typeof rival === 'object' && rival) ? rival : (f && M ? M.f[1 - f.id] : (M ? M.f[1] : null));
+
+  // 1. Trigger a short camera shake (scaled for reduced motion)
+  if (!RM) {
+    G.shake = Math.max(G.shake, 0.48);
+  } else {
+    G.shake = Math.max(G.shake, 0.15);
+  }
+
+  // 2. Play an audio thud via Web Audio API
+  if (AU) {
+    if (!AU.ctx) AU.init();
+    AU.play('thud', 1.25);
+    AU.play('whoosh', 0.6);
+  }
+
+  // 3. Flash the rival material emissive color briefly
+  if (o) {
+    flashRivalMaterial(o);
+  }
+}
+
+function resolveMove(thrower, rival, type) {
+  return applyThrow(thrower, rival, type);
+}
+
 // ============================================================ match events
 const isHuman = i => !!G.humans[i];
 function ptsOf(M) { return M.f[0].score + ' – ' + M.f[1].score; }
@@ -4580,7 +4638,13 @@ function handleEvents(M) {
       case 'step': if ((stepTick++ & 1) === 0) snd('step', 0.7); emitP(f.p.x, 0.05, f.p.z, 2, 0.8, '#b9a87a', 0.18, 0.6, 2); break;
       case 'trip': snd('whoosh', 0.7); snd('slap', 0.7); if (!G.demo) toast(t('tTrip'), 'info'); say('trip'); G.shake = Math.max(G.shake, 0.12); break;
       case 'windup': snd('grunt'); if (!G.demo) { toast(t(e.type), 'info'); if (h && G.coach && G.coach.on && G.coach.step === 3) coachAdvance(); } break;
-      case 'throw': snd('whoosh'); G.excite = 1; crowdFlash(4); G.shake = Math.max(G.shake, 0.3); if (!G.demo) say(e.type === 'caprast' ? 'caprast' : 'paca', true); emitP(o.p.x, 0.8, o.p.z, 8, 2.5, '#d9a441', 0.18, 0.7, 6); break;
+      case 'throw':
+        applyThrow(f, o, e.type);
+        G.excite = 1;
+        crowdFlash(4);
+        if (!G.demo && (e.type === 'caprast' || e.type === 'paca')) say(e.type, true);
+        emitP(o.p.x, 0.8, o.p.z, 8, 2.5, '#d9a441', 0.18, 0.7, 6);
+        break;
       case 'fail': if (h && !G.demo) toast(t('tFail'), 'bad'); break;
       case 'lift': snd('gasp'); G.excite = Math.max(G.excite, 0.8); if (!G.demo) { toast(t('tLift'), 'good'); say('lift', true); } break;
       case 'carrystep': snd('step'); G.shake = Math.max(G.shake, 0.1); if (!G.demo) toast(t('tStep') + ' ' + e.n + '/3', 'good'); if (e.n >= 3) say('carry', true); break;
@@ -4864,7 +4928,26 @@ function renderFrame(dt, nowS) {
     const f = M.f[i], r = f.rig, u = clamp((f.oil - 0.4) / 0.5, 0, 1); oilSum += u;
     r.skinM.roughness = lerp(0.58, 0.14, u); r.skinM.envMapIntensity = lerp(0.8, 2.2, u);
     r.headM.roughness = lerp(0.62, 0.2, u); r.headM.envMapIntensity = lerp(0.8, 1.8, u);
-    r.skinM.emissiveIntensity = r.headM.emissiveIntensity = 0.02 + 0.1 * u; // gold oil sheen
+    if (r.flashT > 0) {
+      r.flashT = Math.max(0, r.flashT - dt);
+      const k = r.flashT / 0.28;
+      // Impact flash: warm bright gold / white-hot burst transitioning to red-gold
+      r.skinM.emissive.setRGB(lerp(0.78, 1.0, k), lerp(0.61, 0.95, k), lerp(0.24, 0.7, k));
+      r.headM.emissive.setRGB(lerp(0.78, 1.0, k), lerp(0.61, 0.95, k), lerp(0.24, 0.7, k));
+      r.skinM.emissiveIntensity = r.headM.emissiveIntensity = (0.02 + 0.1 * u) + 0.85 * k;
+      if (r.kispM) {
+        r.kispM.emissive.set('#b0492f');
+        r.kispM.emissiveIntensity = 0.7 * k;
+      }
+    } else {
+      r.skinM.emissive.set('#c89b3c');
+      r.headM.emissive.set('#c89b3c');
+      r.skinM.emissiveIntensity = r.headM.emissiveIntensity = 0.02 + 0.1 * u; // gold oil sheen
+      if (r.kispM) {
+        r.kispM.emissive.set('#000000');
+        r.kispM.emissiveIntensity = 0;
+      }
+    }
   }
   oilMat.opacity = 0.4 + 0.3 * oilSum * 0.5;
   // lighting follows the pair
@@ -4962,7 +5045,10 @@ function boot() {
   requestAnimationFrame(frame);
   if (AUTO) setInterval(autoDriver, 400);
   const dtab = () => { const b = $('#bPlay'); };
+  window.applyThrow = applyThrow;
+  window.resolveMove = resolveMove;
   window.kirkpinar = {
+    applyThrow, resolveMove,
     get state() { const M = G.match; return M ? { phase: M.phase, clock: M.clock, limit: M.limit, limits: CLASS_LIMIT, golden: M.golden, score: [M.f[0].score, M.f[1].score], states: M.f.map(f => f.state), bal: M.f.map(f => +f.bal.toFixed(2)), sta: M.f.map(f => +f.sta.toFixed(2)), result: M.result, tut: M.tut ? { att: M.tut.att, ph: M.tut.ph, beat: M.tut.beat, shown: M.tut.shown, flipped: M.tut.flipped, read: M.tut.read } : null, tutStats: Object.assign({}, M.stats), reads: M.f.map(f => f.reads), training: !!M.training } : null; },
     get screen() { return G.screen; }, get fps() { return G.fps; }, get drawCalls() { return renderer.info.render.calls; }, get triangles() { return renderer.info.render.triangles; },
     assets: G.assets, auto: G.autoStats, G, store, version: '2.0', get coach() { return G.coach; }, get belt() { return store.belt; }, get reducedMotion() { return RM; }, limits: CLASS_LIMIT, facts: FACTS.length, get errors() { return window.__errs || []; }, quality: () => settings.quality, humans: G.humans, scene,
