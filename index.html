@@ -1327,6 +1327,111 @@ svg { display: block; }
 
 #fatal { position: fixed; inset: 0; z-index: 99; display: none; align-items: center; justify-content: center; background: #140d05; color: #f7ecd6; text-align: center; padding: 24px; font-size: 16px; }
 #dbg { position: fixed; left: 6px; bottom: 6px; z-index: 60; font: 11px/1.3 ui-monospace, Consolas, monospace; color: #9f9; background: rgba(0, 0, 0, 0.7); padding: 4px 7px; border-radius: 4px; pointer-events: none; max-width: 60vw; white-space: pre-wrap; }
+
+/* Move List Modal & Training Badges */
+#trainBadge {
+  position: fixed;
+  top: calc(72px + var(--sa-t));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  pointer-events: auto;
+}
+#trainBadge .btn {
+  min-height: 32px;
+  padding: 4px 14px;
+  font-size: 13px;
+  background: rgba(38, 26, 12, 0.94);
+  border: 1.5px solid var(--gold);
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--gold-light);
+}
+#trainBadge .btn:hover {
+  background: rgba(200, 155, 60, 0.22);
+  border-color: var(--gold-light);
+  color: #fff;
+}
+@media (max-width: 760px) {
+  #trainBadge { top: calc(60px + var(--sa-t)); }
+  #trainBadge .btn { min-height: 28px; padding: 3px 10px; font-size: 11.5px; }
+  .ibtn { width: 38px; height: 38px; font-size: 13px; }
+  .ibtn svg { width: 19px; height: 19px; }
+  #hud .topbar .acts { margin-right: 42px; gap: 4px; }
+}
+
+.move-card {
+  padding: 10px 14px;
+  border-radius: 4px;
+  background: rgba(22, 14, 6, 0.75);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+.move-card:hover {
+  border-color: var(--gold);
+  background: rgba(38, 26, 12, 0.9);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+}
+.move-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.move-name {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold-light);
+  letter-spacing: 0.02em;
+}
+.move-keys {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.move-cond {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: rgba(200, 155, 60, 0.18);
+  border: 1px solid var(--line);
+  color: var(--gold-light);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.move-desc {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--bone);
+  margin: 0;
+}
+.move-cat-title {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gold);
+  margin: 0 0 8px;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.move-cat-title::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--line-strong), transparent);
+}
 </style>
 <script>/*ARENA-KIT:BEGIN v1.0.1 sha256:bc575c398c95*/
 /* ARENA-KIT v1 — shared layer for the 21 Claude Game Arena games.
@@ -1729,6 +1834,7 @@ svg { display: block; }
       <span class="score" id="hScore">0 – 0</span>
     </div>
     <div class="acts">
+      <button class="ibtn" id="bMoveList" data-act="movelist" aria-label="Move List" title="Move List"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="14" y2="11"/></svg></button>
       <button class="ibtn" id="bPause" aria-label="Pause"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4.5" height="14" rx="1.2"/><rect x="13.5" y="5" width="4.5" height="14" rx="1.2"/></svg></button>
       <button class="ibtn" id="bLang" aria-label="Language">TR</button>
     </div>
@@ -1747,6 +1853,7 @@ svg { display: block; }
   <div id="hintline"></div>
   <div id="coach" hidden><div class="cs" id="coachSteps"></div><div class="cd"><span id="coachTxt"></span><button class="btn" id="bCoachSkip"></button></div></div>
   <div class="replaytag" id="replayTag" hidden><span class="rec"></span><span id="replayTxt"></span><button class="btn" id="bSkip" style="min-height:38px;padding:6px 14px"></button></div>
+  <div id="trainBadge" hidden><button class="btn" id="bTrainBadge" data-act="movelist"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span id="trainBadgeTxt"></span></button></div>
 </div>
 
 <div id="touch" hidden>
@@ -1860,6 +1967,7 @@ class Match {
     this.events = []; this.result = null; this.rng = mulberry(opts.seed || 1234); this.ground = null; this.endT = 0;
     this.stats = { throws: 0, tut: 0, counters: 0, tutSlips: 0 };
     this.tut = null; this.tutLock = 0; this.tutCd = 3; this.tutN = 0;
+    this.training = !!opts.training;
   }
   emit(t, w, x) { this.events.push(Object.assign({ t, w }, x || {})); }
   start() { if (this.phase === 'ready') { this.phase = 'play'; this.f[0].stun = this.f[1].stun = 0; } }
@@ -1909,8 +2017,13 @@ class Match {
     if (this.phase === 'play') {
       // sweat builds up
       for (const f of this.f) f.oil = Math.min(0.92, f.oil + dt * 0.0035);
-      if (f0.score !== f1.score && this.golden) this.winner(f0.score > f1.score ? 0 : 1, 'golden');
-      else if (this.clock >= (this.golden ? this.goldenLimit : this.limit)) this.timeUp();
+      if (this.training) {
+        f0.sta = Math.max(0.65, f0.sta);
+        f1.sta = 1.0;
+      } else {
+        if (f0.score !== f1.score && this.golden) this.winner(f0.score > f1.score ? 0 : 1, 'golden');
+        else if (this.clock >= (this.golden ? this.goldenLimit : this.limit)) this.timeUp();
+      }
     } else if (this.phase === 'ending') { this.endT += dt; if (this.endT > 1.2) this.phase = 'over'; }
   }
   timeUp() {
@@ -2141,7 +2254,17 @@ class Match {
     f.lean.x = f.lean.z = 0;
     const pts = opt.pts !== undefined ? opt.pts : 1;
     if (kind !== 'back') { o.score += pts; this.emit('knock', f.id, { kind, pts }); }
-    else { this.phase = this.phase === 'play' ? 'ending' : this.phase; this.endT = 0; this.emit('fallback', f.id, { thrown: !!opt.thrown }); this.pendingWinner = { w: o.id, how: opt.how || 'fall' }; }
+    else {
+      if (this.training) {
+        o.score += pts;
+        this.emit('knock', f.id, { kind: 'back', pts, how: opt.how || 'fall' });
+      } else {
+        this.phase = this.phase === 'play' ? 'ending' : this.phase;
+        this.endT = 0;
+        this.emit('fallback', f.id, { thrown: !!opt.thrown });
+        this.pendingWinner = { w: o.id, how: opt.how || 'fall' };
+      }
+    }
     this.emit('fall', f.id, { kind });
   }
   uFall(f, o, dt) {
@@ -2161,9 +2284,15 @@ class Match {
     if (fl.t >= fl.dur) {
       f.air = 0;
       if (fl.kind === 'back') {
-        f.state = 'down'; f.down = { kind: 'back', t: 0, dur: 99 };
-        this.emit('land', f.id, { kind: 'back' });
-        if (this.pendingWinner) { this.phase = 'ending'; const pw = this.pendingWinner; this.pendingWinner = null; this.winner(pw.w, pw.how); }
+        if (this.training) {
+          f.state = 'down'; f.stT = 0;
+          f.down = { kind: 'back', t: 0, dur: 1.8 };
+          this.emit('land', f.id, { kind: 'back' });
+        } else {
+          f.state = 'down'; f.down = { kind: 'back', t: 0, dur: 99 };
+          this.emit('land', f.id, { kind: 'back' });
+          if (this.pendingWinner) { this.phase = 'ending'; const pw = this.pendingWinner; this.pendingWinner = null; this.winner(pw.w, pw.how); }
+        }
       } else {
         f.state = 'down'; f.stT = 0;
         f.down = { kind: fl.kind, t: 0, dur: 1.6 + (1 - f.sta) * 0.9 };
@@ -2172,10 +2301,17 @@ class Match {
     }
   }
   uDown(f, o, ia, dt) {
-    const dn = f.down; if (dn.kind === 'back') return;
+    const dn = f.down; if (dn.kind === 'back' && !this.training) return;
     dn.t += dt;
     if (this.phase === 'play' && f.e.any) dn.t += 0.12;
-    if (dn.t >= dn.dur) { f.state = 'getup'; f.stT = 0; f.down = null; f.lean.x = f.lean.z = 0; this.emit('getup', f.id); f.stun = 0.3; }
+    if (dn.t >= dn.dur) {
+      f.state = 'getup'; f.stT = 0; f.down = null; f.lean.x = f.lean.z = 0;
+      if (this.training && f.id === 1) {
+        f.p.x = 1.15; f.p.z = 0;
+        this.f[0].sta = 1.0; f.sta = 1.0; f.oil = 0.42;
+      }
+      this.emit('getup', f.id); f.stun = 0.3;
+    }
   }
   // ---- context moves ----
   ctxAvail(f, o) {
@@ -2331,8 +2467,14 @@ class Match {
     d.roll = clamp(g.m, 0, 1);
     if (g.m >= 1) {
       this.stats.throws++; a.throws++; a.score += 2; this.ground = null; a.state = 'stand'; a.stun = 0.4;
-      d.state = 'down'; d.down = { kind: 'back', t: 0, dur: 99 }; d.roll = 1;
-      this.emit('kundewin', a.id); this.winner(a.id, 'kunde');
+      if (this.training) {
+        d.state = 'getup'; d.stT = 0; d.down = null; d.roll = 0;
+        this.emit('kundewin', a.id);
+        this.emit('knock', d.id, { kind: 'back', pts: 2, how: 'kunde' });
+      } else {
+        d.state = 'down'; d.down = { kind: 'back', t: 0, dur: 99 }; d.roll = 1;
+        this.emit('kundewin', a.id); this.winner(a.id, 'kunde');
+      }
     } else if (g.m <= 0 || g.t > 8) {
       this.ground = null; a.state = 'stand'; a.stun = 0.8; d.state = 'getup'; d.stT = 0; d.stun = 0.3; d.roll = 0; d.down = null;
       a.p.x += (a.p.x < d.p.x ? -1 : 1) * 0.3;
@@ -3583,7 +3725,25 @@ const TX = {
     oilLim: 'yağ sınırı', beltYear: 'Yıl {n} / 3', beltKept: 'Kemer kalıcı olarak senin', beltHall: 'Kemer salonu', abandonWarn: 'Devam eden kariyeri bırakmak kemer serisini sıfırlar.',
     a11y: 'Erişilebilirlik', share: 'Paylaş', anotherGame: 'Başka oyun', daily: 'Günün Meydan Okuması', dailyD: 'Herkese aynı rakip, sıklet ve tutuş; günde bir yeni eşleşme.',
     streakLine: 'Seri {s} gün · en iyi {b}', dailyDone: 'bugün tamam', shareWin: 'Kazandım: {how} · {time} · {pts}', shareLose: 'Kaybettim: {how} · {time} · {pts}', shareTitle: 'Başpehlivan oldum · {n} galibiyet',
-    awWin: 'Kırkpınar: ilk galibiyet', awTitle: 'Kırkpınar: Başpehlivan', awBelt: 'Kırkpınar: altın kemer'
+    awWin: 'Kırkpınar: ilk galibiyet', awTitle: 'Kırkpınar: Başpehlivan', awBelt: 'Kırkpınar: altın kemer',
+    training: 'Antrenman', trainingD: 'Hareketsiz rakiple tutuşları ve bitirici hamleleri risksiz dene.',
+    trainingSub: 'Hareketsiz kukla rakip · Süre sınırı yok', dummy: 'Kukla Pehlivan', practice: 'Serbest Güreş',
+    moveList: 'Hamle Listesi', moveListTitle: 'Güreş Hamleleri ve Tutuşlar', moveListSub: 'Er meydanında uygulanan geleneksel tutuş, çelme ve bitirici oyunlar',
+    close: 'Kapat', catGrips: 'Temel Tutuşlar', catBalance: 'Denge ve Yön Verme', catThrows: 'Bitirici Oyunlar ve Savurmalar', catTutus: 'Tutuş Dengesi',
+    hold: 'basılı', release: 'bırak',
+    mArm: 'Kol Tutuşu', mArmD: 'Rakibin kolundan kavrar. En hızlı tutuştur; rakibi çekip sarsmaya yarar.',
+    mWaist: 'Bel / Kuşak Tutuşu', mWaistD: 'Yakından bel veya kuşağı kavrar. Güçlü çekiş sağlar, kaldırma ve çaprast zeminidir.',
+    mKispet: 'Kıspet Tutuşu', mKispetD: 'Deri kıspetten kavrar. Yağdan en az kayan tutuştur; paça kazık hamlesini açar.',
+    mRelease: 'Tutuşu Bırakma', mReleaseD: 'Mevcut tutuşları bırakarak mesafeyi açar ve yorulmayı önler.',
+    mPull: 'Çekme', mPullD: 'Rakibi kendine doğru çekerek dengesini (altındaki baloncuk) bozar.',
+    mPush: 'İtme ve Yüklenme', mPushD: 'Rakibi geriye doğru iter. Baloncuğu geriye kaydırıp adım atmaya zorlar.',
+    mTrip: 'Ayak Kancası (Tırpan)', mTripD: 'Çömelerek rakibin ayağını tırpanlar; rakibin ayağı kilitlenir ve dengesi ani sarsılır.',
+    mPaca: 'Paça Kazık', mPacaCond: 'Kıspet tutuşu + Denge bozuk', mPacaD: 'Kıspetin paçasından kavrayıp bacağı yukarı çekerken gövdeyi ters yöne devirip sırtüstü yere serer.',
+    mCaprast: 'Çaprast', mCaprastCond: 'Kol & Bel tutuşu + Denge bozuk', mCaprastD: 'Bir elle kolu, diğeriyle beli çapraz kavrayıp kendi gövdesi etrafında savurarak sırtüstü fırlatır.',
+    mLift: 'Kaldırma ve Yere Çalma (Slam)', mLiftCond: 'Bel/kıspet tutuşu + Denge bozuk', mLiftD: 'Rakibi omuz hizasına kaldırır; 3 adım taşınırsa ya da havada R basılırsa yere sertçe çalar.',
+    mKunde: 'Kündeye Alma', mKundeCond: 'Rakip yerde yüzüstüyken', mKundeD: 'Yere düşen rakibin arkasından sarılıp kündeye alarak sırtını çayıra çevirir.',
+    mTutKeep: 'İmleci Dengeleme', mTutKeepD: 'Karşılıklı tutuşta imleci ortadaki altın alanda tut. Yağ arttıkça altın alan daralır.',
+    mTutRead: 'Rakibi Okuma ve Kontra', mTutReadD: 'Rakip yüklenirken niyetini doğru oku (çekecekse Çek, itecekse İt). Doğru okuma rakibi kontraya düşürür.'
   },
   en: {
     tagline: 'The spirit of oil wrestling', how: 'Grab the oiled kıspet, break your rival\'s balance, strike when the move lights up. A back on the grass loses.',
@@ -3627,7 +3787,25 @@ const TX = {
     oilLim: 'oil limit', beltYear: 'Year {n} of 3', beltKept: 'Belt kept for good', beltHall: 'Belt hall', abandonWarn: 'Abandoning a run in progress resets your belt streak.',
     a11y: 'Accessibility', share: 'Share', anotherGame: 'Another game', daily: 'Daily challenge', dailyD: 'Same rival, class and grip for everyone; a new pairing every day.',
     streakLine: 'Streak {s} · best {b}', dailyDone: 'done today', shareWin: 'Won: {how} · {time} · {pts}', shareLose: 'Lost: {how} · {time} · {pts}', shareTitle: 'Became Başpehlivan · {n} wins',
-    awWin: 'Kırkpınar: first win', awTitle: 'Kırkpınar: Başpehlivan', awBelt: 'Kırkpınar: golden belt'
+    awWin: 'Kırkpınar: first win', awTitle: 'Kırkpınar: Başpehlivan', awBelt: 'Kırkpınar: golden belt',
+    training: 'Training', trainingD: 'Practice grips and finishing moves against a stationary dummy rival.',
+    trainingSub: 'Stationary dummy rival · No time limit', dummy: 'Training Dummy', practice: 'Free Practice',
+    moveList: 'Move List', moveListTitle: 'Wrestling Moves & Grips', moveListSub: 'Traditional grips, balance trips, and finishing throws of Kırkpınar',
+    close: 'Close', catGrips: 'Basic Grips', catBalance: 'Balance & Pressure', catThrows: 'Finishing Throws & Slams', catTutus: 'Grip Balance',
+    hold: 'hold', release: 'release',
+    mArm: 'Arm / Sleeve Grip', mArmD: 'Grabs the rival’s arm. Fastest grip; used to steer and break balance.',
+    mWaist: 'Waist / Sash Grip', mWaistD: 'Grabs waist or belt at close range. Generates strong pull; foundation for lifts and throws.',
+    mKispet: 'Kıspet Leather Grip', mKispetD: 'Grabs the leather trouser. Least affected by oil; unlocks the paça kazık throw.',
+    mRelease: 'Release Grips', mReleaseD: 'Releases active holds to recover hand fatigue and create distance.',
+    mPull: 'Pull', mPullD: 'Pulls the rival toward you to shift their balance bubble forward until it breaks.',
+    mPush: 'Push & Drive', mPushD: 'Pushes the rival backward, forcing defensive footsteps and compromising balance.',
+    mTrip: 'Leg Hook (Trip)', mTripD: 'Crouched pull that hooks the rival’s leg, locking their foot and staggering balance.',
+    mPaca: 'Paça Kazık', mPacaCond: 'Kıspet grip + rival off balance', mPacaD: 'Reaches deep into the trouser hem to hoist the leg while driving the rival onto their back.',
+    mCaprast: 'Çaprast', mCaprastCond: 'Arm & waist grip + off balance', mCaprastD: 'Locks arm and waist across the chest, whipping the rival in a sweeping arc onto their back.',
+    mLift: 'Lift & Slam', mLiftCond: 'Waist/kıspet grip + off balance', mLiftD: 'Hoists rival onto shoulders; carries 3 steps or press R in mid-air to slam them onto the turf.',
+    mKunde: 'Künde Lock', mKundeCond: 'When rival is on the ground', mKundeD: 'Locks arms around a grounded rival’s torso from behind and levers them onto their back.',
+    mTutKeep: 'Balance Marker', mTutKeepD: 'Steer the marker inside the gold zone during mutual locks. Oil narrows the safe zone.',
+    mTutRead: 'Read & Counter', mTutReadD: 'Commit to reading the rival’s load (Pull if pulling, Push if pushing). Correct read triggers a counter.'
   }
 };
 const t = k => (TX[settings.lang] && TX[settings.lang][k]) || TX.en[k] || k;
@@ -3818,13 +3996,15 @@ function buildScreens() {
   mkScreen('title', 'grad', `<div class="title-wrap">${CREST}<h1>Kırkpınar</h1><div class="tag">${t('tagline')}</div><p class="how">${t('how')}</p>
     <div class="menu" id="mTitle"><div id="loadBox" style="width:100%"><div style="text-align:center;color:var(--ink2);font-size:14px" id="loadTxt">${t('loading')}</div><div class="loadbar"><i id="loadI"></i></div></div>
     ${menuBtn('play', store.run && store.run.wins > 0 ? t('contRun') : t('play'), 'primary', 'id="bPlay" hidden')}${store.run ? menuBtn('continue', t('cont'), 'gold', 'id="bCont" hidden') : ''}
+    <div class="row">${menuBtn('mode', t('more'), '', 'id="bMore"')}${menuBtn('training', t('training'), '', 'id="bTrainTitle"')}</div>
     <div class="row">${menuBtn('howto', t('howto'))}${menuBtn('settings', t('settings'))}</div>
-    <div class="row">${menuBtn('mode', t('more'), '', 'id="bMore"')}${menuBtn('lang', t('lang'))}</div></div><div class="dykline" id="loadDyk">${dykHtml(dykN % FACTS.length)}</div><div class="best">${bestTxt}</div></div>
+    <div class="row" style="justify-content:center">${menuBtn('lang', t('lang'))}</div></div><div class="dykline" id="loadDyk">${dykHtml(dykN % FACTS.length)}</div><div class="best">${bestTxt}</div></div>
     <div class="foot">Claude Game Arena · built by <a href="https://github.com/Furkiozknn" target="_blank" rel="noopener">Claude Sonnet 5.5</a></div>`);
   mkScreen('mode', 'grad', `<div class="panel glass"><h2>${t('modeTitle')}</h2><p class="sub">${t('modeSub')}</p><div class="cards" style="grid-template-columns:1fr">
     <button class="card" data-act="career"><b>${t('career')}</b><small>${t('careerD')}</small></button>
     <button class="card" data-act="quickcfg"><b>${t('quick')}</b><small>${t('quickD')}</small></button>
     <button class="card" data-act="versus"><b>${t('versus')}</b><small>${t('versusD')}</small></button>
+    <button class="card" data-act="training" id="bCardTraining"><b>${t('training')}</b><small>${t('trainingD')}</small></button>
     ${window.Arena ? (d => `<button class="card" data-act="daily"><b>${t('daily')}</b><small>${t('dailyD')} ${d.done ? t('dailyDone') + ' · ' : ''}${t('streakLine').replace('{s}', d.streak).replace('{b}', d.best)}</small></button>`)(Arena.daily()) : ''}</div>
     <div class="row">${menuBtn('title', t('back'))}</div></div>`);
   const cfg = G.quick;
@@ -3837,7 +4017,7 @@ function buildScreens() {
   mkScreen('versus', 'grad', `<div class="panel glass" id="versusBox"></div>`);
   mkScreen('result', 'dim', `<div class="panel glass res" id="resultBox"></div>`);
   mkScreen('ending', 'grad', `<div class="panel glass res" id="endingBox" style="text-align:center"></div><canvas id="confetti" style="position:fixed;inset:0;pointer-events:none;width:100%;height:100%"></canvas>`);
-  mkScreen('pause', 'dim', `<div class="panel glass"><h2>${t('paused')}</h2><div class="stack" style="margin-top:12px">${menuBtn('resume', t('resume'), 'primary')}${menuBtn('restart', t('restart'))}${menuBtn('settings', t('settings'))}${menuBtn('quit', t('mainMenu'))}</div></div>`);
+  mkScreen('pause', 'dim', `<div class="panel glass"><h2>${t('paused')}</h2><div class="stack" style="margin-top:12px">${menuBtn('resume', t('resume'), 'primary')}${menuBtn('movelist', t('moveList'), 'gold')}${menuBtn('restart', t('restart'))}${menuBtn('settings', t('settings'))}${menuBtn('quit', t('mainMenu'))}</div></div>`);
   mkScreen('settings', 'dim', `<div class="panel glass"><h2>${t('set')}</h2>
     <div class="field"><label for="sMaster">${t('master')}</label><input type="range" id="sMaster" min="0" max="1" step="0.05" value="${settings.master}"><span class="val" id="vMaster"></span></div>
     <div class="field"><label for="sMusic">${t('music')}</label><input type="range" id="sMusic" min="0" max="1" step="0.05" value="${settings.music}"><span class="val" id="vMusic"></span></div>
@@ -3860,6 +4040,37 @@ function buildScreens() {
     <tr><td>${t('kMute')}</td><td>${t('kMuteD')}</td></tr>
     <tr><td>${t('kLang')}</td><td><span class="kbd">L</span></td></tr></table>
     <div class="row" style="margin-top:12px">${menuBtn('howback', t('back'), 'primary')}</div></div>`);
+  const moveCard = (nameK, keysHtml, condK, descK) => `<div class="move-card"><div class="move-card-head"><div class="move-name">${t(nameK)}</div><div class="move-keys">${keysHtml}</div></div>${condK ? `<div class="move-cond">${t(condK)}</div>` : ''}<p class="move-desc">${t(descK)}</p></div>`;
+  const kbd = k => `<span class="kbd">${k}</span>`;
+  mkScreen('movelist', 'dim', `<div class="panel wide glass">
+    <h2>${t('moveListTitle')}</h2><p class="sub">${t('moveListSub')}</p>
+    <div class="move-cat-title">${t('catGrips')}</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:18px">
+      ${moveCard('mArm', `${kbd('W')} + ${kbd('F')}`, null, 'mArmD')}
+      ${moveCard('mWaist', `${kbd('F')}`, null, 'mWaistD')}
+      ${moveCard('mKispet', `${kbd('S')} + ${kbd('F')}`, null, 'mKispetD')}
+      ${moveCard('mRelease', `${kbd('F')} <small style="color:var(--ink2)">(${t('release')})</small>`, null, 'mReleaseD')}
+    </div>
+    <div class="move-cat-title">${t('catBalance')}</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:18px">
+      ${moveCard('mPull', `${kbd('G')}`, null, 'mPullD')}
+      ${moveCard('mPush', `${kbd('H')}`, null, 'mPushD')}
+      ${moveCard('mTrip', `${kbd('S')} + ${kbd('G')}`, null, 'mTripD')}
+    </div>
+    <div class="move-cat-title">${t('catThrows')}</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:18px">
+      ${moveCard('mPaca', `${kbd('R')}`, 'mPacaCond', 'mPacaD')}
+      ${moveCard('mCaprast', `${kbd('R')}`, 'mCaprastCond', 'mCaprastD')}
+      ${moveCard('mLift', `${kbd('H')} <small style="color:var(--ink2)">(${t('hold')})</small> / ${kbd('R')}`, 'mLiftCond', 'mLiftD')}
+      ${moveCard('mKunde', `${kbd('R')}`, 'mKundeCond', 'mKundeD')}
+    </div>
+    <div class="move-cat-title">${t('catTutus')}</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-bottom:18px">
+      ${moveCard('mTutKeep', `${kbd('A')} ${kbd('D')}`, null, 'mTutKeepD')}
+      ${moveCard('mTutRead', `${kbd('G')} / ${kbd('H')}`, null, 'mTutReadD')}
+    </div>
+    <div class="row" style="margin-top:14px;justify-content:center">${menuBtn('closemovelist', t('close'), 'primary')}</div>
+  </div>`);
   applyStaticText();
 }
 function applyStaticText() {
@@ -3871,12 +4082,15 @@ function applyStaticText() {
   $('#hintline').textContent = G.versus ? t('hint2') : t('hint1');
   $('#tbCtxT').textContent = G.ctxName ? t(G.ctxName) : t('bMove');
   $('#bPause').setAttribute('aria-label', t('paused')); $('#bLang').setAttribute('aria-label', t('language')); $('#bCoachSkip').textContent = t('coachSkip'); syncSoundBtn();
+  const bMl = $('#bMoveList'); if (bMl) { bMl.setAttribute('aria-label', t('moveList')); bMl.setAttribute('title', t('moveList')); }
+  const tbTxt = $('#trainBadgeTxt'); if (tbTxt) tbTxt.textContent = t('training') + ' · ' + t('moveList');
   for (const [id, key] of [['Master', 'master'], ['Music', 'music'], ['Sfx', 'sfx']]) { const v = $('#v' + id); if (v) v.textContent = Math.round(settings[key] * 100); }
 }
 function showScreen(name) {
-  for (const k in SCREENS) SCREENS[k].hidden = (k !== name && !(name === 'settings' && k === G.settingsFrom && G.settingsFrom === 'pause'));
-  if (name && name !== 'settings' && name !== 'howto') G.screen = name;
+  for (const k in SCREENS) SCREENS[k].hidden = (k !== name && !(name === 'settings' && k === G.settingsFrom && G.settingsFrom === 'pause') && !(name === 'movelist' && k === G.movelistFrom));
+  if (name && name !== 'settings' && name !== 'howto' && name !== 'movelist') G.screen = name;
   if (name === 'settings') { SCREENS.settings.hidden = false; }
+  if (name === 'movelist') { SCREENS.movelist.hidden = false; }
 }
 // Belt hall strip: pips for the years won, the real rule from the facts table (index 3), engraved belt once kept.
 function beltHallHtml(yearN) {
@@ -3929,7 +4143,7 @@ const specOf = i => G.match.specs ? G.match.specs[i] : G.cfg.specs[i];
 function disposeRigs() { if (G.match) for (const f of G.match.f) if (f.rig) { disposeRig(f.rig); f.rig = null; } }
 function setupMatch(cfg) {
   disposeRigs(); G.cfg = cfg;
-  const M = new Match(cfg.specs, { limit: cfg.limit || 90, golden: 45, seed: cfg.seed || (Math.random() * 1e6) | 0 }); M.specs = cfg.specs; // daily: fixed seed
+  const M = new Match(cfg.specs, { limit: cfg.limit || 90, golden: 45, seed: cfg.seed || (Math.random() * 1e6) | 0, training: !!cfg.training }); M.specs = cfg.specs; // daily: fixed seed
   for (let i = 0; i < 2; i++) { M.f[i].rig = makeRig(cfg.specs[i]); }
   G.match = M; G.humans = cfg.humans.slice();
   G.brains = [0, 1].map(i => G.humans[i] ? null : new Brain(Object.assign({}, cfg.specs[i], { level: cfg.levels[i] }), cfg.brainSeed ? cfg.brainSeed + i : (Math.random() * 1e6) | 0));
@@ -3951,7 +4165,15 @@ function startMatch(cfg) {
   $('#hintline').textContent = G.versus ? t('hint2') : t('hint1');
   MUS.intense = 1;
   $('#touch').hidden = !(IS_TOUCH && !G.versus);
-  banner(t('set1')); showIntro(cfg); if (cfg.factIdx >= 0) say('fact', true, FACTS[cfg.factIdx]); else say('intro', true); AU.play('whistle', 0.5);
+  if (cfg.mode === 'training') {
+    G.match.start();
+    $('#trainBadge').hidden = false;
+    const tbTxt = $('#trainBadgeTxt'); if (tbTxt) tbTxt.textContent = t('training') + ' · ' + t('moveList');
+    banner(t('training')); showIntro(cfg); say('intro', true); AU.play('whistle', 0.5);
+  } else {
+    $('#trainBadge').hidden = true;
+    banner(t('set1')); showIntro(cfg); if (cfg.factIdx >= 0) say('fact', true, FACTS[cfg.factIdx]); else say('intro', true); AU.play('whistle', 0.5);
+  }
   if (AUTO && Q.get('sim')) { const n = +Q.get('sim'); if (n > 0) setTimeout(() => window.kirkpinarSim(n), 50); }
 }
 function showIntro(cfg) {
@@ -3965,7 +4187,11 @@ function startDemo() {
   setupMatch({ specs: [a, b], humans: [false, false], levels: [0.8, 0.8], mode: 'demo' });
   G.match.start(); G.recOn = false; MUS.intense = 0;
 }
-function setHUD(on) { $('#hud').hidden = !on; $('#hud').classList.remove('rp', 'nofb'); }
+function setHUD(on) {
+  $('#hud').hidden = !on;
+  $('#hud').classList.remove('rp', 'nofb');
+  $('#trainBadge').hidden = !on || G.mode !== 'training';
+}
 
 // ---- first-bout coach: four steps that tick on real input; the bot never gets one
 const COACH_STEPS = [['cGrab', 'F', 'coachD0'], ['cPull', 'G', 'coachD1'], ['cCrouch', 'S', 'coachD2'], ['cStrike', 'R', 'coachD3']];
@@ -4050,6 +4276,7 @@ addEventListener('keydown', e => {
   if (c === 'KeyP' || c === 'Escape') {
     if (!SCREENS.settings.hidden) { onAct('setback'); e.preventDefault(); return; }
     if (!SCREENS.howto.hidden) { onAct('howback'); e.preventDefault(); return; }
+    if (SCREENS.movelist && !SCREENS.movelist.hidden) { onAct('closemovelist'); e.preventDefault(); return; }
     if (G.screen === 'play' || G.screen === 'pause') { togglePause(); e.preventDefault(); }
     return;
   }
@@ -4159,6 +4386,16 @@ function dailyMatch() {
     limit: CLASS_LIMIT[cls], clsName: t(CLASSES[cls].id), roundName: t('daily'), title: t('daily'), sub: t(CLASSES[cls].id) + ' · ' + day };
   G.pendingVersus = cfg; renderVersus(cfg); showScreen('versus');
 }
+function trainingMatch() {
+  G.mode = 'training';
+  const you = makeSpec(t('you'), 'balanced', 2, 0.72, store.belt.kept ? '#E9B44C' : '#2563EB', SKINS[0]);
+  const dummy = makeSpec(t('dummy'), 'defensive', 2, 0.5, '#78716c', SKINS[2], 1.0);
+  const cfg = {
+    specs: [you, dummy], humans: [!AUTO, false], levels: [0.7, 0.1], mode: 'training', training: true,
+    limit: 9999, clsName: t('training'), roundName: t('practice'), title: t('training'), sub: t('trainingSub')
+  };
+  startMatch(cfg);
+}
 function goTitle() {
   G.paused = false; G.pendingVersus = null; $('#touch').hidden = true; setHUD(false); showScreen('title'); G.screen = 'title'; startDemo(); MUS.intense = 0;
   buildScreensKeep();
@@ -4173,6 +4410,18 @@ function onAct(act, el) {
     case 'continue': if (store.run) { G.mode = 'career'; openLadder(); } break;
     case 'howto': G.settingsFrom = G.screen; SCREENS.howto.hidden = false; $('#s-howto .btn').focus(); break;
     case 'howback': SCREENS.howto.hidden = true; break;
+    case 'movelist':
+      G.movelistFrom = G.screen;
+      if (G.screen === 'play') G.paused = true;
+      SCREENS.movelist.hidden = false;
+      const bMlFirst = SCREENS.movelist.querySelector('button');
+      if (bMlFirst) bMlFirst.focus();
+      break;
+    case 'closemovelist':
+      SCREENS.movelist.hidden = true;
+      if (G.movelistFrom === 'play') G.paused = false;
+      break;
+    case 'training': trainingMatch(); break;
     case 'settings': G.settingsFrom = G.screen === 'pause' ? 'pause' : G.screen; SCREENS.settings.hidden = false; SCREENS.settings.querySelector('input').focus(); break;
     case 'setback': SCREENS.settings.hidden = true; break;
     case 'lang': toggleLang(); break;
@@ -4208,6 +4457,10 @@ function onAct(act, el) {
 scr.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (b && !b.disabled) onAct(b.dataset.act, b); else if (G.vsAuto > 0 && G.screen === 'versus') onAct('vsGo'); // any click on the versus card starts the bout
+});
+$('#hud').addEventListener('click', e => {
+  const b = e.target.closest('[data-act]');
+  if (b && !b.disabled) onAct(b.dataset.act, b);
 });
 scr.addEventListener('input', e => {
   const id = e.target.id; if (!id) return;
@@ -4277,7 +4530,7 @@ function simStep(dt) {
     G.introT += dt;
     if (G.introT > 2.6) { M.start(); banner(t('go')); if (!(G.cfg && G.cfg.factIdx >= 0)) say('start', true); AU.play('whistle'); G.excite = 0.5; }
   }
-  for (let i = 0; i < 2; i++) _simInp[i] = G.humans[i] ? readInput(i) : G.brains[i].tick(M, M.f[i], M.f[1 - i], dt);
+  for (let i = 0; i < 2; i++) _simInp[i] = (M.training && i === 1) ? NOINP : (G.humans[i] ? readInput(i) : G.brains[i].tick(M, M.f[i], M.f[1 - i], dt));
   M.step(dt, _simInp);
   if (G.coach) coachTick(M, _simInp[0], dt);
   oilStampT -= dt; // stains are stamped in sim time (a few times a second), so fast-forwarding paints them too
@@ -4441,9 +4694,15 @@ function projectTo(el, x, y, z, dy) {
 }
 function updateHUD() {
   const M = G.match; if (!M || $('#hud').hidden) return;
-  const left = M.golden ? M.goldenLimit - M.clock : M.limit - M.clock;
-  const tm = $('#hTime'); tm.firstChild.nodeValue = fmtTime(M.phase === 'ready' ? (M.golden ? M.goldenLimit : M.limit) : left); tm.classList.toggle('low', left < 10 && M.phase === 'play');
-  $('#hGold').textContent = M.golden ? t('golden') : '';
+  const tm = $('#hTime');
+  if (M.training) {
+    tm.firstChild.nodeValue = '∞'; tm.classList.remove('low');
+    $('#hGold').textContent = t('training');
+  } else {
+    const left = M.golden ? M.goldenLimit - M.clock : M.limit - M.clock;
+    tm.firstChild.nodeValue = fmtTime(M.phase === 'ready' ? (M.golden ? M.goldenLimit : M.limit) : left); tm.classList.toggle('low', left < 10 && M.phase === 'play');
+    $('#hGold').textContent = M.golden ? t('golden') : '';
+  }
   for (let i = 0; i < 2; i++) {
     const f = M.f[i], b = $('#fb' + i);
     b.querySelector('.st i').style.width = Math.round(f.sta * 100) + '%'; b.querySelector('.st').classList.toggle('low', f.sta < 0.25);
@@ -4586,13 +4845,17 @@ function finishAutoMatch() {
 function autoDriver() {
   const st = G.autoStats; if (st.done) return;
   const s = G.screen;
-  if (s === 'title' && G.ready) { const b = Q.get('mode') === 'quick' ? $('#bMore') : $('#bPlay'); if (b && !b.hidden) b.click(); }
+  if (s === 'title' && G.ready) {
+    if (Q.get('mode') === 'training') { const b = $('#bTrainTitle'); if (b && !b.hidden) b.click(); return; }
+    const b = Q.get('mode') === 'quick' ? $('#bMore') : $('#bPlay'); if (b && !b.hidden) b.click();
+  }
   else if (s === 'mode') { if (Q.get('mode') === 'quick') $('[data-act="quickcfg"]').click(); else $('[data-act="career"]').click(); }
   else if (s === 'quick') { $('[data-act="qstart"]').click(); }
   else if (s === 'ladder') { $('[data-act="ladderGo"]').click(); }
   else if (s === 'versus') { $('[data-act="vsGo"]').click(); }
   else if (s === 'ending') { st.done = true; st.titles = store.best.titles; }
   else if (s === 'result' && G.match && G.match.result && Q.get('mode') === 'quick') { st.done = true; }
+  else if (s === 'play' && G.match && G.match.training && Q.get('mode') === 'training') { st.done = true; }
 }
 
 // ============================================================ boot
@@ -4616,9 +4879,10 @@ function boot() {
   if (AUTO) setInterval(autoDriver, 400);
   const dtab = () => { const b = $('#bPlay'); };
   window.kirkpinar = {
-    get state() { const M = G.match; return M ? { phase: M.phase, clock: M.clock, limit: M.limit, limits: CLASS_LIMIT, golden: M.golden, score: [M.f[0].score, M.f[1].score], states: M.f.map(f => f.state), bal: M.f.map(f => +f.bal.toFixed(2)), sta: M.f.map(f => +f.sta.toFixed(2)), result: M.result, tut: M.tut ? { att: M.tut.att, ph: M.tut.ph, beat: M.tut.beat, shown: M.tut.shown, flipped: M.tut.flipped, read: M.tut.read } : null, tutStats: Object.assign({}, M.stats), reads: M.f.map(f => f.reads) } : null; },
+    get state() { const M = G.match; return M ? { phase: M.phase, clock: M.clock, limit: M.limit, limits: CLASS_LIMIT, golden: M.golden, score: [M.f[0].score, M.f[1].score], states: M.f.map(f => f.state), bal: M.f.map(f => +f.bal.toFixed(2)), sta: M.f.map(f => +f.sta.toFixed(2)), result: M.result, tut: M.tut ? { att: M.tut.att, ph: M.tut.ph, beat: M.tut.beat, shown: M.tut.shown, flipped: M.tut.flipped, read: M.tut.read } : null, tutStats: Object.assign({}, M.stats), reads: M.f.map(f => f.reads), training: !!M.training } : null; },
     get screen() { return G.screen; }, get fps() { return G.fps; }, get drawCalls() { return renderer.info.render.calls; }, get triangles() { return renderer.info.render.triangles; },
-    assets: G.assets, auto: G.autoStats, G, store, version: '2.0', get coach() { return G.coach; }, get belt() { return store.belt; }, get reducedMotion() { return RM; }, limits: CLASS_LIMIT, facts: FACTS.length, get errors() { return window.__errs || []; }, quality: () => settings.quality, humans: G.humans, scene
+    assets: G.assets, auto: G.autoStats, G, store, version: '2.0', get coach() { return G.coach; }, get belt() { return store.belt; }, get reducedMotion() { return RM; }, limits: CLASS_LIMIT, facts: FACTS.length, get errors() { return window.__errs || []; }, quality: () => settings.quality, humans: G.humans, scene,
+    startTraining: trainingMatch, openMoveList: () => onAct('movelist'), get training() { return !!(G.match && G.match.training); }
   };
 }
 boot();
