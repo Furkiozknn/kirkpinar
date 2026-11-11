@@ -2847,11 +2847,44 @@ const settings = Object.assign({ master: 0.8, music: 0.6, sfx: 0.8, muted: false
 if (Q.get('lang') === 'en' || Q.get('lang') === 'tr') settings.lang = Q.get('lang');
 if (LOWQ) settings.quality = 'low';
 const saveSettings = () => LS.set('arena.kirkpinar.settings', settings);
-const store = Object.assign({ run: null, best: { fastest: 0, titles: 0, wins: 0, points: 0 }, coachDone: false, belt: { streak: 0, kept: false } }, LS.get('arena.kirkpinar.save', {}));
+const store = Object.assign({ run: null, career: null, best: { fastest: 0, titles: 0, wins: 0, points: 0 }, coachDone: false, belt: { streak: 0, kept: false } }, LS.get('arena.kirkpinar.save', {}));
 store.best = Object.assign({ fastest: 0, titles: 0, wins: 0, points: 0 }, store.best || {});
 store.belt = Object.assign({ streak: 0, kept: false }, store.belt || {}); // v2: golden belt streak (old saves have none)
 if (DEBUG && Q.has('belt')) { store.belt.streak = clamp((+Q.get('belt')) | 0, 0, 3); store.belt.kept = store.belt.streak >= 3; }
-const saveStore = () => { if (!AUTO) LS.set('arena.kirkpinar.save', store); };
+// Resume/merge career state if present from arena.kirkpinar.career or arena.kirkpinar.save
+const savedCareer = LS.get('arena.kirkpinar.career', null);
+if (!store.run && savedCareer) {
+  store.run = Object.assign({ midCareer: true }, savedCareer);
+}
+if (store.run) {
+  const r = store.run;
+  if (r.class !== undefined && r.ci === undefined) r.ci = r.class;
+  if (r.boutIndex !== undefined && r.oi === undefined) r.oi = r.boutIndex;
+  r.ci = clamp(r.ci || 0, 0, 4);
+  r.oi = clamp(r.oi || 0, 0, (LADDER[r.ci] ? LADDER[r.ci].length - 1 : 3));
+  r.class = r.ci;
+  r.boutIndex = r.oi;
+  r.wins = r.wins || 0;
+  r.losses = r.losses || 0;
+  store.career = { class: r.class, boutIndex: r.boutIndex, wins: r.wins, losses: r.losses };
+}
+const saveStore = () => {
+  if (store.run) {
+    const r = store.run;
+    r.class = r.ci = (r.class !== undefined ? r.class : r.ci) || 0;
+    r.boutIndex = r.oi = (r.boutIndex !== undefined ? r.boutIndex : r.oi) || 0;
+    r.wins = r.wins || 0;
+    r.losses = r.losses || 0;
+    store.career = { class: r.class, boutIndex: r.boutIndex, wins: r.wins, losses: r.losses };
+  } else {
+    store.career = null;
+  }
+  if (!AUTO) {
+    if (store.career) LS.set('arena.kirkpinar.career', store.career);
+    else { try { localStorage.removeItem('arena.kirkpinar.career'); } catch (e) {} }
+    LS.set('arena.kirkpinar.save', store);
+  }
+};
 
 // ============================================================ audio (all synthesised)
 const AU = {
@@ -3920,7 +3953,8 @@ const TX = {
     live: 'CANLI', cazgir: 'Cazgır', fatalNoGL: 'WebGL kullanılamıyor.',
     soundOn: 'Ses açık', soundOff: 'Ses kapalı', fsOn: 'Tam ekran', loadingAssets: 'Meydan hazırlanıyor…',
     mass: 'Sıklet',
-    contRun: 'Devam', more: 'Diğer modlar', vsStart: 'Başlıyor… (geçmek için tıkla)', boutLen: 'Güreş süresi', secs: ' sn', dyk: 'Biliyor muydun?',
+    continueCareer: 'Kariyer Devam',
+    contRun: 'Kariyer Devam', more: 'Diğer modlar', vsStart: 'Başlıyor… (geçmek için tıkla)', boutLen: 'Güreş süresi', secs: ' sn', dyk: 'Biliyor muydun?',
     coachSkip: 'İpuçlarını geç', coachDone: 'Tamam, hazırsın!', cGrab: 'Tut', cPull: 'Çek', cCrouch: 'Çömel', cStrike: 'Vur',
     coachD0: 'Rakibe yaklaş ve kavra', coachD1: 'Çek: rakibin baloncuğu kızarana kadar', coachD2: 'Çömel: daha dengeli durursun', coachD3: 'Hamle yanınca vur',
     mute: 'Sesi kapat', unmute: 'Sesi aç', kMusic: 'Müzik aç / kapat', kSfx: 'Efektleri aç / kapat', kMute: 'Hoparlör düğmesi', kMuteD: 'Tüm sesi kapat (kayıtlı)', kPause: 'Duraklat', kLang: 'Dil',
@@ -3983,7 +4017,8 @@ const TX = {
     live: 'LIVE', cazgir: 'Announcer', fatalNoGL: 'WebGL is not available.',
     soundOn: 'Sound on', soundOff: 'Sound off', fsOn: 'Fullscreen', loadingAssets: 'Preparing the field…',
     mass: 'Weight',
-    contRun: 'Continue', more: 'More modes', vsStart: 'Starting… (click to skip)', boutLen: 'Bout length', secs: ' s', dyk: 'Did you know?',
+    continueCareer: 'Continue Career',
+    contRun: 'Continue Career', more: 'More modes', vsStart: 'Starting… (click to skip)', boutLen: 'Bout length', secs: ' s', dyk: 'Did you know?',
     coachSkip: 'Skip tips', coachDone: 'Nice, you are ready!', cGrab: 'Grab', cPull: 'Pull', cCrouch: 'Crouch', cStrike: 'Strike',
     coachD0: 'Close in on your rival and grab', coachD1: 'Pull until the rival’s bubble turns red', coachD2: 'Crouch: you stand steadier', coachD3: 'Strike when the move lights up',
     mute: 'Mute', unmute: 'Unmute', kMusic: 'Music on / off', kSfx: 'Effects on / off', kMute: 'Speaker button', kMuteD: 'Mute everything (saved)', kPause: 'Pause', kLang: 'Language',
@@ -4199,9 +4234,10 @@ function menuBtn(act, label, cls, extra) { return `<button class="btn ${cls || '
 function buildScreens() {
   for (const k in SCREENS) SCREENS[k].remove();
   const best = store.best; const bestTxt = (best.wins || best.titles) ? `${t('best')}: ${best.wins} ${t('bestWins')} · ${best.titles} ${t('bestTitles')}${best.fastest ? ' · ' + fmtTime(best.fastest) + ' ' + t('bestFast') : ''}` : '';
+  const hasCareer = !!(store.run && (store.run.midCareer || store.run.wins > 0 || store.run.losses > 0 || (store.run.ci || store.run.class || 0) > 0 || (store.run.oi || store.run.boutIndex || 0) > 0));
   mkScreen('title', 'grad', `<div class="title-wrap">${CREST}<h1>Kırkpınar</h1><div class="tag">${t('tagline')}</div><p class="how">${t('how')}</p>
     <div class="menu" id="mTitle"><div id="loadBox" style="width:100%"><div style="text-align:center;color:var(--ink2);font-size:14px" id="loadTxt">${t('loading')}</div><div class="loadbar"><i id="loadI"></i></div></div>
-    ${menuBtn('play', store.run && store.run.wins > 0 ? t('contRun') : t('play'), 'primary', 'id="bPlay" hidden')}${store.run ? menuBtn('continue', t('cont'), 'gold', 'id="bCont" hidden') : ''}
+    ${menuBtn(hasCareer ? 'continueCareer' : 'play', hasCareer ? t('continueCareer') : t('play'), 'primary', 'id="bPlay" hidden')}${store.run ? menuBtn('continue', t('cont'), 'gold', 'id="bCont" hidden') : ''}
     <div class="row">${menuBtn('mode', t('more'), '', 'id="bMore"')}${menuBtn('training', t('training'), '', 'id="bTrainTitle"')}</div>
     <div class="row">${menuBtn('howto', t('howto'))}${menuBtn('settings', t('settings'))}</div>
     <div class="row" style="justify-content:center">${menuBtn('lang', t('lang'))}</div></div><div class="dykline" id="loadDyk">${dykHtml(dykN % FACTS.length)}</div><div class="best">${bestTxt}</div></div>
@@ -4547,22 +4583,50 @@ function rebuild() {
   if (vis.includes('ending') && G.lastEndingFn) { G.lastEndingFn(); SCREENS.ending.hidden = false; }
 }
 function careerSpecs() {
-  const run = store.run, ci = run.ci, oi = run.oi, o = LADDER[ci][oi];
+  const run = store.run;
+  if (run.class !== undefined && run.ci === undefined) run.ci = run.class;
+  if (run.boutIndex !== undefined && run.oi === undefined) run.oi = run.boutIndex;
+  const ci = clamp((run.class !== undefined ? run.class : run.ci) || 0, 0, 4);
+  const maxOi = LADDER[ci] ? LADDER[ci].length - 1 : 0;
+  const oi = clamp((run.boutIndex !== undefined ? run.boutIndex : run.oi) || 0, 0, maxOi);
+  run.ci = run.class = ci;
+  run.oi = run.boutIndex = oi;
+  const o = LADDER[ci][oi];
   const you = makeSpec(t('you'), 'balanced', ci, 0.72, store.belt.kept ? '#E9B44C' : '#2563EB', SKINS[0]); // the kept belt turns the player's belt and armband gold
   const opp = makeSpec(o[0], o[1], ci, o[2], o[3], SKINS[(ci + oi + 1) % 5], 0.97 + 0.03 * oi);
   return { you, opp, level: o[2], o };
 }
-function openLadder() { if (!store.run) { store.run = { ci: 0, oi: 0, wins: 0 }; saveStore(); } renderLadder(); showScreen('ladder'); G.pendingVersus = null; G.vsAuto = 0; }
-// Play: straight to the current rung; the versus card starts the bout after 2.5 s or on any click
-function playCareer() {
+function openLadder() { if (!store.run) { store.run = { ci: 0, oi: 0, class: 0, boutIndex: 0, wins: 0, losses: 0, midCareer: false }; saveStore(); } renderLadder(); showScreen('ladder'); G.pendingVersus = null; G.vsAuto = 0; }
+// Continue / Play career: jumps directly to the saved bout
+function continueCareer() {
   G.mode = 'career';
-  if (!store.run) { store.run = { ci: 0, oi: 0, wins: 0 }; saveStore(); }
-  careerMatch(); G.vsAuto = 2.5; renderVersus(G.pendingVersus);
+  if (!store.run) {
+    const saved = LS.get('arena.kirkpinar.save', null);
+    if (saved && saved.run) store.run = saved.run;
+  }
+  if (!store.run) { store.run = { ci: 0, oi: 0, class: 0, boutIndex: 0, wins: 0, losses: 0, midCareer: false }; saveStore(); }
+  const run = store.run;
+  if (run.class !== undefined && run.ci === undefined) run.ci = run.class;
+  if (run.boutIndex !== undefined && run.oi === undefined) run.oi = run.boutIndex;
+  if (run.ci !== undefined && run.class === undefined) run.class = run.ci;
+  if (run.oi !== undefined && run.boutIndex === undefined) run.boutIndex = run.oi;
+  run.ci = clamp(run.ci || 0, 0, 4);
+  run.oi = clamp(run.oi || 0, 0, (LADDER[run.ci] ? LADDER[run.ci].length - 1 : 3));
+  run.class = run.ci;
+  run.boutIndex = run.oi;
+  run.wins = run.wins || 0;
+  run.losses = run.losses || 0;
+  careerMatch();
+  G.vsAuto = 2.5;
+  renderVersus(G.pendingVersus);
   if (!AUTO) { const b = SCREENS.versus.querySelector('[data-act="vsGo"]'); if (b) b.focus(); }
+}
+function playCareer() {
+  continueCareer();
 }
 function newCareer() {
   if (store.run && store.run.wins > 0 && !store.belt.kept) store.belt.streak = 0; // abandoning a run resets the belt streak
-  store.run = { ci: 0, oi: 0, wins: 0 }; saveStore(); G.mode = 'career'; openLadder();
+  store.run = { ci: 0, oi: 0, class: 0, boutIndex: 0, wins: 0, losses: 0, midCareer: false }; saveStore(); G.mode = 'career'; openLadder();
 }
 function careerMatch() {
   const { you, opp, level } = careerSpecs(); const run = store.run; G.vsAuto = 0;
@@ -4615,7 +4679,10 @@ function onAct(act, el) {
   AU.init(); AU.play('ui');
   const v = el && el.dataset ? el.dataset.v : null;
   switch (act) {
-    case 'play': playCareer(); break;
+    case 'play':
+    case 'continueCareer':
+      continueCareer();
+      break;
     case 'continue': if (store.run) { G.mode = 'career'; openLadder(); } break;
     case 'howto': G.settingsFrom = G.screen; SCREENS.howto.hidden = false; $('#s-howto .btn').focus(); break;
     case 'howback': SCREENS.howto.hidden = true; break;
@@ -4850,16 +4917,39 @@ function showResult() {
   const youWin = G.versus ? null : R.winner === 0;
   G.screen = 'result'; $('#touch').hidden = true; setHUD(true); $('#hud').classList.add('nofb'); MUS.intense = 0;
   let newRec = false, promoted = '', endGame = false;
-  if (!G.versus && youWin) {
-    store.best.wins++; if (!store.best.fastest || M.total < store.best.fastest) { store.best.fastest = Math.round(M.total); newRec = true; }
+  if (!G.versus) {
     if (cfg.mode === 'career' && store.run) {
-      const run = store.run; if (cfg.coach) store.coachDone = true; run.oi++; run.wins++;
-      if (run.oi >= LADDER[run.ci].length) { run.ci++; run.oi = 0; if (run.ci < 5) promoted = t('promoted') + t(CLASSES[run.ci].id); else endGame = true; }
+      const run = store.run;
+      run.class = run.ci = (run.class !== undefined ? run.class : run.ci) || 0;
+      run.boutIndex = run.oi = (run.boutIndex !== undefined ? run.boutIndex : run.oi) || 0;
+      run.wins = run.wins || 0;
+      run.losses = run.losses || 0;
+      run.midCareer = true;
+      if (youWin) {
+        store.best.wins++;
+        if (!store.best.fastest || M.total < store.best.fastest) { store.best.fastest = Math.round(M.total); newRec = true; }
+        if (cfg.coach) store.coachDone = true;
+        run.oi++;
+        run.wins++;
+        if (run.oi >= LADDER[run.ci].length) {
+          run.ci++;
+          run.oi = 0;
+          if (run.ci < 5) promoted = t('promoted') + t(CLASSES[run.ci].id);
+          else endGame = true;
+        }
+        run.class = run.ci;
+        run.boutIndex = run.oi;
+      } else {
+        run.losses++;
+      }
+    } else if (youWin) {
+      store.best.wins++;
+      if (!store.best.fastest || M.total < store.best.fastest) { store.best.fastest = Math.round(M.total); newRec = true; }
     }
   }
   if (G.coach) { G.coach.on = false; renderCoach(); }
   if (endGame) { // a finished career is one year of the belt; the third year in a row keeps it for good
-    store.best.titles++; store.run = null; store.belt.streak = Math.min(3, store.belt.streak + 1); if (store.belt.streak >= 3) store.belt.kept = true;
+    store.best.titles++; store.run = null; store.career = null; store.belt.streak = Math.min(3, store.belt.streak + 1); if (store.belt.streak >= 3) store.belt.kept = true;
   }
   const dykI = nextDyk();
   saveStore();
@@ -5268,6 +5358,8 @@ function boot() {
   window.resolveMove = resolveMove;
   window.kirkpinar = {
     applyThrow, resolveMove,
+    continueCareer, playCareer,
+    get career() { return store.career || (store.run ? { class: store.run.class, boutIndex: store.run.boutIndex, wins: store.run.wins, losses: store.run.losses } : null); },
     setColorBlind: applyColorBlind,
     setTextScale: (s) => { applyTextScale(s); saveSettings(); applyStaticText(); },
     get colorBlind() { return settings.colorBlind || 'off'; },
