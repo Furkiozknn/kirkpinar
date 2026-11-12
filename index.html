@@ -2889,8 +2889,14 @@ const saveStore = () => {
 // ============================================================ audio (all synthesised)
 const AU = {
   ctx: null, master: null, mus: null, sfx: null, noise: null, musicOn: true, sfxOn: true, crowdG: null, excite: 0,
+  resume() {
+    // Resume whenever state is not 'running' (e.g. 'suspended' or iOS 'interrupted'), unless paused or muted
+    if (!this.ctx || this.ctx.state === 'running' || document.hidden) return;
+    if ((typeof G !== 'undefined' && (G.paused || G.screen === 'pause')) || settings.muted || (!this.musicOn && !this.sfxOn)) return;
+    Promise.resolve(this.ctx.resume()).catch(() => {});
+  },
   init() {
-    if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
+    if (this.ctx) { this.resume(); return; }
     try {
       const C = window.AudioContext || window.webkitAudioContext; if (!C) return;
       const c = this.ctx = new C();
@@ -2913,6 +2919,7 @@ const AU = {
     this.master.gain.value = settings.muted ? 0 : settings.master;
     this.mus.gain.value = this.musicOn ? settings.music * 0.6 : 0;
     this.sfx.gain.value = this.sfxOn ? settings.sfx : 0;
+    this.resume();
   },
   tone(f, dur, type, vol, slide, when, dest) {
     const c = this.ctx; if (!c) return; const t = (when || c.currentTime);
@@ -3003,7 +3010,11 @@ function musicSched() {
   }
 }
 setInterval(musicSched, 60);
-document.addEventListener('visibilitychange', () => { if (AU.ctx) { if (document.hidden) AU.ctx.suspend(); else AU.ctx.resume(); } });
+document.addEventListener('visibilitychange', () => {
+  if (!AU.ctx) return;
+  if (document.hidden) Promise.resolve(AU.ctx.suspend()).catch(() => {});
+  else AU.resume();
+});
 
 // ============================================================ renderer / scene
 const canvas = $('#c');
@@ -4401,8 +4412,8 @@ function setupMatch(cfg) {
   G.matchLogT = 0; G.coach = null; renderCoach(); oilClear();
 }
 function startMatch(cfg) {
-  AU.init();
   G.demo = false; G.paused = false; G.mode = cfg.mode; G.versus = !!cfg.versus;
+  AU.init();
   setupMatch(cfg); G.vsAuto = 0;
   G.coach = cfg.coach && !store.coachDone ? { on: true, step: 0, pullT: 0, crouchT: 0 } : null; renderCoach();
   showScreen(null); G.screen = 'play'; setHUD(true);
@@ -4559,7 +4570,7 @@ addEventListener('blur', () => { keys.clear(); touch.mx = touch.up = touch.down 
 // ============================================================ flow
 function togglePause() {
   if (G.screen === 'play') { G.paused = true; G.screen = 'pause'; keys.clear(); showScreen('pause'); SCREENS.pause.querySelector('button').focus(); }
-  else if (G.screen === 'pause') { G.paused = false; G.screen = 'play'; showScreen(null); }
+  else if (G.screen === 'pause') { G.paused = false; G.screen = 'play'; showScreen(null); AU.resume(); }
 }
 function toggleLang() { settings.lang = settings.lang === 'tr' ? 'en' : 'tr'; saveSettings(); rebuild(); }
 function syncSoundBtn() {
@@ -4671,6 +4682,7 @@ function trainingMatch() {
 }
 function goTitle() {
   G.paused = false; G.pendingVersus = null; $('#touch').hidden = true; setHUD(false); showScreen('title'); G.screen = 'title'; startDemo(); MUS.intense = 0;
+  AU.resume();
   buildScreensKeep();
 }
 function buildScreensKeep() { const vis = !G.ready; rebuild(); SCREENS.title.hidden = false; for (const k in SCREENS) if (k !== 'title') SCREENS[k].hidden = true; if (vis) { /* keep loading */ } }
@@ -4695,7 +4707,7 @@ function onAct(act, el) {
       break;
     case 'closemovelist':
       SCREENS.movelist.hidden = true;
-      if (G.movelistFrom === 'play') G.paused = false;
+      if (G.movelistFrom === 'play') { G.paused = false; AU.resume(); }
       break;
     case 'training': trainingMatch(); break;
     case 'settings': G.settingsFrom = G.screen === 'pause' ? 'pause' : G.screen; SCREENS.settings.hidden = false; SCREENS.settings.querySelector('input').focus(); break;
