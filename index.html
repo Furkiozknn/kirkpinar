@@ -2392,8 +2392,16 @@ class Match {
     if (dn.t >= dn.dur) {
       f.state = 'getup'; f.stT = 0; f.down = null; f.lean.x = f.lean.z = 0;
       if (this.training && f.id === 1) {
-        f.p.x = 1.15; f.p.z = 0;
-        this.f[0].sta = 1.0; f.sta = 1.0; f.oil = 0.42;
+        // Only reposition the training dummy when out of bounds or overlapping the player
+        if (Math.abs(f.p.x) > 9.5 || Math.abs(f.p.z) > 1.8 || Math.hypot(f.p.x - o.p.x, f.p.z - o.p.z) < 0.9) {
+          f.p.x = clamp(f.p.x, -9.5, 9.5); f.p.z = 0;
+          if (Math.hypot(f.p.x - o.p.x, f.p.z - o.p.z) < 0.9) {
+            const sgn = f.p.x >= o.p.x ? 1 : -1;
+            const dir = Math.abs(o.p.x + sgn * 1.15) > 9.5 ? -sgn : sgn;
+            f.p.x = o.p.x + dir * 1.15;
+          }
+        }
+        this.f[0].sta = 1.0; f.sta = 1.0; this.f[0].oil = 0.42; f.oil = 0.42;
       }
       this.emit('getup', f.id); f.stun = 0.3;
     }
