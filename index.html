@@ -471,6 +471,18 @@ svg { display: block; }
   .fbar .pts { font-size: calc(18px * var(--hud-text-scale, 1)); }
   .fbar .lab { display: none; }
   .meter { height: 7px; }
+  /* Yazı denetimi (2026-11): üst çubuk uzayınca isim/güç kutularını örtüyordu; çubuğun ölçülen alt kenarının altına */
+  .fbar { top: calc(var(--tbb, 62px) + 6px); }
+}
+/* Yazı denetimi (2026-11): 480 px'ten dar telefonda üst çubuk sığmıyordu ('4 – 0' dikine eziliyor, 'Tur' simgeye biniyordu):
+   tur/süre/skor ikinci satıra iner */
+@media (max-width: 480px) {
+  .topbar { flex-wrap: wrap; row-gap: 4px; }
+  .stats { order: 3; flex: 1 0 100%; justify-content: center; padding-bottom: 2px; }
+  .stats > * { flex: none; }
+  .score { white-space: nowrap; }
+  .acts { margin-left: auto; }
+  .lt .ltp b { white-space: normal; font-size: 16px; line-height: 1.1; }
 }
 
 /* Balance Bubble */
@@ -5666,6 +5678,15 @@ function boot() {
 }
 boot();
 
+</script>
+<script>
+// Üst çubuğun alt kenarı (--tbb): telefonda isim/güç kutuları onun altına yerleşir.
+(() => {
+  const set = () => { const t = document.querySelector('#hud .topbar'); if (!t) return; const b = t.getBoundingClientRect().bottom; if (b > 0) document.documentElement.style.setProperty('--tbb', Math.round(b) + 'px'); };
+  const t = document.querySelector('#hud .topbar');
+  if (t && window.ResizeObserver) new ResizeObserver(set).observe(t);
+  addEventListener('resize', set); set();
+})();
 </script>
 </body>
 </html>
