@@ -4699,6 +4699,14 @@ function statBars(sp) {
   const rows = [['strength', sp.str / 1.4], ['speed', sp.spd / 1.3], ['defense', sp.def / 1.4], ['tech', sp.tech / 1.4]];
   return '<div class="statbars">' + rows.map(r => `<div><span>${t(r[0])}</span><em><i style="width:${Math.round(clamp(r[1], 0.1, 1) * 100)}%"></i></em></div>`).join('') + '</div>';
 }
+// Portals (arena-kit v1.3 Arena.portal): an interstitial may play between matches (rematch / retry / again), on the
+// result screen where the game already waits. Without a portal the action runs synchronously, exactly as before.
+let breakBusy = false;
+function afterBreak(f) {
+  if (!(window.Arena && Arena.portal && Arena.portal.name !== 'none')) return f(); // own site: synchronous, as before
+  if (breakBusy) return; breakBusy = true;
+  Arena.portal.midgame().catch(() => false).then(() => { breakBusy = false; f(); });
+}
 function menuBtn(act, label, cls, extra) { return `<button class="btn ${cls || ''}" data-act="${act}" ${extra || ''}>${label}</button>`; }
 
 function buildScreens() {
@@ -5195,11 +5203,11 @@ function onAct(act, el) {
     case 'resume': togglePause(); break;
     case 'restart': startMatch(G.cfg); break;
     case 'quit': goTitle(); break;
-    case 'rematch': startMatch(G.cfg); break;
+    case 'rematch': afterBreak(() => startMatch(G.cfg)); break;
     case 'nextmatch': if (store.run) openLadder(); else goTitle(); break;
-    case 'retry': careerMatch(); break;
+    case 'retry': afterBreak(careerMatch); break;
     case 'ending': showEnding(); break;
-    case 'again': if (G.cfg.mode === 'career') careerMatch(); else startMatch(G.cfg); break;
+    case 'again': afterBreak(() => { if (G.cfg.mode === 'career') careerMatch(); else startMatch(G.cfg); }); break;
   }
 }
 scr.addEventListener('click', e => {
