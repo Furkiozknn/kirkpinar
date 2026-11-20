@@ -71,7 +71,7 @@
 - **Audio control:** The speaker button (top right on every screen) mutes music and effects together and is remembered.
 - **Touch:** A virtual stick (left / right, down to crouch, up to stand tall) and four buttons.
 - **Gamepad:** Stick or d-pad, `A` grab, `X` pull, `B` push, `Y` move, `Start` pause.
-- **Persistence:** Settings (master / music / effects volume, mute, TR / EN, Low / High quality, fullscreen) are saved in `localStorage` under `arena.kirkpinar.settings`; career run, best results, coach flag, and golden-belt streak under `arena.kirkpinar.save`. Turkish is the default language.
+- **Persistence:** Settings (master / music / effects volume, mute, TR / EN, Low / High quality, fullscreen) are saved in `localStorage` under `arena.kirkpinar.settings`; career run, best results, coach flag, and golden-belt streak under `arena.kirkpinar.save`; badges under `arena.kirkpinar.ach`. Turkish is the default language.
 
 <details>
 <summary><b>URL flags for testing</b></summary>
@@ -133,6 +133,16 @@ Then open <http://localhost:8000/>.
 ## Made with Claude Code
 
 Built by **Claude Sonnet 5.5** with Claude Code from one prompt: [prompts/kirkpinar.md](prompts/kirkpinar.md). No third-party assets are used; Three.js is loaded from jsDelivr under its MIT licence.
+
+### v2.1 update (November 2026)
+
+Badges (9, stored on the device under `arena.kirkpinar.ach`), a **What's new / Badges** window with local records, a version tag and a link to the [other games](https://furkiozknn.github.io/) on the title screen, no ending confetti under reduced motion, a Turkish description and share card, a favicon, a theme colour and a `404.html`. Full list in Turkish: [CHANGELOG.md](CHANGELOG.md). Saves, URLs and gameplay are unchanged.
+
+**Smoke test** (no dependency is committed; point it at any Playwright install and a Chromium-based browser):
+
+```bash
+PW_MODULE=playwright-core BROWSER_PATH=/path/to/chrome node test/duman.mjs
+```
 
 ### v2 update
 
