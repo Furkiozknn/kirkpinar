@@ -5,15 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Kırkpınar</title>
 <meta name="arena-game" content="kirkpinar">
-<meta name="description" content="A 3D physics oil-wrestling game from the Kırkpınar tradition: grip, pull and throw on the oiled grass, all the way to the golden belt. Plays in the browser.">
+<meta name="description" content="Kırkpınar geleneğinden esinlenen 3D fizikli yağlı güreş oyunu: tut, çek, it ve çal; altın kemere giden kariyer, günün meydan okuması ve rozetler. Tarayıcıda, telefonda da oynanır.">
+<meta name="theme-color" content="#140d05">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23140d05'/%3E%3Cpath d='M32 10l6 14 15 1-11 10 4 15-14-8-14 8 4-15L11 25l15-1z' fill='%23c89b3c'/%3E%3C/svg%3E">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Kırkpınar">
-<meta property="og:description" content="A 3D physics oil-wrestling game from the Kırkpınar tradition: grip, pull and throw on the oiled grass, all the way to the golden belt. Plays in the browser.">
+<meta property="og:description" content="Kırkpınar geleneğinden esinlenen 3D fizikli yağlı güreş oyunu: tut, çek, it ve çal; altın kemere giden kariyer, günün meydan okuması ve rozetler. Tarayıcıda, telefonda da oynanır.">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:site_name" content="Claude Game Arena">
 <meta property="og:url" content="https://furkiozknn.github.io/kirkpinar/">
 <meta property="og:image" content="https://furkiozknn.github.io/kirkpinar/docs/card.jpg">
 <meta property="og:image:width" content="960">
 <meta property="og:image:height" content="540">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Kırkpınar">
+<meta name="twitter:description" content="Kırkpınar geleneğinden esinlenen 3D fizikli yağlı güreş oyunu: tut, çek, it ve çal; altın kemere giden kariyer, günün meydan okuması ve rozetler. Tarayıcıda, telefonda da oynanır.">
+<meta name="twitter:image" content="https://furkiozknn.github.io/kirkpinar/docs/card.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;0,800;1,400;1,700&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
@@ -4434,6 +4441,9 @@ const TX = {
     oilLim: 'yağ sınırı', beltYear: 'Yıl {n} / 3', beltKept: 'Kemer kalıcı olarak senin', beltHall: 'Kemer salonu', abandonWarn: 'Devam eden kariyeri bırakmak kemer serisini sıfırlar.',
     a11y: 'Erişilebilirlik', share: 'Paylaş', anotherGame: 'Başka oyun', daily: 'Günün Meydan Okuması', dailyD: 'Herkese aynı rakip, sıklet ve tutuş; günde bir yeni eşleşme.',
     streakLine: 'Seri {s} gün · en iyi {b}', dailyDone: 'bugün tamam', shareWin: 'Kazandım: {how} · {time} · {pts}', shareLose: 'Kaybettim: {how} · {time} · {pts}', shareTitle: 'Başpehlivan oldum · {n} galibiyet',
+    newsBtn: 'Yenilikler · Rozetler', newsTitle: 'Yenilikler', newsVer: 'Sürüm 2.1 · Kasım 2026', badgesTitle: 'Rozetler', recordsTitle: 'Rekorlar (bu cihazda)', moreGames: 'Diğer oyunlar', achNew: 'Yeni rozet: ', locked: 'Kilitli', recWins: 'Galibiyet', recTitles: 'Başpehlivanlık', recFast: 'En hızlı galibiyet', recStreak: 'Üst üste galibiyet',
+    nw1: 'Rozetler: ilk galibiyet, künde, yere çalma, günün pehlivanı ve altın kemer gibi 9 rozet; bu cihazda saklanır.', nw2: 'Rekorlar bu pencerede: galibiyet, başpehlivanlık, en hızlı galibiyet ve üst üste galibiyet.', nw3: 'Başlık ekranında sürüm etiketi ve "Diğer oyunlar" bağlantısı.', nw4: 'Azaltılmış hareket açıkken bitiş konfetisi artık çıkmıyor.', nw5: 'Sayfa: Türkçe açıklama, paylaşım kartı, simge, tema rengi ve 404 sayfası.',
+    ach_first: 'İlk Galibiyet', ach_firstD: 'Bir güreşi kazan.', ach_fast: 'Şimşek', ach_fastD: '25 saniyede ya da daha kısa sürede kazan.', ach_kunde: 'Künde Ustası', ach_kundeD: 'Rakibi künde ile yen.', ach_throw: 'Yere Çalan', ach_throwD: 'Yere çalarak ya da taşıyarak kazan.', ach_streak3: 'Üçleme', ach_streak3D: 'Üst üste 3 güreş kazan.', ach_daily: 'Günün Pehlivanı', ach_dailyD: 'Günün meydan okumasını kazan.', ach_ten: 'On Galibiyet', ach_tenD: 'Toplam 10 güreş kazan.', ach_title: 'Başpehlivan', ach_titleD: 'Kariyeri bitir.', ach_belt: 'Altın Kemer', ach_beltD: 'Kemeri kalıcı olarak kazan.',
     awWin: 'Kırkpınar: ilk galibiyet', awTitle: 'Kırkpınar: Başpehlivan', awBelt: 'Kırkpınar: altın kemer',
     training: 'Antrenman', trainingD: 'Hareketsiz rakiple tutuşları ve bitirici hamleleri risksiz dene.',
     trainingSub: 'Hareketsiz kukla rakip · Süre sınırı yok', dummy: 'Kukla Pehlivan', practice: 'Serbest Güreş',
@@ -4498,6 +4508,9 @@ const TX = {
     oilLim: 'oil limit', beltYear: 'Year {n} of 3', beltKept: 'Belt kept for good', beltHall: 'Belt hall', abandonWarn: 'Abandoning a run in progress resets your belt streak.',
     a11y: 'Accessibility', share: 'Share', anotherGame: 'Another game', daily: 'Daily challenge', dailyD: 'Same rival, class and grip for everyone; a new pairing every day.',
     streakLine: 'Streak {s} · best {b}', dailyDone: 'done today', shareWin: 'Won: {how} · {time} · {pts}', shareLose: 'Lost: {how} · {time} · {pts}', shareTitle: 'Became Başpehlivan · {n} wins',
+    newsBtn: "What's new · Badges", newsTitle: "What's new", newsVer: 'Version 2.1 · November 2026', badgesTitle: 'Badges', recordsTitle: 'Records (on this device)', moreGames: 'More games', achNew: 'New badge: ', locked: 'Locked', recWins: 'Wins', recTitles: 'Titles', recFast: 'Fastest win', recStreak: 'Win streak',
+    nw1: 'Badges: 9 badges such as first win, künde, slam, daily champion and the golden belt, kept on this device.', nw2: 'Records in this window: wins, titles, fastest win and win streak.', nw3: 'A version tag on the title screen and a "More games" link.', nw4: 'The ending confetti no longer plays when reduced motion is on.', nw5: 'Page: description, share card, icon, theme colour and a 404 page.',
+    ach_first: 'First Win', ach_firstD: 'Win a bout.', ach_fast: 'Lightning', ach_fastD: 'Win in 25 seconds or less.', ach_kunde: 'Künde Master', ach_kundeD: 'Win by künde.', ach_throw: 'The Slammer', ach_throwD: 'Win by a slam or a carry.', ach_streak3: 'Hat-trick', ach_streak3D: 'Win 3 bouts in a row.', ach_daily: "Day's Pehlivan", ach_dailyD: 'Win the daily challenge.', ach_ten: 'Ten Wins', ach_tenD: 'Win 10 bouts in total.', ach_title: 'Başpehlivan', ach_titleD: 'Finish the career.', ach_belt: 'Golden Belt', ach_beltD: 'Keep the belt for good.',
     awWin: 'Kırkpınar: first win', awTitle: 'Kırkpınar: Başpehlivan', awBelt: 'Kırkpınar: golden belt',
     training: 'Training', trainingD: 'Practice grips and finishing moves against a stationary dummy rival.',
     trainingSub: 'Stationary dummy rival · No time limit', dummy: 'Training Dummy', practice: 'Free Practice',
@@ -4709,6 +4722,32 @@ function afterBreak(f) {
 }
 function menuBtn(act, label, cls, extra) { return `<button class="btn ${cls || ''}" data-act="${act}" ${extra || ''}>${label}</button>`; }
 
+// ---- v2.1 rozetler ve rekorlar: yalniz yeni anahtar arena.kirkpinar.ach; mevcut kayita dokunmaz
+const ACH_IDS = ['first', 'fast', 'kunde', 'throw', 'streak3', 'daily', 'ten', 'title', 'belt'];
+const ach = Object.assign({ got: {}, streak: 0, bestStreak: 0 }, LS.get('arena.kirkpinar.ach', {}));
+function checkAch(youWin, M, R, cfg, endGame) {
+  if (AUTO || G.versus || cfg.training || cfg.mode === 'training') return [];
+  ach.streak = youWin ? (ach.streak || 0) + 1 : 0; ach.bestStreak = Math.max(ach.bestStreak || 0, ach.streak);
+  const now = [], give = id => { if (!ach.got[id]) { ach.got[id] = Date.now(); now.push(id); } };
+  if (youWin) {
+    give('first'); if (M.total <= 25) give('fast'); if (R.how === 'kunde') give('kunde'); if (R.how === 'slam' || R.how === 'carry') give('throw');
+    if (ach.streak >= 3) give('streak3'); if (cfg.mode === 'daily') give('daily'); if (store.best.wins >= 10) give('ten');
+  }
+  if (endGame) { give('title'); if (store.belt.kept) give('belt'); }
+  LS.set('arena.kirkpinar.ach', ach);
+  return now;
+}
+function newsHtml() {
+  const b = store.best, got = ach.got || {}, n = ACH_IDS.filter(i => got[i]).length;
+  return `<h2>${t('newsTitle')}</h2><p class="sub">${t('newsVer')}</p>
+    <ul class="sub" style="margin:0 0 12px;padding-left:20px">${[1, 2, 3, 4, 5].map(i => '<li>' + t('nw' + i) + '</li>').join('')}</ul>
+    <div class="move-cat-title">${t('badgesTitle')} ${n}/${ACH_IDS.length}</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-bottom:12px">${ACH_IDS.map(i => `<div class="move-card" style="opacity:${got[i] ? 1 : 0.55}"><div class="move-name">${got[i] ? '★ ' : '☆ '}${t('ach_' + i)}</div><div class="move-cond">${got[i] ? t('ach_' + i + 'D') : t('locked') + ' · ' + t('ach_' + i + 'D')}</div></div>`).join('')}</div>
+    <div class="move-cat-title">${t('recordsTitle')}</div>
+    <div class="kv"><div><b>${b.wins || 0}</b><small>${t('recWins')}</small></div><div><b>${b.titles || 0}</b><small>${t('recTitles')}</small></div><div><b>${b.fastest ? fmtTime(b.fastest) : '–'}</b><small>${t('recFast')}</small></div><div><b>${ach.bestStreak || 0}</b><small>${t('recStreak')}</small></div></div>
+    <div class="row" style="margin-top:12px">${menuBtn('newsback', t('back'), 'primary')}<a class="btn" id="bHub" style="text-decoration:none" href="https://furkiozknn.github.io/" target="_blank" rel="noopener">${t('moreGames')}</a></div>`;
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && SCREENS.news && !SCREENS.news.hidden) { SCREENS.news.hidden = true; e.stopPropagation(); e.preventDefault(); } }, true);
 function buildScreens() {
   for (const k in SCREENS) SCREENS[k].remove();
   const best = store.best; const bestTxt = (best.wins || best.titles) ? `${t('best')}: ${best.wins} ${t('bestWins')} · ${best.titles} ${t('bestTitles')}${best.fastest ? ' · ' + fmtTime(best.fastest) + ' ' + t('bestFast') : ''}` : '';
@@ -4718,8 +4757,8 @@ function buildScreens() {
     ${menuBtn(hasCareer ? 'continueCareer' : 'play', hasCareer ? t('continueCareer') : t('play'), 'primary', 'id="bPlay" hidden')}${store.run ? menuBtn('continue', t('cont'), 'gold', 'id="bCont" hidden') : ''}
     <div class="row">${menuBtn('mode', t('more'), '', 'id="bMore"')}${menuBtn('training', t('training'), '', 'id="bTrainTitle"')}</div>
     <div class="row">${menuBtn('howto', t('howto'))}${menuBtn('settings', t('settings'))}</div>
-    <div class="row" style="justify-content:center">${menuBtn('lang', t('lang'))}</div></div><div class="dykline" id="loadDyk">${dykHtml(dykN % FACTS.length)}</div><div class="best">${bestTxt}</div></div>
-    <div class="foot">Claude Game Arena · built by <a href="https://github.com/Furkiozknn" target="_blank" rel="noopener">Claude Sonnet 5.5</a></div>`);
+    <div class="row">${menuBtn('news', t('newsBtn'))}${menuBtn('lang', t('lang'))}</div></div><div class="dykline" id="loadDyk">${dykHtml(dykN % FACTS.length)}</div><div class="best">${bestTxt}</div></div>
+    <div class="foot">v2.1 · ${settings.lang === 'tr' ? 'Kasım 2026' : 'Nov 2026'} · <a href="https://furkiozknn.github.io/" target="_blank" rel="noopener">${t('moreGames')}</a> · Claude Game Arena · built by <a href="https://github.com/Furkiozknn" target="_blank" rel="noopener">Claude Sonnet 5.5</a></div>`);
   mkScreen('mode', 'grad', `<div class="panel glass"><h2>${t('modeTitle')}</h2><p class="sub">${t('modeSub')}</p><div class="cards" style="grid-template-columns:1fr">
     <button class="card" data-act="career"><b>${t('career')}</b><small>${t('careerD')}</small></button>
     <button class="card" data-act="quickcfg"><b>${t('quick')}</b><small>${t('quickD')}</small></button>
@@ -4764,6 +4803,7 @@ function buildScreens() {
     <div class="row" style="margin-top:12px">${menuBtn('howback', t('back'), 'primary')}</div></div>`);
   const moveCard = (nameK, keysHtml, condK, descK) => `<div class="move-card"><div class="move-card-head"><div class="move-name">${t(nameK)}</div><div class="move-keys">${keysHtml}</div></div>${condK ? `<div class="move-cond">${t(condK)}</div>` : ''}<p class="move-desc">${t(descK)}</p></div>`;
   const kbd = k => `<span class="kbd">${k}</span>`;
+  mkScreen('news', 'dim', `<div class="panel wide glass" id="newsBox"></div>`);
   mkScreen('movelist', 'dim', `<div class="panel wide glass">
     <h2>${t('moveListTitle')}</h2><p class="sub">${t('moveListSub')}</p>
     <div class="move-cat-title">${t('catGrips')}</div>
@@ -5164,6 +5204,8 @@ function onAct(act, el) {
       break;
     case 'continue': if (store.run) { G.mode = 'career'; openLadder(); } break;
     case 'howto': G.settingsFrom = G.screen; SCREENS.howto.hidden = false; $('#s-howto .btn').focus(); break;
+    case 'news': $('#newsBox').innerHTML = newsHtml(); SCREENS.news.hidden = false; $('#newsBox .btn').focus(); break;
+    case 'newsback': SCREENS.news.hidden = true; break;
     case 'howback': SCREENS.howto.hidden = true; break;
     case 'movelist':
       G.movelistFrom = G.screen;
@@ -5432,6 +5474,7 @@ function showResult() {
   }
   const dykI = nextDyk();
   saveStore();
+  const newAch = checkAch(youWin === true, M, R, cfg, endGame);
   const ar = arenaResult(youWin, endGame);
   const render = () => {
     const title = G.versus ? R.winner === 0 ? t('p1') + t('wins') : t('p2') + t('wins') : youWin ? t('win') : t('lose');
@@ -5444,6 +5487,7 @@ function showResult() {
     $('#resultBox').innerHTML = `<div class="how">${t(howName(R.how))}</div><h2 style="color:${youWin === false ? 'var(--red)' : 'var(--gold-light)'}">${title}</h2>
       ${promoted ? `<div class="newrec">${promoted}</div>` : ''}${newRec ? `<div class="newrec">${t('newRecord')}</div>` : ''}
       <div class="kv"><div><b>${fmtTime(M.total)}</b><small>${t('time')}</small></div><div><b>${M.f[0].score} – ${M.f[1].score}</b><small>${t('points')}</small></div><div><b>${t(howName(R.how))}</b><small>${t('moves')}</small></div></div>
+      ${newAch.length ? `<div class="newrec">★ ${t('achNew')}${newAch.map(i => t('ach_' + i)).join(', ')}</div>` : ''}
       ${ar.streak ? `<div class="newrec">${ar.streak}</div>` : ''}
       <div class="fact"><div class="fact-cazgir">${CAZGIR_MINI}</div><div><small>${t('dyk')}</small>${factText(dykI)}</div></div>
       <div class="row c">${btns.join('')}</div>${ar.links}`;
@@ -5491,7 +5535,7 @@ function showEnding() {
 }
 let confettiRun = 0;
 function startConfetti() {
-  const c = $('#confetti'); if (!c) return; const ctx = c.getContext('2d'); c.width = innerWidth; c.height = innerHeight; const run = ++confettiRun;
+  const c = $('#confetti'); if (!c || RM) return; const ctx = c.getContext('2d'); c.width = innerWidth; c.height = innerHeight; const run = ++confettiRun;
   const ps = Array.from({ length: 120 }, () => ({ x: Math.random() * c.width, y: -Math.random() * c.height, vx: (Math.random() - 0.5) * 2, vy: 2 + Math.random() * 3, r: 4 + Math.random() * 5, c: ['#E9B44C', '#C2410C', '#f7ecd6', '#2a7f62', '#2563EB'][(Math.random() * 5) | 0], a: Math.random() * 6 }));
   (function loop() {
     if (run !== confettiRun || G.screen !== 'ending') { ctx.clearRect(0, 0, c.width, c.height); return; }
