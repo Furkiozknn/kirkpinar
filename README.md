@@ -31,22 +31,9 @@
 
 <!-- gameplay gif -->
 
-## Şarkı videosundan / From the song video
+## Şarkı videosu / Song video
 
-<p align="center">
-  <img src="docs/banner.svg" width="100%" alt="Kırkpınar: Yağlı güreş · Edirne. Koyu kahve zemin, altın başlık, çimde iki yağlı pehlivan.">
-</p>
-
-<table>
-  <tr>
-    <td width="33%"><img src="docs/sarki-01.jpg" alt="Şarkı videosundan: bıyıklı pehlivan ve küçük çocuk pehlivan, davul ve zurna, seyirci"><br><sub>Başlık: "Turkish is easy… with oil?"</sub></td>
-    <td width="33%"><img src="docs/sarki-02.jpg" alt="Şarkı videosundan: oyun görüntüsü, iki güreşçi tutuşuyor"><br><sub>Oyundan: "Işık yandı mı? Vur!"</sub></td>
-    <td width="33%"><img src="docs/sarki-03.jpg" alt="Şarkı videosundan: gülen pehlivan ve çimde yağdan kayan çocuk"><br><sub>"Türkçe kolay mı? Kolay ama tutması zor"</sub></td>
-  </tr>
-</table>
-
-**Kırkpınar · Oyun Şarkısı** (45 sn, dikey video): oyunun tanıtım şarkısı, Türkçe ile İngilizce kelime oyunu üzerine kurulu. Video bu depoda değil; paylaşım videoları deposunda: [social-videos / 2026-11 / Kırkpınar oyun şarkısı](https://github.com/Furkiozknn/social-videos/blob/master/2026-11/2026-11-19-sarki-kirkpinar.mp4).
-*The song video (45 s, vertical) is a playful Turkish-meets-English tune about the game; it lives in the public social-videos repository, linked above.* Videonun görsel stil notları: [docs/STIL.md](docs/STIL.md).
+**Kırkpınar · Oyun Şarkısı**: oyunun tanıtım şarkısı videosu, paylaşım videoları deposunda: [social-videos / 2026-11](https://github.com/Furkiozknn/social-videos/blob/master/2026-11/2026-11-19-sarki-kirkpinar.mp4). Videonun görsel stil notları: [docs/STIL.md](docs/STIL.md).
 
 ## Features
 

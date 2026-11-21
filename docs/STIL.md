@@ -1,6 +1,6 @@
 # Kırkpınar — şarkı videosundan çıkarılan stil
 
-Kaynak: `social-videos` deposu, `master` dalı, `2026-11/2026-11-19-sarki-kirkpinar.mp4` (1080×1920, 30 fps, 45 sn). Videodan 14 eşit aralıklı kare ile ayrıca ilk, 26. sn, 41,5. sn ve son kare incelendi. Aşağıda yalnız karelerde görülenler yer alır; renk kodları kareler üzerinden ölçüldü (baskın renk kümeleri).
+Kaynak: `social-videos` deposu, `master` dalı, `2026-11/2026-11-19-sarki-kirkpinar.mp4` (1080×1920, 30 fps, 45 sn). Videodan eşit aralıklı kareler ile ayrıca ilk, 26. sn, 41,5. sn ve son kare incelendi. Aşağıda yalnız karelerde görülenler yer alır; renk kodları kareler üzerinden ölçüldü (baskın renk kümeleri).
 
 ## Karakter ve kadraj
 - Stilize 3B, kil/oyuncak görünümlü karakterler: iri kafalı, kalın kıvrık bıyıklı, yağdan parlayan tenli yetişkin pehlivan (deri kıspet) ve yanında küçük, ter damlalı, endişeli çocuk pehlivan.
@@ -33,5 +33,5 @@ Koyu kahve düz zemin, üstte altın rozet "OYUN ŞARKISI 2/21", büyük krem se
 
 ## Bu depoda kullanım
 - `docs/banner.svg` bu palet ve serif yazı diliyle yeniden çizildi (dış yazı tipi ve betik yok; Georgia / serif yedekleri).
-- README'de videodaki ton: şakacı, kısa, Türkçe + İngilizce; "Şarkı videosundan" bölümünde videodan 3 küçük kare ve `social-videos` bağlantısı.
+- README: Türkçe + İngilizce kısa açıklama ve şarkı videosuna tek satırlık bağlantı.
 - Görmediğim hiçbir şey (müzik/ses, söz tamamı, süre dışı özellikler) bu kılavuza yazılmadı.
