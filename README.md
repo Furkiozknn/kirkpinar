@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://furkiozknn.github.io/kirkpinar/">
-    <img src="docs/card.jpg" width="100%" alt="Kırkpınar: a 3D physics oil-wrestling game on the grass near Edirne. Click to play in your browser.">
+    <img src="docs/card-3d.jpg" width="100%" alt="Kırkpınar: a 3D physics oil-wrestling game on the grass near Edirne. Click to play in your browser.">
   </a>
 </p>
 
@@ -29,13 +29,29 @@
 
 ## Features
 
+<p align="center">
+  <img src="docs/features.jpg" width="100%" alt="Kırkpınar feature overview: a big mustached pehlivan lifts a small boy wrestler on a golden-hour grass field, beside five stair-step feature cards: career to the golden belt, stamina and pacing, authentic oil-wrestling moves, three-year champion streak, one file at 60 fps.">
+</p>
+
+<details>
+<summary><b>Feature details</b></summary>
+
 - **Career to the golden belt:** 5 weight classes from Deste to Başpehlivan, facing 3–4 rivals each across 4 styles (strong, fast, defensive, tricky) in a 26-bout tournament ladder, plus quick match and 2 players on one keyboard.
 - **Dynamic bout pacing & stamina:** Bouts scale across 60 / 75 / 90 / 105 / 120 seconds by class (90 s in quick match/2P; 45 s golden score tiebreaker); oil builds up constantly, requiring tactical pacing as grip strength decays.
 - **Authentic yağlı güreş moves:** Execute paça kazık, çaprast, kündeye almak (pin and roll a downed rival onto his back), yere çal (slam), crouched leg hooks, and lift & carry for 3 steps when rival balance allows.
 - **3-year championship streak:** Complete 3 consecutive career runs without abandoning to permanently secure the golden belt and turn your wrestler's belt and armband gold.
 - **Ultra-lean web performance:** A single `index.html` running Three.js r170 delivering 60 fps at 52–65 draw calls on Intel UHD 620 (64 calls, 61 fps on phone), verified by an automated bot across 23 bouts with 0 JS errors.
 
+</details>
+
 ## How to play
+
+<p align="center">
+  <img src="docs/how-to-play.jpg" width="100%" alt="How to play Kırkpınar: three steps (close in and grab, break the balance, strike) above two wrestlers grappling under stadium floodlights, with keyboard controls for Player 1 and Player 2 in the lower corners.">
+</p>
+
+<details>
+<summary><b>Goal and steps</b></summary>
 
 > [!TIP]
 > **Goal:** Put your rival's back (both shoulders) on the grass, or lift him and carry him three steps. Grab first, break his balance with pull and push, then strike when the move button lights up.
@@ -43,6 +59,8 @@
 1. **Close in and grab (`F`):** The first hand takes the arm, the next the waist; hold `S` (crouch) while grabbing to take the kıspet.
 2. **Break the balance:** Pull (`G`) drags the rival towards you, push (`H`) shoves him away; walking away from a hold drags him too. Pulling and pushing wear down your own grip and stamina.
 3. **Strike (`R`):** Strike when the move button lights up—a finishing move needs the right grip and an off-balance rival.
+
+</details>
 
 <details>
 <summary><b>Moves and rules</b></summary>
