@@ -1452,6 +1452,46 @@ svg { display: block; }
   height: 1px;
   background: linear-gradient(90deg, var(--line-strong), transparent);
 }
+
+/* ---- stil 3D (24.11.2026): the song video's warm clay world. Soft rounded panels, chibi figures from assets/3d
+   (Gemini) on the title, the versus card, results and the ending; figures sit beside text, never over it. */
+:root { --gold: #e2a13b; --gold-light: #ffd98a; --line: rgba(226, 161, 59, 0.38); --line-strong: rgba(226, 161, 59, 0.7); }
+.glass, .panel {
+  background: linear-gradient(180deg, rgba(62, 40, 20, 0.96), rgba(43, 26, 14, 0.97));
+  border: 2px solid rgba(226, 161, 59, 0.75); border-radius: 18px;
+  box-shadow: inset 0 1px 0 rgba(255, 228, 170, 0.18), 0 18px 44px rgba(10, 5, 0, 0.6), 0 4px 10px rgba(10, 5, 0, 0.35);
+}
+.btn { border-radius: 14px; }
+.btn.primary { background: linear-gradient(180deg, #d8663c, #a83a1c); box-shadow: 0 6px 16px rgba(168, 58, 28, 0.42), inset 0 2px 0 rgba(255, 255, 255, 0.28), inset 0 -3px 0 rgba(90, 24, 8, 0.35); }
+.btn:not(.primary):not(.gold) { background: linear-gradient(180deg, #4a301a, #2e1d0e); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 230, 180, 0.2); }
+.vs .who, .fact, .move-card, .stat, .rung, .card { border-radius: 14px; }
+.chip, .move-cond, .vs .who small.style-badge { border-radius: 10px; }
+.folio-frame { border-radius: 14px; border-color: rgba(226, 161, 59, 0.55); }
+/* cazgır face (from the festival sheet) in the speech cartouche and the fact cards */
+.cazgir-mini.c3 { display: inline-flex; align-items: flex-end; justify-content: center; width: 44px; height: 44px; flex: none; border-radius: 50%; overflow: hidden;
+  background: radial-gradient(circle at 50% 35%, #6a4524, #2b1a0e); border: 1.8px solid var(--gold); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.45); }
+.cazgir-mini.c3 img { width: 94%; height: auto; display: block; margin-bottom: -1px; }
+.fact-cazgir .cazgir-mini { width: 38px; height: 38px; margin-top: 2px; }
+/* title: the başpehlivan and the rookie stand either side of the crest */
+.title-figs { position: relative; display: flex; justify-content: center; align-items: flex-end; }
+.title-figs .tf { position: absolute; bottom: 0; height: min(150px, 36vw); width: auto; pointer-events: none; filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.55)); }
+.title-figs .tf.l { right: calc(50% + min(22vw, 95px) + 4px); height: min(122px, 30vw); }
+.title-figs .tf.r { left: calc(50% + min(22vw, 95px) + 2px); }
+/* versus: faces instead of the colour swatch; the belt colour rings the face */
+.vs .swatch.face { width: 68px; height: 68px; border-radius: 50%; border: 3px solid; background: radial-gradient(circle at 50% 40%, #6a4524, #2b1a0e) !important;
+  display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+.vs .swatch.face img { width: 88%; height: auto; display: block; margin-bottom: 2px; }
+/* results and the ending: a figure in the card corner */
+.res-fig { position: absolute; top: 10px; right: 14px; height: 92px; width: auto; pointer-events: none; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.5)); }
+.end-fig { display: block; height: 128px; width: auto; margin: 0 auto 4px; filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.55)); }
+@media (max-height: 800px) {
+  .title-figs .tf.r { height: min(118px, 34vw); } .title-figs .tf.l { height: min(96px, 28vw); }
+  .vs .swatch.face { width: 52px; height: 52px; }
+  .res-fig { height: 70px; top: 8px; }
+  .end-fig { height: 84px; }
+  #endingBox > img.end-fig + div { width: min(40vw, 150px) !important; }
+}
+@media (max-height: 500px) and (orientation: landscape) { .res-fig, .end-fig { display: none; } .vs .swatch.face { width: 40px; height: 40px; } }
 </style>
 <script>/*ARENA-KIT:BEGIN v1.3.2 sha256:ce77e23fab7c*/
 /* ARENA-KIT v1 — shared layer for the 21 Claude Game Arena games.
@@ -3646,6 +3686,38 @@ const envTex = new THREE.CanvasTexture(skyCanvas(true)); envTex.colorSpace = THR
 const sky = new THREE.Mesh(new THREE.SphereGeometry(300, 24, 14), new THREE.MeshBasicMaterial({ map: skyTex, side: THREE.BackSide, fog: false, depthWrite: false }));
 sky.rotation.y = 0.6; scene.add(sky);
 scene.fog = new THREE.Fog(0xd4be96, 70, 230);
+// ---- stil 3D (24.11.2026): chibi sprites and a golden-hour sky from the song video's world, assets/3d/*.webp
+// (Gemini, see CREDITS.md). Loading is asynchronous and purely visual: until a texture arrives (or if it fails)
+// the old procedural shapes stay; nothing here touches the sim, its RNG or its timing.
+const S3 = { loaded: [], failed: [], tex: {} };
+const TL3 = new THREE.TextureLoader();
+function tex3(name, onLoad) {
+  let t = S3.tex[name];
+  if (!t) {
+    t = S3.tex[name] = TL3.load('assets/3d/' + name + '.webp', () => { t.userData.ok = true; S3.loaded.push(name); for (const f of t.userData.cbs.splice(0)) f(t); }, undefined, () => S3.failed.push(name));
+    t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; t.userData.cbs = [];
+  }
+  if (onLoad) { if (t.userData.ok) onLoad(t); else t.userData.cbs.push(onLoad); }
+  return t;
+}
+const SHADOW3 = (() => {
+  const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d'), gr = g.createRadialGradient(32, 32, 2, 32, 32, 31);
+  gr.addColorStop(0, 'rgba(24,14,4,.5)'); gr.addColorStop(1, 'rgba(24,14,4,0)'); g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+  const t = new THREE.CanvasTexture(c); return new THREE.MeshBasicMaterial({ map: t, transparent: true, depthWrite: false });
+})();
+// camera-facing chibi sprite standing on the parent's origin (feet at the bottom), with a soft ground shadow;
+// onShow runs once the texture is in (used to hide the old shapes it replaces)
+function sprite3(name, h, parent, shadowW, onShow) {
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ transparent: true, alphaTest: 0.08 })); s.center.set(0.5, 0.02); s.visible = false;
+  s.material.map = tex3(name, t => { s.scale.set(h * t.image.width / t.image.height, h, 1); s.visible = true; if (onShow) onShow(s); });
+  if (parent) parent.add(s);
+  if (shadowW && parent) { const sh = new THREE.Mesh(new THREE.PlaneGeometry(shadowW, shadowW * 0.55), SHADOW3); sh.rotation.x = -Math.PI / 2; sh.position.y = 0.025; parent.add(sh); }
+  return s;
+}
+let _nrK = 7;
+function noRand(fn) { const mr = Math.random; Math.random = () => (_nrK = (_nrK * 16807) % 2147483647) / 2147483647; try { return fn(); } finally { Math.random = mr; } }
+for (let i = 0; i < 9; i++) tex3('yuz-' + i); // faces load at boot, so a bout's makeRig only reuses them
+tex3('gokyuzu', t => { t.mapping = THREE.UVMapping; sky.material.map = t; sky.material.needsUpdate = true; sky.rotation.y = -Math.PI / 2; });
 try {
   const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromEquirectangular(envTex).texture; scene.environmentIntensity = 0.75; pm.dispose();
 } catch (e) { /* environment is optional */ }
@@ -3950,14 +4022,37 @@ let crowdN = CROWD_ALL;
 const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _qa = new THREE.Quaternion(), _p = new THREE.Vector3(), _s = new THREE.Vector3(1, 1, 1), _e = new THREE.Euler(), _s2 = new THREE.Vector3();
 // photographers in the stands: a short white burst at a random seat
 function crowdFlash(n) { for (let k = 0; k < n; k++) { const c = CR[(Math.random() * crowdN) | 0]; emitP(c.x, c.y + 0.9, c.z, 1, 0, '#fff6dc', 0.9, 0.14, 0, 0); } }
+// stil 3D: the spectators become chibi sprites from a 3x3 atlas (row 0 calm, rows 1-2 cheering); one instanced
+// quad per seat facing the field, the cell switches to a cheering figure when the crowd gets up
+const CROWD_W = 0.7, CROWD_H = 0.875;
+const crowdSprGeo = new THREE.PlaneGeometry(CROWD_W, CROWD_H).translate(0, CROWD_H / 2 - 0.1, 0);
+const crowdCell = new THREE.InstancedBufferAttribute(new Float32Array(CROWD_ALL), 1); crowdCell.setUsage(THREE.DynamicDrawUsage);
+crowdSprGeo.setAttribute('aCell', crowdCell);
+const crowdSprM = new THREE.MeshBasicMaterial({ color: 0xece2cf, alphaTest: 0.5, side: THREE.DoubleSide });
+crowdSprM.onBeforeCompile = sh => {
+  sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aCell;')
+    .replace('#include <uv_vertex>', '#include <uv_vertex>\n#ifdef USE_MAP\n  vMapUv = (vec2(mod(aCell, 3.0), 2.0 - floor(aCell / 3.0 + 0.001)) + uv) / 3.0;\n#endif');
+};
+const crowdSpr = new THREE.InstancedMesh(crowdSprGeo, crowdSprM, CROWD_ALL); crowdSpr.frustumCulled = false; crowdSpr.visible = false; scene.add(crowdSpr);
+for (let i = 0; i < CROWD_ALL; i++) { const c = CR[i]; c.c0 = (i * 5 + (i >> 2)) % 9; c.c1 = 3 + (i * 7 + (i >> 3)) % 6; crowdCell.array[i] = c.c0; _m.compose(_p.set(c.x, c.y, c.z), c.qy, _s); crowdSpr.setMatrixAt(i, _m); }
+crowdSprM.map = tex3('seyirci', () => { crowdSprM.needsUpdate = true; crowdSpr.visible = true; for (const m of [crowdBody, crowdHead, crowdHair, crowdArms]) m.visible = false; });
 let crowdPar = 0;
 function updateCrowd(time, excite) {
   const cheer = clamp(excite * 1.15 + 0.1, 0, 1); crowdPar ^= 1; // each frame animates half of the spectators (30 Hz each)
+  const spr = crowdSpr.visible;
   for (let i = crowdPar; i < crowdN; i += 2) {
     const c = CR[i];
     const wv = Math.max(0, Math.sin(c.ang * 4.5 - time * 2.2)), wave = wv * wv * wv * (0.18 + 0.82 * cheer);
     const bounce = Math.max(0, Math.sin(time * (3.4 + 4 * cheer) + c.ph)) * (0.012 + 0.16 * cheer * c.act) + wave * 0.07;
     const up = clamp(cheer * c.act * (0.72 + 0.28 * Math.sin(time * (6 + 4 * cheer) + c.ph * 2)) + wave * 0.6, 0, 1);
+    if (spr) {
+      _p.set(c.x, c.y + bounce, c.z); _m.compose(_p, c.qy, _s); crowdSpr.setMatrixAt(i, _m); crowdCell.array[i] = up > 0.5 ? c.c1 : c.c0;
+      if (i % FLAG_EVERY === 0) {
+        _e.set(-0.15, 0, Math.sin(time * 5 + c.ph) * 0.3 * (0.4 + cheer) - 0.18); _qa.setFromEuler(_e); _q.multiplyQuaternions(c.qy, _qa);
+        _p.set(c.x - c.rx * 0.24, c.y + bounce + 0.5 + up * 0.35, c.z - c.rz * 0.24); _m.compose(_p, _q, _s); crowdFlag.setMatrixAt(i / FLAG_EVERY, _m);
+      }
+      continue;
+    }
     _p.set(c.x, c.y + bounce, c.z); _m.compose(_p, c.qy, _s); crowdBody.setMatrixAt(i, _m);
     _m.compose(_p.set(c.x, c.y + bounce * 1.1, c.z), c.qy, _s); crowdHead.setMatrixAt(i, _m);
     if (c.cap) _s2.set(1.22, 0.9, 1.22); else _s2.set(1, 1, 1);
@@ -3972,6 +4067,7 @@ function updateCrowd(time, excite) {
       _p.set(c.x - c.rx * 0.2, c.y + bounce + 0.42 + up * 0.45, c.z - c.rz * 0.2); _m.compose(_p, _q, _s); crowdFlag.setMatrixAt(i / FLAG_EVERY, _m);
     }
   }
+  if (spr) { crowdSpr.instanceMatrix.needsUpdate = crowdCell.needsUpdate = crowdFlag.instanceMatrix.needsUpdate = true; return; }
   crowdBody.instanceMatrix.needsUpdate = crowdHead.instanceMatrix.needsUpdate = crowdHair.instanceMatrix.needsUpdate = crowdArms.instanceMatrix.needsUpdate = crowdFlag.instanceMatrix.needsUpdate = true;
 }
 // Low quality: far fewer spectators with coarse geometry (high keeps the full set and shapes)
@@ -3986,7 +4082,7 @@ const crowdGeoLow = [
 function setCrowdCount(n) {
   const g = HIGH() ? crowdGeoHigh : crowdGeoLow;
   crowdBody.geometry = g[0]; crowdHead.geometry = g[1]; crowdHair.geometry = g[2]; crowdArms.geometry = g[3];
-  crowdN = n; crowdBody.count = crowdHead.count = crowdHair.count = n; crowdArms.count = n * 2; crowdFlag.count = Math.ceil(n / FLAG_EVERY);
+  crowdN = n; crowdBody.count = crowdHead.count = crowdHair.count = crowdSpr.count = n; crowdArms.count = n * 2; crowdFlag.count = Math.ceil(n / FLAG_EVERY);
 }
 setCrowdCount(HIGH() ? CROWD_ALL : Math.min(CROWD_ALL, CROWD_LOW));
 
@@ -4034,6 +4130,14 @@ function personFigure(o) {
   return g;
 }
 const cazgir = personFigure({ robe: '#2f6b5a', vest: '#8e1b1b', hat: 'turban', scale: 1.05, sash: '#E0C068' }); cazgir.position.set(0, 0, -3.4); scene.add(cazgir);
+// stil 3D: the helper figures become the video's chibi sprites (the old shapes hide once a sprite's texture is in)
+const hideFig = f => () => { const u = f.userData; for (const k of ['body', 'pr', 'pl', 'drum', 'zurna']) if (u[k]) u[k].visible = false; };
+cazgir.userData.spr = sprite3('npc-cazgir', 1.6 / 1.05, cazgir, 0.9, hideFig(cazgir)); tex3('npc-cazgir-cagri');
+// referee (new, visual only): stands a few steps behind the pair; ağa and the oil boy wait by the oil jugs
+const hakem = new THREE.Group(); hakem.position.set(2.8, 0, -4.4); scene.add(hakem); sprite3('npc-hakem', 1.5, hakem, 0.8);
+const aga = new THREE.Group(); aga.position.set(10.3, 0, -3.7); scene.add(aga); sprite3('npc-aga', 1.45, aga, 0.8);
+const yagci = new THREE.Group(); yagci.position.set(7.4, 0, -3.3); scene.add(yagci); sprite3('npc-cocuk', 1.15, yagci, 0.6);
+function swap3(s, name) { const t = S3.tex[name]; if (s && s.visible && t && t.userData.ok && s.material.map !== t) { s.material.map = t; s.scale.x = s.scale.y * t.image.width / t.image.height; } }
 
 // davul-zurna band on a carpeted stage under a striped canopy at the edge of the field
 const BAND = { x: -8.8, z: -4.6 }, bandG = new THREE.Group(); bandG.position.set(BAND.x, 0, BAND.z); bandG.rotation.y = yawToCenter(BAND.x, BAND.z); scene.add(bandG);
@@ -4057,13 +4161,14 @@ function mkBand(kind, x, z, o) {
     zurna.position.set(0, 1.3, 0.2); zurna.rotation.x = 1.15; f.add(zurna); f.userData.zurna = zurna;
     f.userData.pr.rotation.set(-1.45, 0, 0.35); f.userData.pl.rotation.set(-1.45, 0, -0.35);
   }
+  f.userData.spr = sprite3(kind === 'davul' ? 'npc-davul' : 'npc-zurna', 1.5 / 0.97, f, 0.7, hideFig(f)); if (kind === 'davul') tex3('npc-davul2');
   bandNPC.push({ f, kind, base: z, ph: bandNPC.length * 0.9 }); return f;
 }
 mkBand('davul', -1.9, 0.25, { hat: 'kavuk', hatCol: '#b3261e', sash: '#E0C068' });
 mkBand('zurna', -0.65, 0.5, { hat: 'kavuk', hatCol: '#1c3350', vest: '#1c3350', trousers: '#8e1b1b' });
 mkBand('zurna', 0.65, 0.5, { hat: 'kavuk', hatCol: '#1c3350', vest: '#1c3350', trousers: '#8e1b1b' });
 mkBand('davul', 1.9, 0.25, { hat: 'kavuk', hatCol: '#b3261e', sash: '#E0C068' });
-const camMen = camRigs.map(([px, pz, yaw]) => { const f = personFigure({ robe: '#2b303a', vest: '#2b303a', trousers: '#1b1f27', hat: 'cap', hatCol: '#0D1B2A', sash: '#e53935' }); f.position.set(px - Math.cos(yaw) * 0.55, 0, pz + Math.sin(yaw) * 0.55); f.rotation.y = yaw; f.userData.pr.rotation.x = -1.2; f.userData.pl.rotation.x = -1.2; scene.add(f); return f; });
+const camMen = camRigs.map(([px, pz, yaw]) => { const f = personFigure({ robe: '#2b303a', vest: '#2b303a', trousers: '#1b1f27', hat: 'cap', hatCol: '#0D1B2A', sash: '#e53935' }); f.position.set(px - Math.cos(yaw) * 0.55, 0, pz + Math.sin(yaw) * 0.55); f.rotation.y = yaw; f.userData.pr.rotation.x = -1.2; f.userData.pl.rotation.x = -1.2; scene.add(f); f.userData.spr = sprite3('npc-kamera', 1.55, f, 0.8, hideFig(f)); return f; });
 function updateNPCs(time, ph, cazX, cazZ) {
   // cazgır state: accepts (time, talk, x, z) without per-frame object allocation
   const talk = typeof ph === 'object' ? ph.talk : ph;
@@ -4076,8 +4181,12 @@ function updateNPCs(time, ph, cazX, cazZ) {
     if (n.kind === 'davul') {
       const h1 = Math.max(0, Math.sin(s)), h2 = Math.max(0, Math.sin(s + 1.6));
       u.pr.rotation.x = -1.0 + h1 * 0.6; u.pl.rotation.x = -1.0 + h2 * 0.5; u.drum.scale.set(1, 1 + Math.max(h1, h2) * 0.05, 1 + Math.max(h1, h2) * 0.05);
+      swap3(u.spr, Math.max(h1, h2) > 0.8 ? 'npc-davul2' : 'npc-davul');
     } else { u.zurna.rotation.x = 1.15 + Math.sin(time * 3 + n.ph) * 0.06; u.body.rotation.y = Math.sin(time * 1.8 + n.ph) * 0.12; }
+    if (u.spr) u.spr.position.y = Math.abs(Math.sin(time * 4.4 + n.ph)) * 0.04;
   }
+  swap3(c.spr, talk > 0.4 ? 'npc-cazgir-cagri' : 'npc-cazgir'); if (c.spr) c.spr.position.y = talk > 0.4 ? Math.abs(Math.sin(time * 7)) * 0.04 : 0;
+  hakem.children[0].position.y = Math.abs(Math.sin(time * 1.6)) * 0.015; aga.children[0].position.y = Math.abs(Math.sin(time * 1.1 + 1)) * 0.01;
   for (const m of camMen) m.userData.body.position.y = Math.sin(time * 1.3) * 0.006;
   cazgir.position.x += (cx - cazgir.position.x) * 0.04; cazgir.position.z += (cz - cazgir.position.z) * 0.04;
   c.pr.rotation.z = -0.4 - talk * (1.3 + Math.sin(time * 6) * 0.25); c.pl.rotation.z = 0.2; c.body.position.y = (talk ? Math.sin(time * 9) * 0.01 : 0);
@@ -4115,10 +4224,15 @@ function wrestlerHeadGeo(skin) {
   return mergeGeometries(parts, false);
 }
 const BONE = { thigh: 0.46, shin: 0.46, ua: 0.29, fa: 0.27 };
-function makeRig(spec) {
-  const s = spec.scale, heavy = clamp((spec.mass - 0.85) / 0.45, 0, 1), hv = 1 + 0.1 * heavy;
-  const skinM = new THREE.MeshStandardMaterial({ color: spec.skin, vertexColors: true, roughness: 0.55, metalness: 0, envMapIntensity: 0.9, emissive: new THREE.Color('#c89b3c'), emissiveIntensity: 0.03 });
-  const kispColor = settings.colorBlind === 'deuteranopia' ? '#18223c' : (settings.colorBlind === 'protanopia' ? '#5e3c12' : '#3a2c14');
+// stil 3D: each wrestler wears a big camera-facing chibi head (assets/3d/yuz-N.webp, Gemini) and his body takes
+// that face's skin tone; the player is always the moustached başpehlivan (yuz-0), rivals get a face by name
+const YUZ_DERI = ['#b5776a', '#d18668', '#e09e82', '#c98e75', '#e0997a', '#a65d45', '#d29680', '#c98a70', '#e8ad94'];
+function yuzOf(spec, side) { if (side === 0) return 0; let h = 7; for (const ch of String(spec.name)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return 1 + h % 8; }
+const CHB = 1.12; // chibi: chunkier limbs and torso (meshes only; bones, reach and collisions are the sim's)
+function makeRig(spec, side) {
+  const s = spec.scale, heavy = clamp((spec.mass - 0.85) / 0.45, 0, 1), hv = (1 + 0.1 * heavy) * CHB, face = yuzOf(spec, side || 0);
+  const skinM = new THREE.MeshPhysicalMaterial({ color: YUZ_DERI[face], vertexColors: true, roughness: 0.45, metalness: 0, clearcoat: 0.55, clearcoatRoughness: 0.3, envMapIntensity: 0.9, emissive: new THREE.Color('#c89b3c'), emissiveIntensity: 0.03 });
+  const kispColor = settings.colorBlind === 'deuteranopia' ? '#18223c' : (settings.colorBlind === 'protanopia' ? '#5e3c12' : '#4a2c18');
   const kispM = hookColorBlindShader(new THREE.MeshStandardMaterial({ color: kispColor, vertexColors: true, roughness: 0.5, envMapIntensity: 0.75 }));
   const trimM = stdMat('#c89b3c', 0.5);
   const bandM = stdMat(spec.band, 0.5);
@@ -4127,35 +4241,40 @@ function makeRig(spec) {
   const mk = (geo, m, shadow) => { const x = new THREE.Mesh(geo, m); x.castShadow = !!shadow; x.frustumCulled = false; g.add(x); return x; };
   const P = {};
   const chestG = mergeGeometries([
-    aoGeo(new THREE.CapsuleGeometry(0.15 * s, 0.14 * s, 4, 12).scale(1.5 + heavy * 0.1, 1, 0.9 + heavy * 0.1), 0.18),
+    aoGeo(new THREE.CapsuleGeometry(0.15 * s * CHB, 0.14 * s, 4, 12).scale(1.5 + heavy * 0.1, 1, 0.9 + heavy * 0.1), 0.18),
     aoGeo(new THREE.SphereGeometry(0.098 * s, 12, 9).scale(1.15, 0.82, 0.8).translate(0.096 * s, 0.045 * s, 0.1 * s), 0.0), aoGeo(new THREE.SphereGeometry(0.098 * s, 12, 9).scale(1.15, 0.82, 0.8).translate(-0.096 * s, 0.045 * s, 0.1 * s), 0.0),
     aoGeo(new THREE.SphereGeometry(0.11 * s, 10, 7).scale(1.6, 0.6, 0.9).translate(0, 0.13 * s, -0.01 * s), 0.0)
   ], false);
   P.chest = mk(chestG, skinM, true);
-  P.abd = mk(aoGeo(new THREE.CapsuleGeometry(0.14 * s, 0.1 * s, 4, 12).scale(1.3, 1, 0.95 + heavy * 0.28), 0.22), skinM, true);
+  P.abd = mk(aoGeo(new THREE.CapsuleGeometry(0.14 * s * CHB,0.1 * s, 4, 12).scale(1.3, 1, 0.95 + heavy * 0.28), 0.22), skinM, true);
   P.pelvis = mk(aoGeo(new THREE.SphereGeometry(0.175 * s, 14, 10).scale(1.25, 0.95, 1.05), 0.2), kispM, true);
   P.belt = mk(new THREE.CylinderGeometry(0.178 * s, 0.172 * s, 0.085 * s, 16).scale(1.28, 1, 1.0), bandM, false);
   P.neck = mk(limbGeo(0.2 * s, 0.07 * s, 0.056 * s, 0.004 * s, 0.5, 0.1), skinM, false);
   P.head = mk(wrestlerHeadGeo(spec.skin).scale(s, s, s), headM, false);
+  // camera-facing chibi head; the old modelled head stays as the fallback until the face texture is in
+  // (built with its own uuid generator: three's uuids use Math.random, and the bout's Brain seed is drawn from
+  // Math.random right after makeRig, so the extra objects must not shift that sequence)
+  const headS = noRand(() => new THREE.Sprite(new THREE.SpriteMaterial({ transparent: true, alphaTest: 0.1 }))); headS.center.set(0.5, 0.4); headS.visible = false; headS.frustumCulled = false; g.add(headS);
+  const HS = 0.7 * s; headS.material.map = tex3('yuz-' + face, t => { headS.scale.set(HS * t.image.width / t.image.height, HS, 1); headS.visible = true; P.head.visible = false; });
   P.uaR = mk(limbGeo((BONE.ua + 0.04) * s, 0.086 * s * hv, 0.058 * s, 0.016 * s, 0.4), skinM, true); P.uaL = mk(limbGeo((BONE.ua + 0.04) * s, 0.086 * s * hv, 0.058 * s, 0.016 * s, 0.4), skinM, true);
-  const faG = () => mergeGeometries([limbGeo((BONE.fa + 0.02) * s, 0.062 * s, 0.044 * s, 0.012 * s, 0.22, 0.12), aoGeo(new THREE.SphereGeometry(0.066 * s, 9, 7).scale(0.9, 1.1, 1.1).translate(0, (BONE.fa * 0.5 + 0.02) * s, 0), 0)], false);
+  const faG = () => mergeGeometries([limbGeo((BONE.fa + 0.02) * s, 0.062 * s * CHB, 0.044 * s * CHB, 0.012 * s, 0.22, 0.12), aoGeo(new THREE.SphereGeometry(0.08 * s, 9, 7).scale(0.9, 1.1, 1.1).translate(0, (BONE.fa * 0.5 + 0.02) * s, 0), 0)], false);
   P.faR = mk(faG(), skinM, true); P.faL = mk(faG(), skinM, true);
   P.band = mk(new THREE.CylinderGeometry(0.076 * s, 0.073 * s, 0.075 * s, 12), bandM, false);
   P.thR = mk(limbGeo((BONE.thigh + 0.04) * s, 0.13 * s * hv, 0.088 * s, 0.018 * s, 0.35), kispM, true); P.thL = mk(limbGeo((BONE.thigh + 0.04) * s, 0.13 * s * hv, 0.088 * s, 0.018 * s, 0.35), kispM, true);
-  P.shR = mk(limbGeo((BONE.shin + 0.02) * s, 0.078 * s, 0.05 * s, 0.02 * s, 0.25), skinM, true); P.shL = mk(limbGeo((BONE.shin + 0.02) * s, 0.078 * s, 0.05 * s, 0.02 * s, 0.25), skinM, true);
+  P.shR = mk(limbGeo((BONE.shin + 0.02) * s, 0.078 * s * CHB, 0.05 * s * CHB, 0.02 * s, 0.25), skinM, true); P.shL = mk(limbGeo((BONE.shin + 0.02) * s, 0.078 * s * CHB, 0.05 * s * CHB, 0.02 * s, 0.25), skinM, true);
   const trG = () => new THREE.TorusGeometry(0.09 * s, 0.013 * s, 5, 16).rotateX(Math.PI / 2);
   P.knR = mk(trG(), trimM, false); P.knL = mk(trG(), trimM, false);
   const ftG = () => aoGeo(new THREE.SphereGeometry(1, 10, 8).scale(0.058 * s, 0.036 * s, 0.138 * s).translate(0, 0, 0.07 * s), 0.1);
   P.ftR = mk(ftG(), skinM, false); P.ftL = mk(ftG(), skinM, false);
   // runtime state
   return {
-    g, P, spec, s, skinM, headM, kispM, J: new Float32Array(66), feet: [{ x: 0, z: 0, fx: 0, fz: 0, tx: 0, tz: 0, t: 1, y: 0 }, { x: 0, z: 0, fx: 0, fz: 0, tx: 0, tz: 0, t: 1, y: 0 }],
+    g, P, spec, s, skinM, headM, kispM, headS, face, J: new Float32Array(66), feet: [{ x: 0, z: 0, fx: 0, fz: 0, tx: 0, tz: 0, t: 1, y: 0 }, { x: 0, z: 0, fx: 0, fz: 0, tx: 0, tz: 0, t: 1, y: 0 }],
     rk: 0, init: false, whiffT: 0, whiffSide: 0, grabT: [0, 0], flashT: 0, phase: Math.random() * 6
   };
 }
 function disposeRig(r) {
   scene.remove(r.g);
-  r.g.traverse(o => { if (o.isMesh) { o.geometry.dispose(); } });
+  r.g.traverse(o => { if (o.isMesh) { o.geometry.dispose(); } if (o.isSprite) o.material.dispose(); });
   const seen = new Set(); r.g.traverse(o => { if (o.isMesh && !seen.has(o.material)) { seen.add(o.material); o.material.dispose(); } });
 }
 
@@ -4342,6 +4461,12 @@ function applyJ(r, J) {
   // head orientation: look along torso forward
   getJ(J, 17, _xv).negate(); getJ(J, 19, _zv); getJ(J, 18, _yv); _yv.copy(_vd).sub(getJ(J, 3, _va)).normalize(); _xv.addScaledVector(_yv, -_xv.dot(_yv)).normalize(); _zv.crossVectors(_xv, _yv);
   _mm.makeBasis(_xv, _yv, _zv); P.head.quaternion.setFromRotationMatrix(_mm);
+  if (r.headS && r.headS.visible) { // chibi face: sits on the neck line and rolls with it as the camera sees it (upright standing, sideways when down)
+    getJ(J, 3, _va); _vc.copy(_vd).sub(_va).normalize(); r.headS.position.copy(_vd).addScaledVector(_vc, 0.06 * s);
+    _vb.copy(camera.position).sub(_vd).normalize(); r.headS.position.addScaledVector(_vb, 0.3 * s); // a little towards the camera: the own guard arm stays behind the face
+    _ca.copy(_va).project(camera); _ca2.copy(_vd).project(camera);
+    r.headS.material.rotation = Math.atan2(_ca2.y - _ca.y, (_ca2.x - _ca.x) * camera.aspect) - Math.PI / 2;
+  }
   boneTo(P.uaR, J, 5, 6); boneTo(P.uaL, J, 8, 9); boneTo(P.faR, J, 6, 7, 0.0); boneTo(P.faL, J, 9, 10, 0.0);
   // hand sphere sits at the end of the forearm capsule: shift the mesh so its sphere lands on the hand joint
   getJ(J, 7, _va); getJ(J, 6, _vb); _vc.copy(_va).sub(_vb).normalize(); P.faR.position.copy(_va).addScaledVector(_vc, -(BONE.fa * 0.5 + 0.02) * s * 0.0).addScaledVector(_vc, -BONE.fa * 0.5 * s);
@@ -4570,19 +4695,7 @@ const dykHtml = i => `<div class="dyk-inner">${CAZGIR_MINI}<div><b>${t('dyk')}</
 const WIN_TR = n => 'Meydanın galibi ' + n + '!', WIN_EN = n => 'The winner of the field: ' + n + '!';
 
 // ============================================================ svg art & manuscript illumination
-const CAZGIR_MINI = `<svg class="cazgir-mini" viewBox="0 0 44 44" width="44" height="44" aria-hidden="true">
-  <circle cx="22" cy="22" r="21" fill="#241a0d" stroke="#c89b3c" stroke-width="1.8"/>
-  <path d="M14 17c0-6 4-10 8-10s8 4 8 10c-2-1-6-2-8-2s-6 1-8 2z" fill="#f0e2c0" stroke="#3a2c14" stroke-width="1"/>
-  <ellipse cx="22" cy="11" rx="4" ry="2.5" fill="#5c6e3a"/>
-  <circle cx="22" cy="10" r="1.5" fill="#f5d78a"/>
-  <ellipse cx="22" cy="21" rx="6" ry="6.5" fill="#e6ad82"/>
-  <path d="M16 22c0 4 2.5 8 6 8s6-4 6-8c-2 1-4 1.5-6 1.5s-4-.5-6-1.5z" fill="#f0e2c0" stroke="#c89b3c" stroke-width="0.8"/>
-  <circle cx="19" cy="19.5" r="0.8" fill="#241a0d"/>
-  <circle cx="25" cy="19.5" r="0.8" fill="#241a0d"/>
-  <path d="M11 38c1-7 5-11 11-11s10 4 11 11z" fill="#b0492f"/>
-  <path d="M18 27l4 7 4-7" fill="none" stroke="#f5d78a" stroke-width="2"/>
-  <circle cx="31" cy="26" r="3" fill="#e6ad82" stroke="#c89b3c" stroke-width="0.8"/>
-</svg>`;
+const CAZGIR_MINI = `<span class="cazgir-mini c3" aria-hidden="true"><img src="assets/3d/cazgir-yuz.webp" alt="" width="102" height="96"></span>`;
 
 const CREST = `<svg class="crest" viewBox="0 0 200 200" role="img" aria-label="Kırkpınar Er Meydanı">
 <defs>
@@ -4752,7 +4865,7 @@ function buildScreens() {
   for (const k in SCREENS) SCREENS[k].remove();
   const best = store.best; const bestTxt = (best.wins || best.titles) ? `${t('best')}: ${best.wins} ${t('bestWins')} · ${best.titles} ${t('bestTitles')}${best.fastest ? ' · ' + fmtTime(best.fastest) + ' ' + t('bestFast') : ''}` : '';
   const hasCareer = !!(store.run && (store.run.midCareer || store.run.wins > 0 || store.run.losses > 0 || (store.run.ci || store.run.class || 0) > 0 || (store.run.oi || store.run.boutIndex || 0) > 0));
-  mkScreen('title', 'grad', `<div class="title-wrap">${CREST}<h1>Kırkpınar</h1><div class="tag">${t('tagline')}</div><p class="how">${t('how')}</p>
+  mkScreen('title', 'grad', `<div class="title-wrap"><div class="title-figs"><img class="tf l" src="assets/3d/figur-acemi.webp" alt="" width="163" height="360">${CREST}<img class="tf r" src="assets/3d/figur-pehlivan.webp" alt="" width="268" height="360"></div><h1>Kırkpınar</h1><div class="tag">${t('tagline')}</div><p class="how">${t('how')}</p>
     <div class="menu" id="mTitle"><div id="loadBox" style="width:100%"><div style="text-align:center;color:var(--ink2);font-size:14px" id="loadTxt">${t('loading')}</div><div class="loadbar"><i id="loadI"></i></div></div>
     ${menuBtn(hasCareer ? 'continueCareer' : 'play', hasCareer ? t('continueCareer') : t('play'), 'primary', 'id="bPlay" hidden')}${store.run ? menuBtn('continue', t('cont'), 'gold', 'id="bCont" hidden') : ''}
     <div class="row">${menuBtn('mode', t('more'), '', 'id="bMore"')}${menuBtn('training', t('training'), '', 'id="bTrainTitle"')}</div>
@@ -4877,11 +4990,11 @@ function renderLadder() {
 }
 function renderVersus(m) {
   const [a, b] = m.specs;
-  const who = (sp, label, bandCol) => `<div class="who"><div class="swatch-wrap"><div class="swatch" style="background:${bandCol}"></div></div><b>${sp.name}</b><small class="style-badge">${label}</small>${statBars(sp)}</div>`;
+  const who = (sp, label, bandCol, side) => `<div class="who"><div class="swatch-wrap"><div class="swatch face" style="border-color:${bandCol}"><img src="assets/3d/yuz-${yuzOf(sp, side)}.webp" alt="" width="185" height="192"></div></div><b>${sp.name}</b><small class="style-badge">${label}</small>${statBars(sp)}</div>`;
   if (m.dyk === undefined) m.dyk = nextDyk();
   const cazFact = m.factIdx >= 0;
   $('#versusBox').innerHTML = `<h2>${m.title}</h2><p class="sub">${m.sub}</p><div class="row c" style="margin:0 0 2px"><span class="chip">${t('boutLen')}: <b>${m.limit || 90}${t('secs')}</b></span></div>
-    <div class="vs">${who(a, t(a.style === 'balanced' ? 'normal' : a.style), a.band)}<div class="x-medallion"><span>VS</span></div>${who(b, t(b.style), b.band)}</div>
+    <div class="vs">${who(a, t(a.style === 'balanced' ? 'normal' : a.style), a.band, 0)}<div class="x-medallion"><span>VS</span></div>${who(b, t(b.style), b.band, 1)}</div>
     <div class="fact"><div class="fact-cazgir">${CAZGIR_MINI}</div><div><small>${cazFact ? t('cazgir') : t('dyk')}</small>${factText(cazFact ? m.factIdx : m.dyk)}</div></div>
     <div class="vsauto" id="vsAuto" ${G.vsAuto > 0 ? '' : 'hidden'}><b><i id="vsAutoI"></i></b><span>${t('vsStart')}</span></div>
     <div class="row c" style="margin-top:8px">${menuBtn('vsGo', t('enter'), 'primary')}${menuBtn('vsBack', t('back'))}</div>`;
@@ -4892,7 +5005,7 @@ const DT = 1 / 60;
 const G = {
   screen: 'title', paused: false, versus: false, mode: 'demo', demo: true, match: null, cfg: null, humans: [false, false], brains: [null, null],
   quick: { style: 'strong', cls: 2, diff: 'normal' }, settingsFrom: 'title', talk: 0, excite: 0, shake: 0, slowT: 0, introT: 0, acc: 0, time: 0,
-  replay: null, rec: [], recN: 0, recOn: false, resultShown: false, ctxName: null, camX: 0, camDist: 8, fps: 0, assets: { mode: 'procedural', loaded: [], failed: [], note: 'all geometry, textures and sounds are generated in code' },
+  replay: null, rec: [], recN: 0, recOn: false, resultShown: false, ctxName: null, camX: 0, camDist: 8, fps: 0, assets: { mode: 'procedural+sprites', loaded: S3.loaded, failed: S3.failed, note: 'geometry and sounds are generated in code; chibi sprites and the sky come from assets/3d (see CREDITS.md)' },
   autoStats: { matches: 0, wins: 0, losses: 0, done: false, hows: {} }, lastStep: 0, demoRestart: 0, camT: 0, zoom: 1, ready: false, vsAuto: 0, coach: null
 };
 const REC_N = 120;
@@ -4907,7 +5020,7 @@ function disposeRigs() { if (G.match) for (const f of G.match.f) if (f.rig) { di
 function setupMatch(cfg) {
   disposeRigs(); G.cfg = cfg;
   const M = new Match(cfg.specs, { limit: cfg.limit || 90, golden: 45, seed: cfg.seed || (Math.random() * 1e6) | 0, training: !!cfg.training }); M.specs = cfg.specs; // daily: fixed seed
-  for (let i = 0; i < 2; i++) { M.f[i].rig = makeRig(cfg.specs[i]); }
+  for (let i = 0; i < 2; i++) { M.f[i].rig = makeRig(cfg.specs[i], i); }
   G.match = M; G.humans = cfg.humans.slice();
   G.brains = [0, 1].map(i => G.humans[i] ? null : new Brain(Object.assign({}, cfg.specs[i], { level: cfg.levels[i] }), cfg.brainSeed ? cfg.brainSeed + i : (Math.random() * 1e6) | 0));
   G.introT = 0; G.resultShown = false; G.replay = null; G.recN = 0; G.recOn = true; G.slowT = 0; G.acc = 0; G.excite = 0.2; G.ctxName = null;
@@ -5484,7 +5597,7 @@ function showResult() {
       else btns.push(menuBtn('retry', t('retry'), 'primary'));
       btns.push(menuBtn('quit', t('menu')));
     } else btns.push(menuBtn('rematch', t('rematch'), 'primary'), menuBtn('quit', t('menu')));
-    $('#resultBox').innerHTML = `<div class="how">${t(howName(R.how))}</div><h2 style="color:${youWin === false ? 'var(--red)' : 'var(--gold-light)'}">${title}</h2>
+    $('#resultBox').innerHTML = `<img class="res-fig" src="assets/3d/${youWin === false ? 'figur-kayan' : 'figur-kemer'}.webp" alt="" width="${youWin === false ? 321 : 274}" height="360"><div class="how">${t(howName(R.how))}</div><h2 style="color:${youWin === false ? 'var(--red)' : 'var(--gold-light)'}">${title}</h2>
       ${promoted ? `<div class="newrec">${promoted}</div>` : ''}${newRec ? `<div class="newrec">${t('newRecord')}</div>` : ''}
       <div class="kv"><div><b>${fmtTime(M.total)}</b><small>${t('time')}</small></div><div><b>${M.f[0].score} – ${M.f[1].score}</b><small>${t('points')}</small></div><div><b>${t(howName(R.how))}</b><small>${t('moves')}</small></div></div>
       ${newAch.length ? `<div class="newrec">★ ${t('achNew')}${newAch.map(i => t('ach_' + i)).join(', ')}</div>` : ''}
@@ -5528,7 +5641,7 @@ function arenaResult(youWin, endGame) {
 function showEnding() {
   AU.init(); AU.play('fanfare'); AU.play('cheer');
   G.lastEndingFn = () => {
-    $('#endingBox').innerHTML = `<div style="width:min(70vw,240px);margin:0 auto 8px">${beltSvg(store.belt.kept)}</div><h2 style="font-size:40px">${t('endTitle')}</h2><p class="sub">${t('endSub')}</p>${beltHallHtml(store.belt.streak)}<div class="kv"><div><b>${store.best.titles}</b><small>${t('endTitles')}</small></div><div><b>${store.best.wins}</b><small>${t('bestWins')}</small></div></div><div class="row c">${menuBtn('title', t('menu'), 'primary')}</div>${arenaLinks()}`;
+    $('#endingBox').innerHTML = `<img class="end-fig" src="assets/3d/figur-kemer.webp" alt="" width="274" height="360"><div style="width:min(70vw,240px);margin:0 auto 8px">${beltSvg(store.belt.kept)}</div><h2 style="font-size:40px">${t('endTitle')}</h2><p class="sub">${t('endSub')}</p>${beltHallHtml(store.belt.streak)}<div class="kv"><div><b>${store.best.titles}</b><small>${t('endTitles')}</small></div><div><b>${store.best.wins}</b><small>${t('bestWins')}</small></div></div><div class="row c">${menuBtn('title', t('menu'), 'primary')}</div>${arenaLinks()}`;
   };
   if (window.Arena) G.shareData = { title: 'Kırkpınar · ' + t('endTitle'), lines: [t('shareTitle').replace('{n}', store.best.wins), t('endTitles') + ': ' + store.best.titles], url: 'https://furkiozknn.github.io/kirkpinar/' };
   G.lastEndingFn(); showScreen('ending'); G.screen = 'ending'; startConfetti(); say('win', true, G.cfg.specs[0].name); $('#hud').classList.add('nofb');
@@ -5564,13 +5677,14 @@ function updateCamera(dt) {
     camTmp.set(cx + Math.sin(ang) * d - off, 1.7, Math.cos(ang) * d); camera.position.lerp(camTmp, Math.min(1, dt * 2)); lookTmp.set(cx - off, 1.05, 0); camera.lookAt(lookTmp);
     return;
   }
-  const span = Math.max(4.6, Math.abs(a.p.x - b.p.x) + 2.8);
+  // stil 3D: on a portrait phone the camera frames the pair tighter (about 1.5x larger figures); camera only, the sim is untouched
+  const span = asp < 1 ? Math.max(3.0, Math.abs(a.p.x - b.p.x) + 1.9) : Math.max(4.6, Math.abs(a.p.x - b.p.x) + 2.8);
   let dist = Math.max(1.85 / tv, (span / 2) / (tv * asp), 5.4) * (1 - 0.14 * Math.min(1, G.zoom)) * (G.slowT > 0 ? 0.82 : 1);
   const cx = (a.p.x + b.p.x) / 2;
   G.camX += (cx - G.camX) * Math.min(1, dt * 4); G.camDist += (dist - G.camDist) * Math.min(1, dt * 2.6);
   const sh = G.shake; G.shake = Math.max(0, G.shake - dt * 1.6);
   const land = innerHeight < 500 && asp > 1; // phone landscape: HUD sits over the top band
-  const ly = land ? 0.95 : asp < 1 || IS_TOUCH ? 0.62 : 1.05;
+  const ly = land ? 0.95 : asp < 1 ? 0.9 : IS_TOUCH ? 0.62 : 1.05; // stil 3D: portrait looks a bit higher so the closer pair sits mid-screen
   const cd = land ? G.camDist * 1.1 : G.camDist;
   camera.position.set(G.camX + (Math.random() - 0.5) * sh * 0.25, 1.35 + 0.15 * cd + (Math.random() - 0.5) * sh * 0.2, cd);
   camera.lookAt(G.camX, ly, 0);
@@ -5756,6 +5870,7 @@ function renderFrame(dt, nowS) {
       r.skinM.emissive.setRGB(lerp(0.78, 1.0, k), lerp(0.61, 0.95, k), lerp(0.24, 0.7, k));
       r.headM.emissive.setRGB(lerp(0.78, 1.0, k), lerp(0.61, 0.95, k), lerp(0.24, 0.7, k));
       r.skinM.emissiveIntensity = r.headM.emissiveIntensity = (0.02 + 0.1 * u) + 0.85 * k;
+      if (r.headS) r.headS.material.color.setRGB(1 + 0.5 * k, 1 + 0.42 * k, 1 + 0.2 * k);
       if (r.kispM) {
         r.kispM.emissive.set('#b0492f');
         r.kispM.emissiveIntensity = 0.7 * k;
@@ -5764,6 +5879,7 @@ function renderFrame(dt, nowS) {
       r.skinM.emissive.set('#c89b3c');
       r.headM.emissive.set('#c89b3c');
       r.skinM.emissiveIntensity = r.headM.emissiveIntensity = 0.02 + 0.1 * u; // gold oil sheen
+      if (r.headS) r.headS.material.color.setScalar(1);
       if (r.kispM) {
         r.kispM.emissive.set('#000000');
         r.kispM.emissiveIntensity = 0;
@@ -5784,6 +5900,7 @@ function renderFrame(dt, nowS) {
   const talkTarget = G.talk ? 1 : 0; G.talkS = (G.talkS || 0) + (talkTarget - (G.talkS || 0)) * 0.1;
   const away = !G.demo && M.phase !== 'ready' ? 1 : 0;
   updateNPCs(nowS, G.talkS, away ? 0.5 : 0, away ? -8.5 : -3.4);
+  hakem.position.x += (cx + 2.8 - hakem.position.x) * Math.min(1, dt * 1.5);
   if (AU.crowdG) AU.crowdG.gain.value = 0.03 + G.excite * 0.14;
   updateCamera(dt);
   updateHUD();
@@ -5894,7 +6011,7 @@ function boot() {
     get state() { const M = G.match; return M ? { phase: M.phase, clock: M.clock, limit: M.limit, limits: CLASS_LIMIT, golden: M.golden, score: [M.f[0].score, M.f[1].score], states: M.f.map(f => f.state), bal: M.f.map(f => +f.bal.toFixed(2)), sta: M.f.map(f => +f.sta.toFixed(2)), result: M.result, tut: M.tut ? { att: M.tut.att, ph: M.tut.ph, beat: M.tut.beat, shown: M.tut.shown, flipped: M.tut.flipped, read: M.tut.read } : null, tutStats: Object.assign({}, M.stats), reads: M.f.map(f => f.reads), training: !!M.training } : null; },
     get screen() { return G.screen; }, get fps() { return G.fps; }, get drawCalls() { return renderer.info.render.calls; }, get triangles() { return renderer.info.render.triangles; },
     assets: G.assets, auto: G.autoStats, G, store, version: '2.0', get coach() { return G.coach; }, get belt() { return store.belt; }, get reducedMotion() { return RM; }, limits: CLASS_LIMIT, facts: FACTS.length, get errors() { return window.__errs || []; }, quality: () => settings.quality, humans: G.humans, scene,
-    startTraining: trainingMatch, openMoveList: () => onAct('movelist'), get training() { return !!(G.match && G.match.training); }
+    stil3d: S3, startTraining: trainingMatch, openMoveList: () => onAct('movelist'), get training() { return !!(G.match && G.match.training); }
   };
 }
 boot();
