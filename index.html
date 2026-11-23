@@ -3714,6 +3714,9 @@ function sprite3(name, h, parent, shadowW, onShow) {
   if (shadowW && parent) { const sh = new THREE.Mesh(new THREE.PlaneGeometry(shadowW, shadowW * 0.55), SHADOW3); sh.rotation.x = -Math.PI / 2; sh.position.y = 0.025; parent.add(sh); }
   return s;
 }
+let _nrK = 7;
+function noRand(fn) { const mr = Math.random; Math.random = () => (_nrK = (_nrK * 16807) % 2147483647) / 2147483647; try { return fn(); } finally { Math.random = mr; } }
+for (let i = 0; i < 9; i++) tex3('yuz-' + i); // faces load at boot, so a bout's makeRig only reuses them
 tex3('gokyuzu', t => { t.mapping = THREE.UVMapping; sky.material.map = t; sky.material.needsUpdate = true; sky.rotation.y = -Math.PI / 2; });
 try {
   const pm = new THREE.PMREMGenerator(renderer); scene.environment = pm.fromEquirectangular(envTex).texture; scene.environmentIntensity = 0.75; pm.dispose();
@@ -4249,7 +4252,9 @@ function makeRig(spec, side) {
   P.neck = mk(limbGeo(0.2 * s, 0.07 * s, 0.056 * s, 0.004 * s, 0.5, 0.1), skinM, false);
   P.head = mk(wrestlerHeadGeo(spec.skin).scale(s, s, s), headM, false);
   // camera-facing chibi head; the old modelled head stays as the fallback until the face texture is in
-  const headS = new THREE.Sprite(new THREE.SpriteMaterial({ transparent: true, alphaTest: 0.1 })); headS.center.set(0.5, 0.4); headS.visible = false; headS.frustumCulled = false; g.add(headS);
+  // (built with its own uuid generator: three's uuids use Math.random, and the bout's Brain seed is drawn from
+  // Math.random right after makeRig, so the extra objects must not shift that sequence)
+  const headS = noRand(() => new THREE.Sprite(new THREE.SpriteMaterial({ transparent: true, alphaTest: 0.1 }))); headS.center.set(0.5, 0.4); headS.visible = false; headS.frustumCulled = false; g.add(headS);
   const HS = 0.7 * s; headS.material.map = tex3('yuz-' + face, t => { headS.scale.set(HS * t.image.width / t.image.height, HS, 1); headS.visible = true; P.head.visible = false; });
   P.uaR = mk(limbGeo((BONE.ua + 0.04) * s, 0.086 * s * hv, 0.058 * s, 0.016 * s, 0.4), skinM, true); P.uaL = mk(limbGeo((BONE.ua + 0.04) * s, 0.086 * s * hv, 0.058 * s, 0.016 * s, 0.4), skinM, true);
   const faG = () => mergeGeometries([limbGeo((BONE.fa + 0.02) * s, 0.062 * s * CHB, 0.044 * s * CHB, 0.012 * s, 0.22, 0.12), aoGeo(new THREE.SphereGeometry(0.08 * s, 9, 7).scale(0.9, 1.1, 1.1).translate(0, (BONE.fa * 0.5 + 0.02) * s, 0), 0)], false);
